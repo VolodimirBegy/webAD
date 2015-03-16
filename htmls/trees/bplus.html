@@ -1,0 +1,228 @@
+<html>
+<head>
+
+<title>WebAD</title>
+
+	<link rel="shortcut icon" type="image/png" href="../../images/icon.png"/>
+	<link rel="stylesheet" type="text/css" href="../../style.css">
+	<script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
+	<script src="../../libs/models/trees/bplus.js"></script>
+	<script src="../../libs/views/trees/bplus.js"></script>
+	<script src="../../libs/menu.js"></script>
+	<script src="../../libs/externalLibs/taffy.js"></script>
+	
+</head>
+
+<script>
+
+	var tree = new BPlusTree();
+
+	function clearTimes(){
+		var pids = window.setTimeout(function() {}, 0);
+
+		while (pids--) {
+    		window.clearTimeout(pids); 
+		}
+		
+		tmpNodes=[];
+		if(tree.root!=undefined)
+			tmpNodes.push(tree.root);
+		var finished=true;
+		
+		do{
+			finished=true;
+			var oldNodes=tmpNodes; tmpNodes=[];
+	
+			do{
+				if(oldNodes[0]!=undefined){
+					for(var i=0;i<oldNodes[0].pointers.length;i++){
+						oldNodes[0].pointers[i].neededKid=undefined;
+						oldNodes[0].pointers[i].color="#ADFF2F";
+						tmpNodes.push(oldNodes[0].pointers[i]);
+					}
+				}
+				oldNodes.shift();
+			}while(oldNodes.length!=0);
+			
+			for(var k=0;k<tmpNodes.length;k++){
+				if(tmpNodes[k]!=undefined)
+					finished=false;
+			}
+		}while(!finished);
+		var c1 = document.getElementById("container1");
+		tree.draw(c1);
+	}
+	
+	function create(){
+		clearTimes();
+		//tree=new BPlusTree();
+		var c1 = document.getElementById("container1");
+		tree.init(c1);
+	}
+	
+	function add(){
+		clearTimes();
+		var c1 = document.getElementById("container1");
+		tree.add(c1);
+	}
+	
+	function search(){
+		clearTimes();
+		var c1 = document.getElementById("container1");
+		tree.search(c1);	
+	}
+	
+	function rem(){
+		clearTimes();
+		var c1 = document.getElementById("container1");
+		tree.remove(c1);
+	}
+	
+	function random(){
+		clearTimes();
+		var c1 = document.getElementById("container1");
+		tree.random(c1);
+	}
+	
+	function pre(){
+		clearTimes();
+		var c1 = document.getElementById("container1");
+		tree.prev(c1);
+	}
+	
+	function next(){
+		clearTimes();
+		var c1 = document.getElementById("container1");
+		tree.next(c1);
+	}
+	
+	function first(){
+		clearTimes();
+		var c1 = document.getElementById("container1");
+		tree.firstState(c1);
+	}
+	
+	function last(){
+		clearTimes();
+		var c1 = document.getElementById("container1");
+		tree.lastState(c1);
+	}
+	
+	function zoomIn(){
+     	var c1 = document.getElementById("container1");
+     	tree.view.zoomIn(c1);
+	}
+	
+	function zoomOut(){
+     	var c1 = document.getElementById("container1");
+     	tree.view.zoomOut(c1);
+	}
+	
+
+	</script>
+
+
+<body><div class="container" >
+	<div id="head">
+		<a href="#" onclick="javascript:org('info')" class="inf"></a>
+		<a href="#" onclick="javascript:org('configs')" class="conf"></a>
+		<a href="#" onclick="javascript:org('ideas')" class="gogo"></a>
+	</div>
+	<div id="rightcoll">
+		<img src="../../images/logo.png"/>
+		<ul class="menu">
+			<li class="vectors ani"><a href="#" onclick="javascript:org('vectors')" class="vectors ani">Vectors</a>
+			</li>
+			<li class="dictionaries ani"><a href="#" onclick="javascript:org('dictionaries')" class="dictionaries ani">Dictionaries</a>
+			</li>
+			<li class="lists ani"><a href="#" onclick="javascript:org('lists')" class="lists ani">Lists</a>
+			</li>
+			<li class="graphs ani"><a href="#" onclick="javascript:org('graphs')" class="graphs ani">Graphs</a>
+			</li>
+			<li class="trees ani"><a href="#" onclick="javascript:org('trees')" class="trees ani">Trees</a>
+			</li>
+		</ul>
+	</div>
+	<div id="center">
+		<div class="left" id="container1"></div>
+		<div class="right ani" id="mmmenu" style="height:500px"><h3 class="mtitle" style="display:none"></h3><a class="shower" href="#" onclick="javascript:bot('mmmenu')">B+ Tree<br>^</a>
+						<input type="button" value="Create" id="create" onclick="create();return false;">
+			<input type="button" value="Generate Random" id="random" onclick="random();return false;">
+			<input type="button" value="Add Value" id="add" onclick="add();return false;">
+			<input type="button" value="Remove Value" id="remove" onclick="rem();return false;">
+			<input type="button" value="Search for Value" id="search" onclick="search();return false;">
+		</div>
+	</div>
+	<div id="footer">
+		<a href="#" class="ll" id="first" onclick="first();return false;"></a>
+		<a href="#" class="l" id="prev" onclick="pre();return false;"></a>
+		<a href="#" class="p"></a>
+		<a href="#" class="r" id="next" onclick="next();return false;"></a>
+		<a href="#" class="rr" id="last" onclick="last();return false;"></a>
+		<a href="#" class="min" onclick="zoomOut();return false;"></a>
+		<a href="#" class="max" onclick="zoomIn();return false;"></a>
+	</div>
+	<div class="ani" id="info" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('info')">X</a>
+		A B+ tree is an n-ary tree with a variable but often large number of children per node. A B+ tree consists of a root, internal nodes and leaves. The root may be either a leaf or a node with two or more children.
+		A B+ tree can be viewed as a B-tree in which each node contains only keys (not key-value pairs), and to which an additional level is added at the bottom with linked leaves.
+		<br>The primary value of a B+ tree is in storing data for efficient retrieval in a block-oriented storage context - in particular, filesystems. This is primarily because unlike binary search trees, B+ trees have very 
+		high fanout (number of pointers to child nodes in a node, typically on the order of 100 or more), which reduces the number of I/O operations required to find an element in the tree.
+		<br>The NTFS, ReiserFS, NSS, XFS, JFS, ReFS, and BFS filesystems all use this type of tree for metadata indexing; BFS also uses B+ trees for storing directories. Relational database management systems support this type of 
+		tree for table indices. Key-value database management systems support this type of tree for data access.
+		<img src="../../images/bplus.png" alt="bplusimage" width="400" height="200">[1]
+		<div>[1]: <a href="http://en.wikipedia.org/wiki/B%2B_tree" target="_blank" style="color:white">http://en.wikipedia.org/wiki/B%2B_tree</a></div>
+	</div>
+	<div class="ani" id="configs" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('configs')">X</a>
+		<br>
+		<input type="text" placeholder="???????" title="Zagolovochk asdasdasd"><input type="button" value="OK">
+		<input type="text" placeholder="???????" title="Zagolovochk asdasdasd"><input type="button" value="OK">
+	</div>
+	<div class="ani" id="ideas" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('ideas')">X</a>
+		webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures.
+		<br>For further questions please contact: begy.volodimir@gmail.com
+	</div>
+	<!-- pop ups for themes -->
+	<div class="ani" id="vectors" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('vectors')">X</a>
+		<li>Vectors
+			<ul class="ani ">
+				<li><a href="../vectors/BubbleSort.html">Bubble Sort</a></li>
+				<li><a href="../vectors/SelectionSort.html">Selection Sort</a></li>
+				<li><a href="../vectors/Quicksort.html">Quick Sort</a></li>
+			</ul>
+		</li>
+	</div>
+	<div class="ani" id="dictionaries" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('dictionaries')">X</a>
+		<li>Dictionaries
+			<ul class="ani ">
+				<li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
+				<li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
+				<li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
+			</ul>
+		</li>
+	</div>
+	<div class="ani" id="lists" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('lists')">X</a>
+		<li>Lists
+			<ul class="ani">
+				<li><a href="#">Coming Soon</a></li>
+			</ul>
+		</li>
+	</div>
+	<div class="ani" id="graphs" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('graphs')">X</a>
+		<li>Graphs
+			<ul class="ani">
+				<li><a href="#">Coming Soon</a></li>
+			</ul>
+		</li>
+	</div>
+		<div class="ani" id="trees" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('trees')">X</a>
+		<li>Trees
+			<ul class="ani">
+				<li>B+ Tree</li>
+				<li><a href="BST.html">Binary Search Tree</a></li>
+				<li><a href="Heap.html">Binary Heap</a></li>
+				<li><a href="HeapSort.html">Heap Sort</a></li>
+			</ul>
+		</li>
+	</div>
+</div></body>
+</html>

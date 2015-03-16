@@ -1,0 +1,16 @@
+for(var j=0;j<elements.length;j++){
+		var max=elements[0];
+		var index=0;
+		
+		for(var i=0;i<elements.length-j;i++){
+			if(elements[i]>max){
+				max=elements[i];
+				index=i;
+			}
+		}
+		
+		if(index!=elements.length-j){
+			elements.splice(index,1);
+			elements.splice(elements.length-j,0,max);	
+		}
+}
