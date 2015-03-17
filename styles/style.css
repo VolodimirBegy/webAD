@@ -53,7 +53,7 @@ a.close {display:block;padding:5px;background:red;color:white;text-decoration:no
 a.close:hover {background:#900;top:11px;margin-left:-1px;box-shadow:4px 4px 7px black}
 a.close:active {background:#900;top:13px;margin-left:1px;box-shadow:0 0 1px black}
 
-#container1 {position:absolute;top:28px;right:0;left:0;bottom:0;z-index:8;overflow-x:auto !important;overflow-y:auto !important}
+#container1 {position:absolute;top:28px;right:0;left:0;bottom:3px;z-index:8;overflow-x:auto !important;overflow-y:auto !important}
 
 #menu {position:absolute;top:0;right:0;width:200px;height:auto;background:silver;text-align:center;overflow:hidden;z-index:999}
 #menu.open {max-height:calc(100% - 3px);overflow:auto}
