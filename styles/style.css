@@ -1,15 +1,16 @@
 @font-face {font-family:Ubuntu;src:url(Ubuntu-Regular.ttf)}
 
-html {height:100%;width:100%;min-height:600px;min-width:500px;overflow:hidden}
-body {height:100%;;min-height:600px;min-width:500px;position:relative;padding:0;margin:0;font-family:'Ubuntu'}
+html {height:100%;width:100%;min-height:300px;min-width:500px}
+body {height:100%;;min-height:300px;min-width:500px;position:relative;padding:0;margin:0;font-family:'Ubuntu'}
+body:before {content:'Please turn off AdBlock in your browser!';font-size:30px;margin-top:150px;color:#900;position:absolute;top:0;left:0;right:0;bottom:0;text-align:center}
 
 header, aside, footer, article {position:absolute}
 
 header {top:0;left:0;height:30px;margin:0;padding:0;background:#587A9E}
-aside {top:0;right:0;bottom:0;width:188px;padding:5px;border-left:2px solid #E9EDF1}
-footer {bottom:0;left:0;background:silver;font-size:10px;color:white}
+aside {top:0;right:0;bottom:0;width:188px;padding:5px;border-left:2px solid #E9EDF1;background:white}
+footer {bottom:0;left:0;background:silver;font-size:10px;color:white;white-space:nowrap;overflow:hidden}
 footer a {color:white}
-article {left:0;top:30px}
+article {left:0;top:30px;background:white}
 
 
 .index header, .index footer, .index article {right:0}
@@ -17,7 +18,7 @@ article {left:0;top:30px}
 .index aside {display:none}
 .page aside {display:block}
 .index footer {height:13px}
-.page footer {height:53px}
+.page footer {height:56px}
 .index article {bottom:13px}
 .page article {bottom:53px}
 
@@ -26,7 +27,7 @@ article {left:0;top:30px}
 
 header ul, ul.dis {margin:0;padding:0;list-style:none}
 header ul {height:100%}
-header ul li {display:block;width:calc(20% - 20px);height:26px;padding:2px 10px;float:left}
+header ul li {display:block;width:calc(20% - 20px);min-width:80px;height:26px;padding:2px 10px;float:left}
 header ul li a {display:block;color:white;text-decoration:none;padding:4px 0 4px 40px;font-size:16px}
 header ul li:hover {background-color:rgba(0,0,0,0.3)}
 header ul li:hover a {font-weight:bold}
@@ -44,23 +45,23 @@ ul.dis li:hover a:before {opacity:1;background-size:90%}
 ul.dis li a span {display:block;text-align:center;position:absolute;top:calc(50% - 0.5em);left:0;right:0;text-shadow:2px 2px 0 #587A9E}
 ul.dis li:hover a span {top:0;text-shadow:2px 2px 0 #FB7B00, 0 0 5px #FB7B00, 0 0 2px #FB7B00}
 
-.popup {display:block;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.7);padding:20px}
+.popup {overflow:auto !important;display:block;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.7);padding:20px 50px}
 .popup .closer {position:absolute;top:0;left:0;right:0;bottom:0;z-index:1}
-.popup .pole {width:500px;min-height:200px;position:relative;z-index:2;padding:10px;margin:20px auto;background:white;border:5px solid #587A9E;box-shadow:0 0 10px black;color:#587A9E;overflow:auto;max-height:calc(100% - 70px);min-width:60%}
+.popup .pole {width:60%;min-height:200px;position:relative;z-index:2;padding:10px;margin:20px auto;background:white;border:5px solid #587A9E;box-shadow:0 0 10px black;color:#587A9E;overflow:auto;max-height:calc(100% - 70px)}
 
-a.close {display:block;padding:5px;background:red;color:white;text-decoration:none;position:absolute;top:12px;left:80%;z-index:999;width:15px;height:15px;border-radius:5px;text-align:center;border:1px solid white;box-shadow:2px 2px 5px black}
+a.close {display:block;padding:5px;background:red;color:white;text-decoration:none;position:absolute;top:12px;right:19%;z-index:999;width:15px;border-radius:5px;text-align:center;border:1px solid white;box-shadow:2px 2px 5px black}
 a.close:hover {background:#900;top:11px;margin-left:-1px;box-shadow:4px 4px 7px black}
 a.close:active {background:#900;top:13px;margin-left:1px;box-shadow:0 0 1px black}
 
 #container1 {position:absolute;top:28px;right:0;left:0;bottom:0;z-index:8;overflow-x:auto !important;overflow-y:auto !important}
 
-#menu {position:absolute;top:0;right:0;width:200px;height:28px;background:silver;text-align:center;overflow:hidden;z-index:999}
-#menu.open {height:auto}
+#menu {position:absolute;top:0;right:0;width:200px;height:auto;background:silver;text-align:center;overflow:hidden;z-index:999}
+#menu.open {max-height:calc(100% - 3px);overflow:auto}
 #menu a {display:block;padding:5px;color:white;text-decoration:none}
 #menu a:after {content:'\\/';display:block;float:right}
 #menu a:hover {background:orange}
 #menu.open a {background:#587A9E}
-#menu input {display:none;padding:5px;background:orange;color:white;width:100%;border:none;cursor:pointer;margin:5px 0}
+#menu input {display:none;padding:5px;background:orange;color:white;width:100%;border:none;cursor:pointer;margin:5px 0;font-size:0.8em}
 #menu.open input {display:block}
 #menu input:hover {background:red}
 
