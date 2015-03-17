@@ -1,16 +1,21 @@
-<html>
+<!DOCTYPE html>
 <head>
+  <meta charset="UTF-8">
+  <title>webAD</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+  <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
+  <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
+  
+  <script src="../../libs/externalLibs/jquery.min.js"></script>
+  <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
+  <script src="../../libs/externalLibs/taffy.js"></script>
+  
+  <script type="text/javascript" src="../../libs/menu.js"></script>
 
-<title>WebAD</title>
-
-	<link rel="shortcut icon" type="image/png" href="../../images/icon.png"/>
-	<link rel="stylesheet" type="text/css" href="../../style.css">
-	<script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-	<script src="../../libs/views/vectors/default.js"></script>
-	<script src="../../libs/models/vectors/bubblesort.js"></script>
-	<script src="../../libs/menu.js"></script>
-	<script src="../../libs/externalLibs/taffy.js"></script>
-	
+  <script src="../../libs/views/vectors/default.js"></script>
+  <script src="../../libs/models/vectors/bubblesort.js"></script>
 </head>
 
 <script>
@@ -28,20 +33,24 @@
 		clearTimes();
 		vec = new Vector();
 		vec.init();
-		document.getElementById("un_pause").className = "pause";
+		//document.getElementById("un_pause").className = "pause";
 		var c1 = document.getElementById("container1");
 		vec.getElementsByPrompt();
 		vec.bubbleSort(c1);
+		var elem = $("#p");
+		elem.addClass("p1");
 	}	
 
 	function rand(){
 		clearTimes();
 		vec = new Vector();
 		vec.init();
-		document.getElementById("un_pause").className = "pause";
+		//document.getElementById("un_pause").className = "pause";
 		var c1 = document.getElementById("container1");
 		vec.setRandomElements();
 		vec.bubbleSort(c1); 
+		var elem = $("#p");
+		elem.addClass("p1");
 	}
 	
 	function pre(){
@@ -66,17 +75,19 @@
 	
 	function un_pause(){
 		if(vec!=undefined){
-			if(document.getElementById("un_pause").getAttribute('class')=="pause"){
-				document.getElementById("un_pause").className = "p";
-				vec.paused=true;
+      		var elem = $("#p");
+			if(elem.hasClass("p1")){
 				clearTimes();
+				vec.paused=true;
+				elem.removeClass("p1");
 			}
 			else{
-				document.getElementById("un_pause").className = "pause";
 				vec.paused=false;
 				var c1 = document.getElementById("container1");
 				vec.bubbleSort(c1); 
+				elem.addClass("p1");
 			}
+			
 		}
 		else
 			alert("No vector created!");
@@ -94,49 +105,50 @@
 
 </script>
 
-
-<body><div class="container">
-	<div id="head">
-		<a href="#" onclick="javascript:org('info')" class="inf"></a>
-		<a href="#" onclick="javascript:org('configs')" class="conf"></a>
-		<a href="#" onclick="javascript:org('ideas')" class="gogo"></a>
+<body id="body" class="page">
+<header id="header">
+	<ul>
+		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
+		<li><a href="javascript:_class('config', 'hide')" class="conf">Config</a></li>
+		<li><a href="javascript:_class('about', 'hide')" class="idea">About</a></li>
+	</ul>
+</header>
+<aside>
+	<a href="../index.html" class="logo"></a>
+	<ul class="dis">
+		<li><a href="javascript:_class('vec', 'hide')" class="v"><span>Vectors</span></a></li>
+		<li><a href="javascript:_class('dic', 'hide')" class="d"><span>Dictionaries</span></a></li>
+		<li><a href="javascript:_class('lis', 'hide')" class="l"><span>Lists</span></a></li>
+		<li><a href="javascript:_class('gra', 'hide')" class="g"><span>Graphs</span></a></li>
+		<li><a href="javascript:_class('tre', 'hide')" class="t"><span>Trees</span></a></li>
+	</ul>
+</aside>
+<article>
+	<div id="menu" class="open">
+		<a href="javascript:_class('menu', 'open')">Bubble Sort</a>
+		<input type="button" value="Generate Random" id="rand" onclick="rand();return false;">
+		<input type="button" value="Enter Manually" id="add" onclick="create();return false;">
 	</div>
-	<div id="rightcoll">
-		<img src="../../images/logo.png"/>
-		<ul class="menu">
-			<li class="vectors ani"><a href="#" onclick="javascript:org('vectors')" class="vectors ani">Vectors</a>
-			</li>
-			<li class="dictionaries ani"><a href="#" onclick="javascript:org('dictionaries')" class="dictionaries ani">Dictionaries</a>
-			</li>
-			<li class="lists ani"><a href="#" onclick="javascript:org('lists')" class="lists ani">Lists</a>
-			</li>
-			<li class="graphs ani"><a href="#" onclick="javascript:org('graphs')" class="graphs ani">Graphs</a>
-			</li>
-			<li class="trees ani"><a href="#" onclick="javascript:org('trees')" class="trees ani">Trees</a>
-			</li>
-		</ul>
+	<div id="container1"></div>
+</article>
+<footer>
+	<div class="rul">
+		<a href="#" class="l2" id="first" onclick="first();return false;"></a>
+		<a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
+		<a href="#" id="p" onclick="un_pause();return false;"></a>
+		<a href="#" class="r1" id="next" onclick="next();return false;"></a>
+		<a href="#" class="r2" id="last" onclick="last();return false;"></a>
+		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
+		<a href="#" class="z1" onclick="zoomIn();return false;"></a>
 	</div>
-	<div id="center">
-		<div class="left" id="container1"></div>
-		<div class="right ani" id="mmmenu" style="height:500px"><h3 class="mtitle" style="display:none"></h3><a class="shower" href="#" onclick="javascript:bot('mmmenu')">Bubble Sort<br>^</a>
-			<input type="button" value="Generate Random" id="rand" onclick="rand();return false;">
-			<input type="button" value="Enter Manually" id="add" onclick="create();return false;">
-		</div>
-	</div>
-	<div id="footer">
-		<a href="#" class="ll" id="first" onclick="first();return false;"></a>
-		<a href="#" class="l" id="prev" onclick="pre();return false;"></a>
-		<a href="#" class="pause" id="un_pause" onclick="un_pause();return false;"></a>
-		<a href="#" class="r" id="next" onclick="next();return false;"></a>
-		<a href="#" class="rr" id="last" onclick="last();return false;"></a>
-		<a href="#" class="min" onclick="zoomOut();return false;"></a>
-		<a href="#" class="max" onclick="zoomIn();return false;"></a>
-	</div>
-	<div class="ani" id="info" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('info')">X</a>
+	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+</footer>
+<div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Info</h2>
 	Legend: actual values are marked green, when they do not need to be sorted, otherwise red. Sorted values are marked gold, all others purple
 	<br>
 	Bubble sort is a simple sorting algorithm that works by repeatedly stepping through the list to be sorted, comparing each pair of adjacent items and swapping them
-	if they are in the wrong order. The pass through the list is repeated until no swaps are needed, which indicates that the list is sorted. The algorithm gets its name from the way smaller elements "bubble" to the top
+   	if they are in the wrong order. The pass through the list is repeated until no swaps are needed, which indicates that the list is sorted. The algorithm gets its name from the way smaller elements "bubble" to the top
 	of the list. Because it only uses comparisons to operate on elements, it is a comparison sort. Although the algorithm is simple, most of the other sorting algorithms are more efficient for large lists.
 	<br>
 	<br>
@@ -150,60 +162,59 @@
 	<br>
 	Bubble sort should be avoided in case of large collections. It will not be efficient in case of reverse ordered collection.[1]
 	<img src="../../images/Bubble-sort.gif" alt="bsimage">
-	<div>[1]: <a href="http://en.wikipedia.org/wiki/Bubble_sort" target="_blank" style="color:white">http://en.wikipedia.org/wiki/Bubble_sort</a></div>
+	<div>[1]:<a href="http://en.wikipedia.org/wiki/Bubble_sort" target="_blank">http://en.wikipedia.org/wiki/Bubble_sort</a></div>
 	</div>
-	<div class="ani" id="configs" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('configs')">X</a>
-		<br>
-		<input type="text" placeholder="???????" title="Zagolovochk asdasdasd"><input type="button" value="OK">
-		<input type="text" placeholder="???????" title="Zagolovochk asdasdasd"><input type="button" value="OK">
 	</div>
-	<div class="ani" id="ideas" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('ideas')">X</a>
-		webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures.
-		<br>For further questions please contact: begy.volodimir@gmail.com
+</div>
+<div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Config</h2>
 	</div>
-	
-	<!-- pop ups for themes -->
-	<div class="ani" id="vectors" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('vectors')">X</a>
-		<li>Vectors
-			<ul class="ani ">
-				<li>Bubble Sort</li>
-				<li><a href="SelectionSort.html">Selection Sort</a></li>
-				<li><a href="Quicksort.html">Quick Sort</a></li>
-			</ul>
-		</li>
+</div>
+<div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
+	<div class="pole"><h2>About</h2>
 	</div>
-	<div class="ani" id="dictionaries" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('dictionaries')">X</a>
-		<li>Dictionaries
-			<ul class="ani ">
-				<li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
-				<li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
-				<li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
-			</ul>
-		</li>
+</div>
+<div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Vectors</h2>
+     	<ul>
+           	<li><span>Bubble Sort</span></li>
+           	<li><a href="SelectionSort.html">Selection Sort</a></li>
+           	<li><a href="QuickSort.html">Quick Sort</a></li>
+          </ul>
 	</div>
-	<div class="ani" id="lists" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('lists')">X</a>
-		<li>Lists
-			<ul class="ani">
-				<li><a href="#">Coming Soon</a></li>
-			</ul>
-		</li>
+</div>
+<div id="dic" class="popup hide"><div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Dictionaries</h2>
+       	<ul>
+           	<li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
+           	<li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
+           	<li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
+          </ul>
 	</div>
-	<div class="ani" id="graphs" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('graphs')">X</a>
-		<li>Graphs
-			<ul class="ani">
-				<li><a href="#">Coming Soon</a></li>
-			</ul>
-		</li>
+</div>
+<div id="lis" class="popup hide"><div class="closer" onclick="javascript:_class('lis', 'hide')"></div><a href="javascript:_class('lis', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Lists</h2>
+     	<ul>
+             	<li>Coming soon</li>
+          </ul>
 	</div>
-		<div class="ani" id="trees" style="top:50%;bottom:50%;left:50%;right:50%;padding:0px;border:0px solid white;box-shadow:5px 5px 20px rgba(0,0,0,0.5)"><a class="closeme" href="#" onclick="javascript:org('trees')">X</a>
-		<li>Trees
-			<ul class="ani">
-				<li><a href="../trees/bplus.html">B+ Tree</a></li>
-				<li><a href="../trees/BST.html">Binary Search Tree</a></li>
-				<li><a href="../trees/Heap.html">Binary Heap</a></li>
-				<li><a href="../trees/HeapSort.html">Heap Sort</a></li>
-			</ul>
-		</li>
+</div>
+<div id="gra" class="popup hide"><div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Graphs</h2>
+     	<ul>
+             	<li>Coming soon</li>
+          </ul>
 	</div>
-</div></body>
+</div>
+<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Trees</h2>
+	     <ul>
+           	<li><a href="../trees/bst.html">Binary Search Tree</a></li>
+           	<li><a href="../trees/bplus.html">B+ Tree</a></li>
+           	<li><a href="../trees/heap.html">Binary Heap</a></li>
+           	<li><a href="../trees/heapSort.html">Heap Sort</a></li>
+          </ul>
+	</div>
+</div>
+</body>
 </html>
