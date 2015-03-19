@@ -35,7 +35,7 @@ function BPlusTree(){
 
 BPlusTree.prototype.init=function(con){
 	var o=parseInt(prompt("Order k:"));
-	if(isNaN(o))return;
+	if(isNaN(o)||o<1)return;
 	this.root=undefined;
 	this.history="";
 	this.order=o;
@@ -1479,6 +1479,7 @@ BPlusTree.prototype.search=function(con){
 	//if root exists
 	else{
 		var val=parseInt(prompt("Search for:"));
+		if(isNaN(val))return;
 		//find target leaf node first:
 		var actNode=this.root;
 		actNode.color="#FF8000";
