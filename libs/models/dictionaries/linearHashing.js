@@ -35,10 +35,10 @@ function LinearHashing(){
 
 LinearHashing.prototype.init=function(c1){
 
-	var b=parseInt(prompt("Bucket size:"));
-	var d=parseInt(prompt("D:"));
+	var b=parseInt(prompt("Bucket size:\n(>0)"));
+	var d=parseInt(prompt("D:\n(>0)"));
 	
-	if(isNaN(b)||isNaN(d))return;
+	if(isNaN(b)||isNaN(d)||b<1||d<0)return;
 	this.d=d;
 	this.b=b;
 	
