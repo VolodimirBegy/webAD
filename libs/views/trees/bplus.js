@@ -30,15 +30,9 @@ BPlusTreeView.prototype.zoomOut=function(c1){
 
 BPlusTreeView.prototype.draw=function(con){
 	
-	var _radiusX=40*this.model.order*this.scale;
+	var _radiusX=50*this.model.order*this.scale;
 	var _radius=20*this.scale;
-  	var stage = new Kinetic.Stage({
-  		container: con,
-  		draggable: true,
-		width: 1000*(this.model.order*3)*this.scale,
-		height: 1500*this.scale
-	}); 
-
+	var lastX=0,lastY=0;
 	var layer = new Kinetic.Layer();
 	  
 	var group = new Kinetic.Group();
@@ -54,18 +48,12 @@ BPlusTreeView.prototype.draw=function(con){
 	
 	//determine x and y, draw
 	do{
-		for(var i=0;i<tmpNodes.length;i++){
-		var xPos=1;
-		if(level==1){
-			xPos=250;
-		}
 		
-		else{
+		for(var i=0;i<tmpNodes.length;i++){
+			var xPos=50;
+
 			if(tmpNodes[i]!=undefined){
-				var devider=1;
-				for(var d=1;d<level;d++){
-					devider=devider*2;
-				}
+
 					var prev=undefined;
 					var ci=i;
 					while(ci>0){
@@ -75,33 +63,22 @@ BPlusTreeView.prototype.draw=function(con){
 						}
 						ci--;
 					}
-					var parXpos=tmpNodes[i].parent.xPosition;
-					if(tmpNodes[i]==tmpNodes[i].parent.pointers[0]){
-						xPos=parXpos-_radiusX*1.5;
-					}
-					else if(tmpNodes[i]==tmpNodes[i].parent.pointers[1]&&tmpNodes[i].parent.pointers.length==2){
-						xPos=prev.xPosition+_radiusX*3;
-					}
-					else{
-						xPos=prev.xPosition+_radiusX*2;
-					}
 					
 					if(i>0 && prev!=undefined && prev.xPosition+_radiusX*1.5>xPos){
-  						while(prev.xPosition+_radiusX*1.5>xPos)
+  						while(prev.xPosition+_radiusX+15>xPos)
       						xPos++;
 					}
 			}
+
+			tmpNodes[i].xPosition=xPos;
+			yPos=_radius+level*2*_radius;
+			tmpNodes[i].yPosition=yPos; 
+			if(i==tmpNodes.length-1){
+				lastY=yPos+_radius;
+				lastX=xPos+_radiusX;
+			}
 		}
 		
-		//if(tmpNodes[i]!=undefined){
-			tmpNodes[i].xPosition=xPos;
-			yPos=_radius+level*4*_radius;
-			tmpNodes[i].yPosition=yPos; 
-		//}
-
-	
-		}
-
 		finished=true;
 		
 		var oldNodes2=tmpNodes;
@@ -113,7 +90,7 @@ BPlusTreeView.prototype.draw=function(con){
 		}
 		
 		tmpNodes=[];
-		
+		oldNodes3=tmpNodes;//to set X of last level
 		do{
 			if(oldNodes2[0]!=undefined){
 				for(var i=0;i<oldNodes2[0].pointers.length;i++){
@@ -127,12 +104,38 @@ BPlusTreeView.prototype.draw=function(con){
 			if(tmpNodes[k]!=undefined)
 				finished=false;
 		}
+		
+		if(finished){//if on last level
+			tmpNodes=oldNodes3;
+			for(var i=0;i<tmpNodes.length;i++){
+				var xPos=50;
+
+				if(tmpNodes[i]!=undefined){
+
+						var prev=undefined;
+						var ci=i;
+						while(ci>0){
+							if(tmpNodes[ci-1]!=undefined){
+								prev=tmpNodes[ci-1];
+								break;
+							}
+							ci--;
+						}
+						
+						if(i>0 && prev!=undefined && prev.xPosition+_radiusX*1.5>xPos){
+	  						while(prev.xPosition+_radiusX+15>xPos)
+	      						xPos++;
+						}
+				}
+
+				tmpNodes[i].xPosition=xPos;
+				yPos=_radius+level*2*_radius;
+				tmpNodes[i].yPosition=yPos; 
+			}
+		}
 		level++;
 	}while(!finished);
-	
-	/*for(var i=0;i<oldNodes.length;i++){
-		window.alert(oldNodes[i].keys);
-	}*/
+
 	
 	while(oldNodes.length!=0){
 		for(var i=0;i<oldNodes.length;i++){
@@ -180,44 +183,50 @@ BPlusTreeView.prototype.draw=function(con){
 	do{
 		for(var i=0;i<tmpNodes.length;i++){
 			if(tmpNodes[i]!=undefined){
+				
+				for(var j=0;j<this.model.order*2;j++){
 					
-				var circle = new Kinetic.Rect({
-					x: tmpNodes[i].xPosition,
-					y: tmpNodes[i].yPosition,
-					width: _radiusX,
-				    height: _radius,
-					fill: tmpNodes[i].color,
-					strokeWidth: 4,
-					//draggable: true
-				});
-						  
-				var val = new Kinetic.Text({
-					x: circle.getX()+_radius/2,
-					y: circle.getY(),
-					text: tmpNodes[i].keys,
-					fontSize: 10*this.scale+(0.2*_radius),
-					fontFamily: 'Calibri',
-					fill: 'black',
-					width: 50+(0.6*_radiusX),
-					//align: 'center'
-				});
+					var circle = new Kinetic.Rect({
+						x: tmpNodes[i].xPosition+_radiusX/(this.model.order*2)*j,
+						y: tmpNodes[i].yPosition,
+						width: _radiusX/(this.model.order*2),
+					    height: _radius,
+						fill: tmpNodes[i].color,
+						stroke: 'black',
+						strokeWidth: 2*this.scale,
+						//draggable: true
+					});
+					
+					var _val="x";
+					if(tmpNodes[i].keys[j]!=undefined)
+						_val=tmpNodes[i].keys[j];
+					
+					var val = new Kinetic.Text({
+						x: circle.getX()+3*this.scale,
+						y: circle.getY()+3*this.scale,
+						text: _val,
+						fontSize: 10*this.scale+(0.2*_radius),
+						fontFamily: 'Calibri',
+						fill: 'black',
+						width: 50+(0.6*_radiusX),
+						//align: 'center'
+					});
+					
+					group.add(circle);
+					group.add(val);
+					
+				}
 
 				if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined){
 		
 					var parX=tmpNodes[i].parent.xPosition;
 					
-					if(tmpNodes[i]==tmpNodes[i].parent.pointers[tmpNodes[i].parent.pointers.length-1]){
-						parX+=_radiusX;
+					var j=0;
+					for(;j<tmpNodes[i].parent.pointers.length;j++){
+						if(tmpNodes[i].parent.pointers[j]==tmpNodes[i])break;
 					}
-					else if(tmpNodes[i]!=tmpNodes[i].parent.pointers[0]){
-						var index=0;
-						for(var j=0;j<tmpNodes[i].parent.pointers.length;j++){
-							if(tmpNodes[i].parent.pointers[j]==tmpNodes[i]){
-								index=j;break;
-							}
-						}
-						parX+=_radiusX/(tmpNodes[i].parent.pointers.length-1)*(index);
-					}
+					
+					parX+=(_radiusX/(this.model.order*2))*j;
 					
 					var lineCol="black";
 					var mIndex=0;
@@ -232,15 +241,15 @@ BPlusTreeView.prototype.draw=function(con){
 					}
 					
 					var line = new Kinetic.Line({
-						points: [circle.getX()+_radiusX/2,circle.getY(),parX,tmpNodes[i].parent.yPosition+_radius],
+						points: [tmpNodes[i].xPosition+_radiusX/2,tmpNodes[i].yPosition,parX,tmpNodes[i].parent.yPosition+_radius],
 						stroke: lineCol,
-						strokeWidth: (0.1*_radius),
+						strokeWidth: 2*this.scale,
 						lineJoin: 'round',
 					});
 				}
 				//linked list
 				if(tmpNodes[i].is_leaf && i<tmpNodes.length-1){
-					var headlen = 10;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
+					var headlen = 7;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
 				   
 				    var toX=tmpNodes[i+1].xPosition;
 				    var Y=tmpNodes[i].yPosition+_radius/2;
@@ -248,14 +257,13 @@ BPlusTreeView.prototype.draw=function(con){
 				    var angle = Math.atan2(0,toX-tmpNodes[i].xPosition+_radiusX);
 				    
 				    var arrow = new Kinetic.Line({
-				        points: [tmpNodes[i].xPosition+_radiusX, Y, toX, Y, toX-headlen*Math.cos(angle-Math.PI/6),Y-headlen*Math.sin(angle-Math.PI/6),toX, Y, toX-headlen*Math.cos(angle+Math.PI/6),Y-headlen*Math.sin(angle+Math.PI/6)],
+				        points: [tmpNodes[i].xPosition+_radiusX+1*this.scale, Y, toX, Y, toX-headlen*Math.cos(angle-Math.PI/6),Y-headlen*Math.sin(angle-Math.PI/6),toX, Y, toX-headlen*Math.cos(angle+Math.PI/6),Y-headlen*Math.sin(angle+Math.PI/6)],
 				        stroke: "#FF8000"
 				    });
 				}
 			}
 
-			group.add(circle);
-			group.add(val);
+			
 			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined)
 				group.add(line);
 			if(tmpNodes[i].is_leaf && i<tmpNodes.length-1)
@@ -280,6 +288,13 @@ BPlusTreeView.prototype.draw=function(con){
 		}
 		level++;
 	}while(!finished);
+	
+	var stage = new Kinetic.Stage({
+  		container: con,
+  		draggable: true,
+		width: lastX+50*this.scale,
+		height: lastY+50*this.scale
+	}); 
 	
 	layer.add(group);
 	stage.add(layer);	  

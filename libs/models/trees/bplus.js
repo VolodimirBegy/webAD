@@ -206,9 +206,9 @@ BPlusTree.prototype.lastState=function(con){
 
 
 BPlusTree.prototype.add=function(con) {
-	var val=parseInt(prompt("Add:"));
+	var val=parseInt(prompt("Add:\n(Values <-99 and >999 are ignored"));
 	var origVal=val;
-	if(isNaN(val))return;
+	if(isNaN(val)||val<-99||val>999)return;
 	var steps=0;
 	if(this.order<1){
 		window.alert("Create the tree first!");return;
@@ -1122,7 +1122,7 @@ function getRandomInt(min, max) {
 BPlusTree.prototype.random=function(con){
 	this.root=undefined;
 	this.history="";
-	var number=parseInt(Math.random()*100,10);
+	var number=parseInt(Math.random()*50,10);
 	var _order=parseInt(getRandomInt(1,3)); 
 	this.order=_order;
 	
