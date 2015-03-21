@@ -30,7 +30,7 @@ BPlusTreeView.prototype.zoomOut=function(c1){
 
 BPlusTreeView.prototype.draw=function(con){
 	
-	var _radiusX=50*this.model.order*this.scale;
+	var _radiusX=55*this.model.order*this.scale;
 	var _radius=20*this.scale;
 	var lastX=0,lastY=0;
 	var layer = new Kinetic.Layer();
