@@ -1122,7 +1122,7 @@ function getRandomInt(min, max) {
 BPlusTree.prototype.random=function(con){
 	this.root=undefined;
 	this.history="";
-	var number=parseInt(Math.random()*50,10);
+	var number=parseInt(Math.random()*25,10);
 	var _order=parseInt(getRandomInt(1,3)); 
 	this.order=_order;
 	

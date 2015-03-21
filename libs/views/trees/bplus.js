@@ -30,7 +30,7 @@ BPlusTreeView.prototype.zoomOut=function(c1){
 
 BPlusTreeView.prototype.draw=function(con){
 	
-	var _radiusX=55*this.model.order*this.scale;
+	var _radiusX=57*this.model.order*this.scale;
 	var _radius=20*this.scale;
 	var lastX=0,lastY=0;
 	var layer = new Kinetic.Layer();
@@ -205,7 +205,7 @@ BPlusTreeView.prototype.draw=function(con){
 						x: circle.getX()+3*this.scale,
 						y: circle.getY()+3*this.scale,
 						text: _val,
-						fontSize: 10*this.scale+(0.2*_radius),
+						fontSize: 15*this.scale,
 						fontFamily: 'Calibri',
 						fill: 'black',
 						width: 50+(0.6*_radiusX),
