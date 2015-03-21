@@ -65,7 +65,7 @@ BPlusTreeView.prototype.draw=function(con){
 					}
 					
 					if(i>0 && prev!=undefined && prev.xPosition+_radiusX*1.5>xPos){
-  						while(prev.xPosition+_radiusX+15>xPos)
+  						while(prev.xPosition+_radiusX+15*this.scale>xPos)
       						xPos++;
 					}
 			}
@@ -249,7 +249,7 @@ BPlusTreeView.prototype.draw=function(con){
 				}
 				//linked list
 				if(tmpNodes[i].is_leaf && i<tmpNodes.length-1){
-					var headlen = 7;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
+					var headlen = 7*this.scale;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
 				   
 				    var toX=tmpNodes[i+1].xPosition;
 				    var Y=tmpNodes[i].yPosition+_radius/2;
@@ -258,7 +258,8 @@ BPlusTreeView.prototype.draw=function(con){
 				    
 				    var arrow = new Kinetic.Line({
 				        points: [tmpNodes[i].xPosition+_radiusX+1*this.scale, Y, toX, Y, toX-headlen*Math.cos(angle-Math.PI/6),Y-headlen*Math.sin(angle-Math.PI/6),toX, Y, toX-headlen*Math.cos(angle+Math.PI/6),Y-headlen*Math.sin(angle+Math.PI/6)],
-				        stroke: "#FF8000"
+				        stroke: "#FF8000",
+				        strokeWidth:2*this.scale
 				    });
 				}
 			}
