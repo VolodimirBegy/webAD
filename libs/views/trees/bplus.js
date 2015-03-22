@@ -293,7 +293,7 @@ BPlusTreeView.prototype.draw=function(con){
 	var w=lastX+50*this.scale;
 	var h=lastY+50*this.scale
 	
-	if(h<700)h=500;
+	if(h<500)h=500;
 	if(w<1000)w=1000;
 	
 	var stage = new Kinetic.Stage({
