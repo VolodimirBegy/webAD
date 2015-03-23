@@ -21,7 +21,7 @@ function Node(){
 function Graph(){
 	this.view=new GraphView(this);
 	
-	this.matrix=[][];
+	this.matrix=[[]];
 	
 	this.db=TAFFY();
 	this.actStateID=0;
