@@ -33,6 +33,7 @@ function UndirectedGraph(_matrix,_startNode,con){
 				var newNode=new Node();
 				newNode.index=i;
 				cNode.connectedTo.push(newNode);
+				if(index==_startNode)cNode.color="#00FFFF";
 			}
 		}
 		

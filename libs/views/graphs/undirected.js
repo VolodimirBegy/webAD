@@ -128,6 +128,38 @@ UndirectedGraphView.prototype.draw=function(cont){
 				}
 		    });
 			
+			valFrom.on('mouseover', function() {
+				if(parseInt(this.getText())!=v.model.startNode){
+					this.circle.setFill("orange");
+					
+					var ai=parseInt(this.getText());
+					var _i=undefined;
+					for(var k=0;k<v.model.nodes.length;k++){
+						if(v.model.nodes[k].index==ai){
+							_i=k;break;
+						}
+					}
+					v.model.nodes[_i].color="orange";
+					layer.draw();
+				}
+		    });
+			
+			valFrom.on('mouseout', function() {
+				if(parseInt(this.getText())!=v.model.startNode){
+					this.circle.setFill("lime");
+					
+					var ai=parseInt(this.getText());
+					var _i=undefined;
+					for(var k=0;k<v.model.nodes.length;k++){
+						if(v.model.nodes[k].index==ai){
+							_i=k;break;
+						}
+					}
+					v.model.nodes[_i].color="lime";
+					layer.draw();
+				}
+		    });
+			
 			circles.push(circleFrom);
 			vals.push(valFrom);
 			
@@ -221,6 +253,37 @@ UndirectedGraphView.prototype.draw=function(cont){
 					}
 			    });
 				
+				valTo.on('mouseover', function() {
+					if(parseInt(this.getText())!=v.model.startNode){
+						this.circle.setFill("orange");
+						
+						var ai=parseInt(this.getText());
+						var _i=undefined;
+						for(var k=0;k<v.model.nodes.length;k++){
+							if(v.model.nodes[k].index==ai){
+								_i=k;break;
+							}
+						}
+						v.model.nodes[_i].color="orange";
+						layer.draw();
+					}
+			    });
+				
+				valTo.on('mouseout', function() {
+					if(parseInt(this.getText())!=v.model.startNode){
+						this.circle.setFill("lime");
+						
+						var ai=parseInt(this.getText());
+						var _i=undefined;
+						for(var k=0;k<v.model.nodes.length;k++){
+							if(v.model.nodes[k].index==ai){
+								_i=k;break;
+							}
+						}
+						v.model.nodes[_i].color="lime";
+						layer.draw();
+					}
+			    });
 				
 				circles.push(circleTo);
 				vals.push(valTo);
@@ -291,10 +354,39 @@ UndirectedGraphView.prototype.draw=function(cont){
 			this.val.setY(this.getY()-_radius/4);
 	    });
 		
-		/*on.on('dragend', function() {
-			window.alert(this.val.getX());
-			window.alert(this.val.getY());
-	    });*/
+		var v=this;
+		
+		on.on('mouseover', function() {
+			if(parseInt(this.val.getText())!=v.model.startNode){
+				this.setFill("orange");
+				var ai=parseInt(this.val.getText());
+				var _i=undefined;
+				for(var k=0;k<v.model.nodes.length;k++){
+					if(v.model.nodes[k].index==ai){
+						_i=k;break;
+					}
+				}
+				//window.alert(_i);
+				v.model.nodes[_i].color="orange";
+				layer.draw();
+			}
+	    });
+		
+		on.on('mouseout', function() {
+			//window.alert("out");
+			if(parseInt(this.val.getText())!=v.model.startNode){
+				this.setFill("lime");
+				var ai=parseInt(this.val.getText());
+				var _i=undefined;
+				for(var k=0;k<v.model.nodes.length;k++){
+					if(v.model.nodes[k].index==ai){
+						_i=k;break;
+					}
+				}
+				v.model.nodes[_i].color="lime";
+				layer.draw();
+			}
+	    });
 	
 	}
 	
