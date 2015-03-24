@@ -22,7 +22,7 @@
 <script>
 	
 	var _matrix=undefined;
-	
+	var graph=undefined;
 	
 	function create(){
 		var amount=parseInt(prompt("Amount of nodes:"));
@@ -32,11 +32,37 @@
 		_matrix=matrix;
 		var cm = document.getElementById("containerMatrix");
 		matrix.draw(cm);
+		
+		var tf = $("#startNode");
+		tf.val("");
+		tf.css("background-color","white");
 		_class('createMatrix', 'hide');
 	}
 	
 	function createOk(){
-		//window.alert(_matrix.matrix);
+		var tf = $("#startNode");
+		var startNode=parseInt(tf.val());
+
+		if(isNaN(startNode)||startNode<0||startNode>_matrix.number-1){
+			tf.css("background-color","orange");
+			window.alert("Invalid initial node. It must be between 0 and "+(_matrix.number-1));
+			return;
+		}
+		
+		_class('createMatrix', 'hide');
+		var c1 = document.getElementById("container1");
+		graph=new UndirectedGraph(_matrix.matrix,startNode,c1);
+		//window.alert(graph.matrix);
+	}
+	
+	function zoomIn(){
+		var c1 = document.getElementById("container1");
+		graph.view.zoomIn(c1);
+	}
+	
+	function zoomOut(){
+		var c1 = document.getElementById("container1");
+		graph.view.zoomOut(c1);
 	}
 	
 	function zoomInMatrix(){
@@ -90,7 +116,8 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
-	DFS on undirected graphs
+	DFS on undirected graphs<br>
+	All nodes not connected to the initial node will be removed
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
@@ -147,11 +174,12 @@
 <div id="createMatrix" class="popup hide"><div class="closer" onclick="javascript:_class('createMatrix', 'hide')"></div><a href="javascript:_class('createMatrix', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Tick the fields in the matrix:</h2>
 		<div id="containerMatrix"></div>
-			<div class="rul">
-				<a href="#" class="z2" onclick="zoomOutMatrix();return false;"></a>
-				<a href="#" class="z1" onclick="zoomInMatrix();return false;"></a>	
-			</div>
-       	<a href="#" id="createOk" style='font-size:25px;text-decoration: none;color:red;background:lime;box-shadow:inset 0px 2px 10px white, 0 0 5px silver' onclick="createOk();_class('createMatrix', 'hide');">Create</a>
+		<div class="rul">
+			<a href="#" class="z2" style="width:7%;height:50%;" onclick="zoomOutMatrix();return false;"></a>
+			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>	
+		</div>
+		Initial Node:<input type="text" id="startNode" style="width:20px"><br><br>
+       	<a href="#" id="createOk" style='font-size:25px;text-decoration: none;color:red;background:lime;box-shadow:inset 0px 2px 10px white, 0 0 5px silver' onclick="createOk();">Create</a>
 	</div>
 </div>
 </body>
