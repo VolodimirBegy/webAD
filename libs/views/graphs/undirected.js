@@ -30,26 +30,99 @@ UndirectedGraphView.prototype.zoomOut=function(cont){
 
 UndirectedGraphView.prototype.draw=function(cont){
 	
-	var w=(25+75*this.model.gridSize)*this.scale;
-	var h=(25+75*this.model.gridSize)*this.scale;
 	var _radius=25*this.scale;
-	if(w<1000)w=1000;
-	if(h<500)h=500
-  	var stage = new Kinetic.Stage({
-  		container: cont,
-		width: w,
-		height: h,
-		draggable:true
-	}); 
-
-	var group = new Kinetic.Group();
 	
 	var layer = new Kinetic.Layer();
 	var lines=[];
 	var circles=[];
 	var vals=[];
 
+	var H=undefined;
+	var W=undefined;
 	var drawn=[];
+	
+	if((this.model.stack!=undefined && this.model.stack.length>0)||
+			(this.model.visited!=undefined && this.model.visited.length>0)){
+		
+		var visited="";
+		
+		for(var i=0;i<this.model.visited.length;i++){
+			visited+=this.model.visited[i].index;
+			if(i<this.model.visited.length-1)
+				visited+=", ";
+		}
+		
+		var stack = new Kinetic.Text({
+			x: 10,
+			y: 0,
+			text: 'Stack:',
+			fontSize: 25*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black'
+		});
+		
+		var visited = new Kinetic.Text({
+			x: stack.getX()+stack.getWidth()+5*this.scale,
+			y: 0,
+			text: visited,
+			fontSize: 25*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black'
+		});
+		
+		layer.add(stack);
+		layer.add(visited);
+		var scRadius=15*this.scale;
+		W=visited.getX()+visited.getWidth()+15*this.scale;
+		for(var i=this.model.stack.length-1;i>-1;i--){
+			
+			var sc = new Kinetic.Circle({
+				x: stack.getX()+stack.getWidth()/2,
+				y: (stack.getY()+stack.getFontSize()*2)+35*this.scale*i,
+				radius:scRadius,
+				fill: 'red'
+			});
+			
+			var sct = new Kinetic.Text({
+				x: sc.getX()-scRadius,
+				y: sc.getY()-scRadius/4,
+				text: this.model.stack[this.model.stack.length-1-i].index,
+				fontSize: 15*this.scale,
+				fontFamily: 'Calibri',
+				fill: 'black',
+				width:scRadius*2,
+				align:'center'
+			});
+			
+			layer.add(sc);
+			layer.add(sct);
+			lastY=sc.getY();
+		}
+		
+		var sl1 = new Kinetic.Line({
+			points: [stack.getX()+stack.getWidth()/2-scRadius-5*this.scale,stack.getY()+stack.getFontSize()+10*this.scale,stack.getX()+stack.getWidth()/2-scRadius-5*this.scale,(stack.getY()+stack.getFontSize()*2)+(35*this.scale*this.model.stack.length-1)-15*this.scale],
+			stroke: 'black',
+			strokeWidth: 2*this.scale
+		});
+		
+		var sl2 = new Kinetic.Line({
+			points: [stack.getX()+stack.getWidth()/2+scRadius+5*this.scale,stack.getY()+stack.getFontSize()+10*this.scale,stack.getX()+stack.getWidth()/2+scRadius+5*this.scale,(stack.getY()+stack.getFontSize()*2)+(35*this.scale*this.model.stack.length-1)-15*this.scale],
+			stroke: 'black',
+			strokeWidth: 2*this.scale
+		});
+		
+		var sl3 = new Kinetic.Line({
+			points:[stack.getX()+stack.getWidth()/2-scRadius-5*this.scale,(stack.getY()+stack.getFontSize()*2)+(35*this.scale*this.model.stack.length-1)-15*this.scale,stack.getX()+stack.getWidth()/2+scRadius+5*this.scale,(stack.getY()+stack.getFontSize()*2)+(35*this.scale*this.model.stack.length-1)-15*this.scale],
+			stroke: 'black',
+			strokeWidth: 2*this.scale
+		});
+		
+		H=(stack.getY()+stack.getFontSize()*2)+(35*this.scale*this.model.stack.length-1)-15*this.scale+15*this.scale;
+		
+		layer.add(sl1);
+		layer.add(sl2);
+		layer.add(sl3);
+	}
 	
 	for(var i=0;i<this.model.nodes.length;i++){
 		
@@ -106,18 +179,10 @@ UndirectedGraphView.prototype.draw=function(cont){
 				this.circle.setX(parseInt(this.getX())+_radius);
 				this.circle.setY(parseInt(this.getY())+_radius/4);
 				
-				var _index=undefined;
-				
-				for(var k=0;k<v.model.nodes.length;k++){
-					
-					if(""+v.model.nodes[k].index==this.getText()){
-						v.model.nodes[k].xPosition=parseInt(this.circle.getX());
-						v.model.nodes[k].yPosition=parseInt(this.circle.getY());
-						_index=v.model.nodes[k].index;
-						break;
-					}
-				}
-				
+				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].xPosition=parseInt(this.circle.getX());
+				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].yPosition=parseInt(this.circle.getY());
+				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].index;
+
 				for(var k=0;k<v.model.nodes.length;k++){
 					for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
 						if(v.model.nodes[k].connectedTo[p].index==_index){
@@ -129,35 +194,17 @@ UndirectedGraphView.prototype.draw=function(cont){
 		    });
 			
 			valFrom.on('mouseover', function() {
-				if(parseInt(this.getText())!=v.model.startNode){
-					this.circle.setFill("orange");
-					
-					var ai=parseInt(this.getText());
-					var _i=undefined;
-					for(var k=0;k<v.model.nodes.length;k++){
-						if(v.model.nodes[k].index==ai){
-							_i=k;break;
-						}
-					}
-					v.model.nodes[_i].color="orange";
-					layer.draw();
-				}
+				this.circle.setFill("orange");
+				var ai=parseInt(this.getText());
+				v.model.nodes[v.model.matrixLink[ai]].color="orange";
+				layer.draw();
 		    });
 			
 			valFrom.on('mouseout', function() {
-				if(parseInt(this.getText())!=v.model.startNode){
-					this.circle.setFill("lime");
-					
-					var ai=parseInt(this.getText());
-					var _i=undefined;
-					for(var k=0;k<v.model.nodes.length;k++){
-						if(v.model.nodes[k].index==ai){
-							_i=k;break;
-						}
-					}
-					v.model.nodes[_i].color="lime";
-					layer.draw();
-				}
+				var ai=parseInt(this.getText());
+				this.circle.setFill(v.model.nodes[v.model.matrixLink[ai]].oColor);
+				v.model.nodes[v.model.matrixLink[ai]].color=v.model.nodes[v.model.matrixLink[ai]].oColor;
+				layer.draw();
 		    });
 			
 			circles.push(circleFrom);
@@ -231,17 +278,10 @@ UndirectedGraphView.prototype.draw=function(cont){
 					this.circle.setX(parseInt(this.getX())+_radius);
 					this.circle.setY(parseInt(this.getY())+_radius/4);
 					
-					var _index=undefined;
-					
-					for(var k=0;k<v.model.nodes.length;k++){
-						
-						if(""+v.model.nodes[k].index==this.getText()){
-							v.model.nodes[k].xPosition=parseInt(this.circle.getX());
-							v.model.nodes[k].yPosition=parseInt(this.circle.getY());
-							_index=v.model.nodes[k].index;
-							break;
-						}
-					}
+					v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].xPosition=parseInt(this.circle.getX());
+					v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].yPosition=parseInt(this.circle.getY());
+					var _index=v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].index;
+
 					
 					for(var k=0;k<v.model.nodes.length;k++){
 						for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
@@ -254,35 +294,17 @@ UndirectedGraphView.prototype.draw=function(cont){
 			    });
 				
 				valTo.on('mouseover', function() {
-					if(parseInt(this.getText())!=v.model.startNode){
-						this.circle.setFill("orange");
-						
-						var ai=parseInt(this.getText());
-						var _i=undefined;
-						for(var k=0;k<v.model.nodes.length;k++){
-							if(v.model.nodes[k].index==ai){
-								_i=k;break;
-							}
-						}
-						v.model.nodes[_i].color="orange";
-						layer.draw();
-					}
+					this.circle.setFill("orange");
+					var ai=parseInt(this.getText());
+					v.model.nodes[v.model.matrixLink[ai]].color="orange";
+					layer.draw();
 			    });
 				
 				valTo.on('mouseout', function() {
-					if(parseInt(this.getText())!=v.model.startNode){
-						this.circle.setFill("lime");
-						
-						var ai=parseInt(this.getText());
-						var _i=undefined;
-						for(var k=0;k<v.model.nodes.length;k++){
-							if(v.model.nodes[k].index==ai){
-								_i=k;break;
-							}
-						}
-						v.model.nodes[_i].color="lime";
-						layer.draw();
-					}
+					var ai=parseInt(this.getText());
+					this.circle.setFill(v.model.nodes[v.model.matrixLink[ai]].oColor);
+					v.model.nodes[v.model.matrixLink[ai]].color=v.model.nodes[v.model.matrixLink[ai]].oColor;
+					layer.draw();
 			    });
 				
 				circles.push(circleTo);
@@ -329,17 +351,10 @@ UndirectedGraphView.prototype.draw=function(cont){
 				}
 			}
 			
-			var _index=undefined;
-			
-			for(var k=0;k<v.model.nodes.length;k++){
-				
-				if(""+v.model.nodes[k].index==this.val.getText()){
-					v.model.nodes[k].xPosition=this.getX();
-					v.model.nodes[k].yPosition=this.getY();
-					_index=v.model.nodes[k].index;
-					break;
-				}
-			}
+			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].xPosition=parseInt(this.getX());
+			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].yPosition=parseInt(this.getY());
+			var _index=v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].index;
+
 			
 			for(var k=0;k<v.model.nodes.length;k++){
 				for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
@@ -357,49 +372,43 @@ UndirectedGraphView.prototype.draw=function(cont){
 		var v=this;
 		
 		on.on('mouseover', function() {
-			if(parseInt(this.val.getText())!=v.model.startNode){
-				this.setFill("orange");
-				var ai=parseInt(this.val.getText());
-				var _i=undefined;
-				for(var k=0;k<v.model.nodes.length;k++){
-					if(v.model.nodes[k].index==ai){
-						_i=k;break;
-					}
-				}
-				//window.alert(_i);
-				v.model.nodes[_i].color="orange";
-				layer.draw();
-			}
+			this.setFill("orange");
+			var ai=parseInt(this.val.getText());
+			v.model.nodes[v.model.matrixLink[ai]].color="orange";
+			layer.draw();
 	    });
 		
 		on.on('mouseout', function() {
-			//window.alert("out");
-			if(parseInt(this.val.getText())!=v.model.startNode){
-				this.setFill("lime");
-				var ai=parseInt(this.val.getText());
-				var _i=undefined;
-				for(var k=0;k<v.model.nodes.length;k++){
-					if(v.model.nodes[k].index==ai){
-						_i=k;break;
-					}
-				}
-				v.model.nodes[_i].color="lime";
-				layer.draw();
-			}
+			var ai=parseInt(this.val.getText());
+			this.setFill(v.model.nodes[v.model.matrixLink[ai]].oColor);
+			v.model.nodes[v.model.matrixLink[ai]].color=v.model.nodes[v.model.matrixLink[ai]].oColor;
+			layer.draw();			
 	    });
 	
 	}
 	
 	for(var i=0;i<lines.length;i++)
-		group.add(lines[i]);
+		layer.add(lines[i]);
 	
 	for(var i=0;i<circles.length;i++){
-		group.add(circles[i]);
-		group.add(vals[i]);
+		layer.add(circles[i]);
+		layer.add(vals[i]);
 	}
 	
-	layer.add(group);
+	//layer.add(group);
+	var w=(25+75*this.model.gridSize)*this.scale;
+	var h=(25+75*this.model.gridSize)*this.scale;
 	
+	if(w<1000)w=1000;
+	if(h<500)h=500
+	
+	if(H>h)h=H;
+	if(W>w)w=W;
+  	var stage = new Kinetic.Stage({
+  		container: cont,
+		width: w,
+		height: h,
+	}); 
 	stage.add(layer);
 						  
 }

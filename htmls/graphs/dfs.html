@@ -24,6 +24,14 @@
 	var _matrix=undefined;
 	var graph=undefined;
 	
+	function clearTimes(){
+		var pids = window.setTimeout(function() {}, 0);
+
+		while (pids--) {
+    		window.clearTimeout(pids); 
+		}
+	}
+	
 	function create(){
 		var amount=parseInt(prompt("Amount of nodes:"));
 		if(isNaN(amount)||amount<1)return;
@@ -60,6 +68,14 @@
 		graph.view.zoomIn(c1);
 	}
 	
+	function dfs(){
+		clearTimes();
+		var elem = $("#p");
+		elem.addClass("p1");
+		var c1 = document.getElementById("container1");
+		graph.dfs(c1);
+	}
+	
 	function zoomOut(){
 		var c1 = document.getElementById("container1");
 		graph.view.zoomOut(c1);
@@ -73,6 +89,24 @@
 	function zoomOutMatrix(){
 		var cm = document.getElementById("containerMatrix");
 		_matrix.zoomOut(cm);
+	}
+	
+	function un_pause(){
+		if(graph!=undefined){
+      		var elem = $("#p");
+			if(elem.hasClass("p1")){
+				clearTimes();
+				elem.removeClass("p1");
+			}
+			else{
+				var c1 = document.getElementById("container1");
+				graph.dfs(c1); 
+				elem.addClass("p1");
+			}
+			
+		}
+		else
+			alert("No graph created!");
 	}
 	
 </script>
@@ -99,6 +133,7 @@
 	<div id="menu" class="open">
 		<a href="javascript:_class('menu', 'open')">Depth First Search</a>
         <input type="button" value="Create" id="create" onclick="create();return false;">
+        <input type="button" value="Run DFS" id="dfs" onclick="dfs();return false;">
 	</div>
 	<div id="container1"></div>
 </article>
@@ -106,7 +141,7 @@
 	<div class="rul">
 		<a href="#" class="l2" id="first" onclick="first();return false;"></a>
 		<a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
-		<a href="#" id="p"></a>
+		<a href="#" id="p" onclick="un_pause();return false;"></a>
 		<a href="#" class="r1" id="next" onclick="next();return false;"></a>
 		<a href="#" class="r2" id="last" onclick="last();return false;"></a>
 		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
