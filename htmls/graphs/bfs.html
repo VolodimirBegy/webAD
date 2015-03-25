@@ -68,13 +68,13 @@
 		graph.view.zoomIn(c1);
 	}
 	
-	function dfs(){
+	function bfs(){
 		if(graph!=undefined){
 			clearTimes();
 			var elem = $("#p");
 			elem.addClass("p1");
 			var c1 = document.getElementById("container1");
-			graph.dfs(c1);
+			graph.bfs(c1);
 		}
 		else{
 			window.alert("No graph created");
@@ -105,7 +105,7 @@
 			}
 			else{
 				var c1 = document.getElementById("container1");
-				graph.dfs(c1); 
+				graph.bfs(c1); 
 				elem.addClass("p1");
 			}
 			
@@ -136,9 +136,9 @@
 </aside>
 <article>
 	<div id="menu" class="open">
-		<a href="javascript:_class('menu', 'open')">Depth First Search</a>
+		<a href="javascript:_class('menu', 'open')">Breadth First Search</a>
         <input type="button" value="Create" id="create" onclick="create();return false;">
-        <input type="button" value="Run DFS" id="dfs" onclick="dfs();return false;">
+        <input type="button" value="Run BFS" id="bfs" onclick="bfs();return false;">
 	</div>
 	<div id="container1"></div>
 </article>
@@ -156,7 +156,7 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
-	DFS on undirected graphs<br>
+	BFS on undirected graphs<br>
 	All nodes not connected to the initial node will be removed
 	</div>
 </div>
@@ -196,8 +196,8 @@
 <div id="gra" class="popup hide"><div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Graphs</h2>
      	<ul>
-     		<li><a href="bfs.html">Breadth First Search</a></li>
-			<li><span>Depth First Search</span></li>
+			<li><span>Breadth First Search</span></li>
+			<li><a href="dfs.html">Depth First Search</a></li>
         </ul>
 	</div>
 </div>

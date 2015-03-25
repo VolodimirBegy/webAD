@@ -25,8 +25,7 @@ function UndirectedGraph(_matrix,_startNode,con){
 	
 	this.nodes=[];
 	this.startNode=_startNode;
-	
-	this.stack=[];
+
 	this.visited=[];
 	
 	this.matrixLink=new Array(_matrix.length);
@@ -97,6 +96,8 @@ function UndirectedGraph(_matrix,_startNode,con){
 UndirectedGraph.prototype.dfs=function(cont){
 	//push into stack-> process upper -> push 
 	// cause initial has always index 0
+	if(this.stack==undefined)
+		this.stack=[];
 	if(this.stack.length==0)
 		this.stack.push(this.nodes[this.matrixLink[this.startNode]]);
 	
@@ -171,6 +172,88 @@ UndirectedGraph.prototype.dfs=function(cont){
 	}
 	
 	_dfs(this);
+	
+}
+
+UndirectedGraph.prototype.bfs=function(cont){
+	//push into stack-> process upper -> push 
+	// cause initial has always index 0
+	if(this.queue==undefined)
+		this.queue=[];
+	if(this.queue.length==0)
+		this.queue.push(this.nodes[this.matrixLink[this.startNode]]);
+	
+	function _bfs(graph){
+		//make all from stack red
+		for(var k=0;k<graph.queue.length;k++){
+			graph.queue[k].color="red";
+			graph.queue[k].oColor="red";
+			var ai=graph.matrixLink[graph.queue[k].index];
+			graph.nodes[ai].color="red";
+			graph.nodes[ai].oColor="red";
+			for(var p=0;p<graph.nodes.length;p++){
+				for(var z=0;z<graph.nodes[p].connectedTo.length;z++){
+					if(graph.nodes[p].connectedTo[z].index==graph.queue[k].index){
+						graph.nodes[p].connectedTo[z].color="red";
+						graph.nodes[p].connectedTo[z].oColor="red";
+					}
+				}
+			}
+		}
+		
+		graph.draw(cont);
+		
+		function processAct(graph){
+			setTimeout(function (){
+				var ai=graph.matrixLink[graph.queue[0].index];
+				graph.queue[0].color="lime";
+				graph.queue[0].oColor="lime";
+				graph.nodes[ai].color="lime";
+				graph.nodes[ai].oColor="lime";
+				for(var p=0;p<graph.nodes.length;p++){
+					for(var z=0;z<graph.nodes[p].connectedTo.length;z++){
+						if(graph.nodes[p].connectedTo[z].index==graph.nodes[ai].index){
+							graph.nodes[p].connectedTo[z].color="lime";
+							graph.nodes[p].connectedTo[z].oColor="lime";
+						}
+					}
+				}
+				
+				graph.visited.push(graph.queue[0]);
+				graph.queue.splice(0,1);
+				graph.draw(cont);
+				//process connected
+				for(i=0;i<graph.nodes[ai].connectedTo.length;i++){
+					var exists=false;
+					
+					for(var j=0;j<graph.visited.length;j++){
+						if(graph.visited[j].index==graph.nodes[ai].connectedTo[i].index)
+							exists=true;
+					}
+					
+					for(var j=0;j<graph.queue.length;j++){
+						if(graph.queue[j].index==graph.nodes[ai].connectedTo[i].index)
+							exists=true;
+					}
+					
+					if(!exists)
+						graph.queue.push(graph.nodes[ai].connectedTo[i]);
+				}
+				
+				if(graph.queue.length>0)
+					_bfs(graph);
+				else{
+					graph.nodes[0].color="#00FFFF";graph.nodes[0].oColor="#00FFFF";
+					graph.draw(cont);graph.visited=[];return;
+				}
+
+			},2000)
+		}
+		
+		processAct(graph);
+	}
+	
+	_bfs(this);
 	
 }
 

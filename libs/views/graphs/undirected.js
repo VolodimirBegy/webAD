@@ -41,9 +41,7 @@ UndirectedGraphView.prototype.draw=function(cont){
 	var W=undefined;
 	var drawn=[];
 	
-	if((this.model.stack!=undefined && this.model.stack.length>0)||
-			(this.model.visited!=undefined && this.model.visited.length>0)){
-		
+	if(this.model.stack!=undefined){
 		var visited="";
 		
 		for(var i=0;i<this.model.visited.length;i++){
@@ -118,6 +116,87 @@ UndirectedGraphView.prototype.draw=function(cont){
 		});
 		
 		H=(stack.getY()+stack.getFontSize()*2)+(35*this.scale*this.model.stack.length-1)-15*this.scale+15*this.scale;
+		
+		layer.add(sl1);
+		layer.add(sl2);
+		layer.add(sl3);
+	}
+	
+	else if(this.model.queue!=undefined){
+		var visited="";
+		
+		for(var i=0;i<this.model.visited.length;i++){
+			visited+=this.model.visited[i].index;
+			if(i<this.model.visited.length-1)
+				visited+=", ";
+		}
+		
+		var queue = new Kinetic.Text({
+			x: 10,
+			y: 0,
+			text: 'Queue:',
+			fontSize: 25*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black'
+		});
+		
+		var visited = new Kinetic.Text({
+			x: queue.getX()+queue.getWidth()+5*this.scale,
+			y: 0,
+			text: visited,
+			fontSize: 25*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black'
+		});
+		
+		layer.add(queue);
+		layer.add(visited);
+		var scRadius=15*this.scale;
+		W=visited.getX()+visited.getWidth()+15*this.scale;
+		for(var i=this.model.queue.length-1;i>-1;i--){
+			
+			var sc = new Kinetic.Circle({
+				x: queue.getX()+queue.getWidth()/2,
+				y: (queue.getY()+queue.getFontSize()*2)+35*this.scale*i,
+				radius:scRadius,
+				fill: 'red'
+			});
+			
+			var sct = new Kinetic.Text({
+				x: sc.getX()-scRadius,
+				y: sc.getY()-scRadius/4,
+				text: this.model.queue[this.model.queue.length-1-i].index,
+				fontSize: 15*this.scale,
+				fontFamily: 'Calibri',
+				fill: 'black',
+				width:scRadius*2,
+				align:'center'
+			});
+			
+			layer.add(sc);
+			layer.add(sct);
+			lastY=sc.getY();
+		}
+		
+		var sl1 = new Kinetic.Line({
+			points: [queue.getX()+queue.getWidth()/2-scRadius-5*this.scale,queue.getY()+queue.getFontSize()+10*this.scale,queue.getX()+queue.getWidth()/2-scRadius-5*this.scale,(queue.getY()+queue.getFontSize()*2)+(35*this.scale*this.model.queue.length-1)-15*this.scale],
+			stroke: 'black',
+			strokeWidth: 2*this.scale
+		});
+		
+		var sl2 = new Kinetic.Line({
+			points: [queue.getX()+queue.getWidth()/2+scRadius+5*this.scale,queue.getY()+queue.getFontSize()+10*this.scale,queue.getX()+queue.getWidth()/2+scRadius+5*this.scale,(queue.getY()+queue.getFontSize()*2)+(35*this.scale*this.model.queue.length-1)-15*this.scale],
+			stroke: 'black',
+			strokeWidth: 2*this.scale
+		});
+		
+		var sl3 = new Kinetic.Line({
+			points:[queue.getX()+queue.getWidth()/2-scRadius-5*this.scale,(queue.getY()+queue.getFontSize()*2)+(35*this.scale*this.model.queue.length-1)-15*this.scale,queue.getX()+queue.getWidth()/2+scRadius+5*this.scale,(queue.getY()+queue.getFontSize()*2)+(35*this.scale*this.model.queue.length-1)-15*this.scale],
+			stroke: 'black',
+			strokeWidth: 2*this.scale
+		});
+		
+		H=(queue.getY()+queue.getFontSize()*2)+(35*this.scale*this.model.queue.length-1)-15*this.scale+15*this.scale;
 		
 		layer.add(sl1);
 		layer.add(sl2);
