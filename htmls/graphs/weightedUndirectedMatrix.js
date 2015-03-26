@@ -117,6 +117,20 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
   		        return;
   		    });
   			
+  			rect.on('touchend', function() {
+  				var weight=parseInt(prompt("Weight:\n>=-999, <=999"));
+  				if(isNaN(weight) || weight<-999 ||weight>999)return;
+  				  				
+  		        var indexes=this.ij.split(":");
+  		        if(um.matrix[indexes[0]][indexes[1]]==undefined && indexes[0]!=indexes[1]){
+  		        	um.matrix[indexes[0]][indexes[1]]=weight;
+  		        	um.matrix[indexes[1]][indexes[0]]=weight;
+  		        }
+
+  		        um.draw(cont);
+  		        return;
+  		    });
+  			
   			rects[i][j]=rect;
   			group.add(rect);
   		}
@@ -167,7 +181,25 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
 	  		        return;
 	  		    });
 	  	  		
+		  	  	set.on('touchend', function() {
+	  	  			var indexes=this.ij.split(":");	
+	  		        um.matrix[indexes[0]][indexes[1]]=undefined;
+	  		        um.matrix[indexes[1]][indexes[0]]=undefined;
+	  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
+	  		        um.draw(cont);
+	  		        return;
+	  		    });
+	  	  		
 		  	  	weight.on('click', function() {
+	  	  			var indexes=this.ij.split(":");	
+	  		        um.matrix[indexes[0]][indexes[1]]=undefined;
+	  		        um.matrix[indexes[1]][indexes[0]]=undefined;
+	  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
+	  		        um.draw(cont);
+	  		        return;
+	  		    });
+		  	  	
+		  	  	weight.on('touchend', function() {
 	  	  			var indexes=this.ij.split(":");	
 	  		        um.matrix[indexes[0]][indexes[1]]=undefined;
 	  		        um.matrix[indexes[1]][indexes[0]]=undefined;

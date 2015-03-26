@@ -41,18 +41,64 @@
 		var cm = document.getElementById("containerMatrix");
 		matrix.draw(cm);
 		
-		var tf = $("#startNode");
-		tf.val("");
-		tf.css("background-color","white");
 		_class('createMatrix', 'hide');
 	}
 	
 	function createOk(){
 		
-		_class('createMatrix', 'hide');
-		var c1 = document.getElementById("container1");
+
+		var nodes=[];
+		
+		function addConnected(index){
+			var cNode=new Node();
+			cNode.index=index;
+			for(var i=0;i<_matrix.matrix.length;i++){
+				if(_matrix.matrix[index][i]!=undefined){
+					var newNode=new Node();
+					newNode.index=i;
+					cNode.connectedTo.push(newNode);
+				}
+			}
+			
+			nodes.push(cNode);
+
+			for(i=0;i<cNode.connectedTo.length;i++){
+				var exists=false;
+				for(var j=0;j<nodes.length;j++){
+					if(nodes[j].index==cNode.connectedTo[i].index)
+						exists=true;
+				}
+				if(!exists)
+					addConnected(cNode.connectedTo[i].index);
+			}
+		}
+		
+		addConnected(0);
+		
+		if(nodes.length!=_matrix.matrix.length){
+			window.alert("graph not connected");
+			return;
+		}
+		else{
+			_class('createMatrix', 'hide');
+			var c1 = document.getElementById("container1");
+			graph=new WeightedUndirectedGraph(_matrix.matrix,c1);
+		}
 		//graph=new WeightedUndirectedGraph(_matrix.matrix,startNode,c1);
 		//window.alert(graph.matrix);
+	}
+	
+	function kruskal(){
+		if(graph!=undefined){
+			clearTimes();
+			var elem = $("#p");
+			elem.addClass("p1");
+			var c1 = document.getElementById("container1");
+			graph.kruskal(c1);
+		}
+		else{
+			window.alert("No graph created");
+		}
 	}
 	
 	function zoomIn(){
@@ -84,7 +130,7 @@
 			}
 			else{
 				var c1 = document.getElementById("container1");
-				//graph.bfs(c1); 
+				graph.kruskal(c1); 
 				elem.addClass("p1");
 			}
 			
