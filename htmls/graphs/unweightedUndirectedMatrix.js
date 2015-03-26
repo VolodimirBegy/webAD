@@ -115,6 +115,18 @@ UnweightedUndirectedMatrix.prototype.draw=function(cont){
   		        return;
   		    });
   			
+  			rect.on('touchend', function() {
+  		        var indexes=this.ij.split(":");
+  		        if(um.matrix[indexes[0]][indexes[1]]==undefined && indexes[0]!=indexes[1]){
+  		        	um.matrix[indexes[0]][indexes[1]]=1;
+  		        	um.matrix[indexes[1]][indexes[0]]=1;
+  		        }
+  		        
+  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
+  		        um.draw(cont);
+  		        return;
+  		    });
+  			
   			rects[i][j]=rect;
   			group.add(rect);
   		}
@@ -152,6 +164,15 @@ UnweightedUndirectedMatrix.prototype.draw=function(cont){
 	  		        um.draw(cont);
 	  		        return;
 	  		    });
+	  	  		
+	  	  	set.on('touchend', function() {
+  	  			var indexes=this.ij.split(":");	
+  		        um.matrix[indexes[0]][indexes[1]]=undefined;
+  		        um.matrix[indexes[1]][indexes[0]]=undefined;
+  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
+  		        um.draw(cont);
+  		        return;
+  		    });
   	  			
   				group.add(set);
   			}

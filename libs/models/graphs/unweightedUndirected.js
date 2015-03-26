@@ -97,6 +97,20 @@ function UnweightedUndirectedGraph(_matrix,_startNode,con){
 UnweightedUndirectedGraph.prototype.dfs=function(cont){
 	//push into stack-> process upper -> push 
 	// cause initial has always index 0
+	var delay=0;
+	if(this.visited.length==this.nodes.length){
+		for(var j=0;j<this.nodes.length;j++){
+			this.nodes[j].color="lime";
+			this.nodes[j].oColor="lime";
+			for(var k=0;k<this.nodes[j].connectedTo.length;k++){
+				this.nodes[j].connectedTo[k].color="lime";
+				this.nodes[j].connectedTo[k].oColor="lime";
+			}
+		}
+		this.nodes[0].color="#00FFFF";this.nodes[0].oColor="#00FFFF";
+		this.visited=[];this.draw(cont);delay=1000;
+	}
+	
 	if(this.stack==undefined)
 		this.stack=[];
 	if(this.stack.length==0)
@@ -125,15 +139,15 @@ UnweightedUndirectedGraph.prototype.dfs=function(cont){
 		function processAct(graph){
 			setTimeout(function (){
 				var ai=graph.matrixLink[graph.stack[graph.stack.length-1].index];
-				graph.stack[graph.stack.length-1].color="lime";
-				graph.stack[graph.stack.length-1].oColor="lime";
-				graph.nodes[ai].color="lime";
-				graph.nodes[ai].oColor="lime";
+				graph.stack[graph.stack.length-1].color="grey";
+				graph.stack[graph.stack.length-1].oColor="grey";
+				graph.nodes[ai].color="grey";
+				graph.nodes[ai].oColor="grey";
 				for(var p=0;p<graph.nodes.length;p++){
 					for(var z=0;z<graph.nodes[p].connectedTo.length;z++){
 						if(graph.nodes[p].connectedTo[z].index==graph.nodes[ai].index){
-							graph.nodes[p].connectedTo[z].color="lime";
-							graph.nodes[p].connectedTo[z].oColor="lime";
+							graph.nodes[p].connectedTo[z].color="grey";
+							graph.nodes[p].connectedTo[z].oColor="grey";
 						}
 					}
 				}
@@ -161,10 +175,7 @@ UnweightedUndirectedGraph.prototype.dfs=function(cont){
 				
 				if(graph.stack.length>0)
 					_dfs(graph);
-				else{
-					graph.nodes[0].color="#00FFFF";graph.nodes[0].oColor="#00FFFF";
-					graph.draw(cont);graph.visited=[];return;
-				}
+				
 
 			},2000)
 		}
@@ -172,13 +183,32 @@ UnweightedUndirectedGraph.prototype.dfs=function(cont){
 		processAct(graph);
 	}
 	
-	_dfs(this);
+	function startDFS(graph){
+		setTimeout(function(){
+			_dfs(graph);
+		},delay)
+	}
+	
+	startDFS(this);
 	
 }
 
 UnweightedUndirectedGraph.prototype.bfs=function(cont){
 	//push into stack-> process upper -> push 
 	// cause initial has always index 0
+	var delay=0;
+	if(this.visited.length==this.nodes.length){
+		for(var j=0;j<this.nodes.length;j++){
+			this.nodes[j].color="lime";
+			this.nodes[j].oColor="lime";
+			for(var k=0;k<this.nodes[j].connectedTo.length;k++){
+				this.nodes[j].connectedTo[k].color="lime";
+				this.nodes[j].connectedTo[k].oColor="lime";
+			}
+		}
+		this.nodes[0].color="#00FFFF";this.nodes[0].oColor="#00FFFF";
+		this.visited=[];this.draw(cont);delay=1000;
+	}
 	if(this.queue==undefined)
 		this.queue=[];
 	if(this.queue.length==0)
@@ -207,15 +237,15 @@ UnweightedUndirectedGraph.prototype.bfs=function(cont){
 		function processAct(graph){
 			setTimeout(function (){
 				var ai=graph.matrixLink[graph.queue[0].index];
-				graph.queue[0].color="lime";
-				graph.queue[0].oColor="lime";
-				graph.nodes[ai].color="lime";
-				graph.nodes[ai].oColor="lime";
+				graph.queue[0].color="grey";
+				graph.queue[0].oColor="grey";
+				graph.nodes[ai].color="grey";
+				graph.nodes[ai].oColor="grey";
 				for(var p=0;p<graph.nodes.length;p++){
 					for(var z=0;z<graph.nodes[p].connectedTo.length;z++){
 						if(graph.nodes[p].connectedTo[z].index==graph.nodes[ai].index){
-							graph.nodes[p].connectedTo[z].color="lime";
-							graph.nodes[p].connectedTo[z].oColor="lime";
+							graph.nodes[p].connectedTo[z].color="grey";
+							graph.nodes[p].connectedTo[z].oColor="grey";
 						}
 					}
 				}
@@ -243,19 +273,19 @@ UnweightedUndirectedGraph.prototype.bfs=function(cont){
 				
 				if(graph.queue.length>0)
 					_bfs(graph);
-				else{
-					graph.nodes[0].color="#00FFFF";graph.nodes[0].oColor="#00FFFF";
-					graph.draw(cont);graph.visited=[];return;
-				}
-
 			},2000)
 		}
 		
 		processAct(graph);
 	}
 	
-	_bfs(this);
+	function startBFS(graph){
+		setTimeout(function(){
+			_bfs(graph);
+		},delay)
+	}
 	
+	startBFS(this);
 }
 
 UnweightedUndirectedGraph.prototype.draw=function(cont){
