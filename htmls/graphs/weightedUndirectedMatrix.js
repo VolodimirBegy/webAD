@@ -1,4 +1,4 @@
-function UnweightedUndirectedMatrix(_number){
+function WeightedUndirectedMatrix(_number){
 	//number=of nodes
 	this.number=_number;
 	this.matrix=new Array(_number);
@@ -8,17 +8,17 @@ function UnweightedUndirectedMatrix(_number){
 	this.scale=1;
 }
 
-UnweightedUndirectedMatrix.prototype.zoomIn=function(c1){
+WeightedUndirectedMatrix.prototype.zoomIn=function(c1){
 	if(this.scale<1.5)this.scale=this.scale+0.1;
 	this.draw(c1);
 }
 
-UnweightedUndirectedMatrix.prototype.zoomOut=function(c1){
+WeightedUndirectedMatrix.prototype.zoomOut=function(c1){
 	if(this.scale>0.5)this.scale=this.scale-0.1;
 	this.draw(c1);
 }
 
-UnweightedUndirectedMatrix.prototype.draw=function(cont){
+WeightedUndirectedMatrix.prototype.draw=function(cont){
 	//var rects=;
 	var dim=(75+this.number*50)*this.scale;
   	var stage = new Kinetic.Stage({
@@ -104,18 +104,15 @@ UnweightedUndirectedMatrix.prototype.draw=function(cont){
   			rect.ij=""+(i)+":"+(j);
   			var um=this;
   			rect.on('click', function() {
-  				var weight=parseInt(prompt("Weight:"));
-  				if(isNaN(weight))return;
+  				var weight=parseInt(prompt("Weight:\n>=-999, <=999"));
+  				if(isNaN(weight) || weight<-999 ||weight>999)return;
   				  				
   		        var indexes=this.ij.split(":");
   		        if(um.matrix[indexes[0]][indexes[1]]==undefined && indexes[0]!=indexes[1]){
   		        	um.matrix[indexes[0]][indexes[1]]=weight;
   		        	um.matrix[indexes[1]][indexes[0]]=weight;
   		        }
-  		        
-  		        
-  		        
-  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
+
   		        um.draw(cont);
   		        return;
   		    });
@@ -147,12 +144,14 @@ UnweightedUndirectedMatrix.prototype.draw=function(cont){
   	  			});
   	  			
 	  	  		weight = new Kinetic.Text({
-					x: set.getX()+set.getWidth()/2,
-					y: set.getY()+set.getHeight()/2,
+					x: set.getX(),
+					y: set.getY()+set.getHeight()/4,
 					text: this.matrix[i][j],
 					fontSize: 25*this.scale,
 					fontFamily: 'Calibri',
-					fill: 'black'
+					fill: 'black',
+					width: set.getWidth(),
+					align:'center'
 				});
   	  			
   	  			set.ij=""+i+":"+j;

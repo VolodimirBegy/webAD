@@ -15,8 +15,8 @@
   <script type="text/javascript" src="../../libs/menu.js"></script>
   <script src="./weightedUndirectedMatrix.js"></script>
 
-  <script src="../../libs/views/graphs/undirected.js"></script>
-  <script src="../../libs/models/graphs/undirected.js"></script>
+  <script src="../../libs/views/graphs/weightedUndirected.js"></script>
+  <script src="../../libs/models/graphs/weightedUndirected.js"></script>
 </head>
 
 <script>
@@ -36,7 +36,7 @@
 		var amount=parseInt(prompt("Amount of nodes:"));
 		if(isNaN(amount)||amount<1)return;
 		
-		var matrix=new weightedUndirectedMatrix(amount);
+		var matrix=new WeightedUndirectedMatrix(amount);
 		_matrix=matrix;
 		var cm = document.getElementById("containerMatrix");
 		matrix.draw(cm);
@@ -48,14 +48,6 @@
 	}
 	
 	function createOk(){
-		var tf = $("#startNode");
-		var startNode=parseInt(tf.val());
-
-		if(isNaN(startNode)||startNode<0||startNode>_matrix.number-1){
-			tf.css("background-color","orange");
-			window.alert("Invalid initial node. It must be between 0 and "+(_matrix.number-1));
-			return;
-		}
 		
 		_class('createMatrix', 'hide');
 		var c1 = document.getElementById("container1");
@@ -183,8 +175,9 @@
 <div id="gra" class="popup hide"><div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Graphs</h2>
      	<ul>
-			<li><span>Breadth First Search</span></li>
+			<li><a href="bfs.html">Breadth First Search</a></li>
 			<li><a href="dfs.html">Depth First Search</a></li>
+			<li><span>Kruskal</span></li>
         </ul>
 	</div>
 </div>
@@ -206,7 +199,6 @@
 			<a href="#" class="z2" style="width:7%;height:50%;" onclick="zoomOutMatrix();return false;"></a>
 			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>	
 		</div>
-		Initial Node:<input type="text" id="startNode" style="width:20px"><br><br>
        	<a href="#" id="createOk" style='font-size:25px;text-decoration: none;color:red;background:lime;box-shadow:inset 0px 2px 10px white, 0 0 5px silver' onclick="createOk();">Create</a>
 	</div>
 </div>
