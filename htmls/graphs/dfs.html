@@ -13,7 +13,7 @@
   <script src="../../libs/externalLibs/taffy.js"></script>
   
   <script type="text/javascript" src="../../libs/menu.js"></script>
-  <script src="./undirectedMatrix.js"></script>
+  <script src="./unweightedUndirectedMatrix.js"></script>
 
   <script src="../../libs/views/graphs/undirected.js"></script>
   <script src="../../libs/models/graphs/undirected.js"></script>
@@ -36,7 +36,7 @@
 		var amount=parseInt(prompt("Amount of nodes:"));
 		if(isNaN(amount)||amount<1)return;
 		
-		var matrix=new UndirectedMatrix(amount);
+		var matrix=new UnweightedUndirectedMatrix(amount);
 		_matrix=matrix;
 		var cm = document.getElementById("containerMatrix");
 		matrix.draw(cm);
@@ -59,7 +59,7 @@
 		
 		_class('createMatrix', 'hide');
 		var c1 = document.getElementById("container1");
-		graph=new UndirectedGraph(_matrix.matrix,startNode,c1);
+		graph=new UnweightedUndirectedGraph(_matrix.matrix,startNode,c1);
 		//window.alert(graph.matrix);
 	}
 	

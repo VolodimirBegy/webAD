@@ -1,4 +1,4 @@
-function UndirectedMatrix(_number){
+function UnweightedUndirectedMatrix(_number){
 	//number=of nodes
 	this.number=_number;
 	this.matrix=new Array(_number);
@@ -8,17 +8,17 @@ function UndirectedMatrix(_number){
 	this.scale=1;
 }
 
-UndirectedMatrix.prototype.zoomIn=function(c1){
+UnweightedUndirectedMatrix.prototype.zoomIn=function(c1){
 	if(this.scale<1.5)this.scale=this.scale+0.1;
 	this.draw(c1);
 }
 
-UndirectedMatrix.prototype.zoomOut=function(c1){
+UnweightedUndirectedMatrix.prototype.zoomOut=function(c1){
 	if(this.scale>0.5)this.scale=this.scale-0.1;
 	this.draw(c1);
 }
 
-UndirectedMatrix.prototype.draw=function(cont){
+UnweightedUndirectedMatrix.prototype.draw=function(cont){
 	//var rects=;
 	var dim=(75+this.number*50)*this.scale;
   	var stage = new Kinetic.Stage({

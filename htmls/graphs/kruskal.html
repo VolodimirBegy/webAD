@@ -13,7 +13,7 @@
   <script src="../../libs/externalLibs/taffy.js"></script>
   
   <script type="text/javascript" src="../../libs/menu.js"></script>
-  <script src="./unweightedUndirectedMatrix.js"></script>
+  <script src="./weightedUndirectedMatrix.js"></script>
 
   <script src="../../libs/views/graphs/undirected.js"></script>
   <script src="../../libs/models/graphs/undirected.js"></script>
@@ -36,7 +36,7 @@
 		var amount=parseInt(prompt("Amount of nodes:"));
 		if(isNaN(amount)||amount<1)return;
 		
-		var matrix=new UnweightedUndirectedMatrix(amount);
+		var matrix=new weightedUndirectedMatrix(amount);
 		_matrix=matrix;
 		var cm = document.getElementById("containerMatrix");
 		matrix.draw(cm);
@@ -59,26 +59,13 @@
 		
 		_class('createMatrix', 'hide');
 		var c1 = document.getElementById("container1");
-		graph=new UnweightedUndirectedGraph(_matrix.matrix,startNode,c1);
+		//graph=new WeightedUndirectedGraph(_matrix.matrix,startNode,c1);
 		//window.alert(graph.matrix);
 	}
 	
 	function zoomIn(){
 		var c1 = document.getElementById("container1");
 		graph.view.zoomIn(c1);
-	}
-	
-	function bfs(){
-		if(graph!=undefined){
-			clearTimes();
-			var elem = $("#p");
-			elem.addClass("p1");
-			var c1 = document.getElementById("container1");
-			graph.bfs(c1);
-		}
-		else{
-			window.alert("No graph created");
-		}
 	}
 	
 	function zoomOut(){
@@ -105,7 +92,7 @@
 			}
 			else{
 				var c1 = document.getElementById("container1");
-				graph.bfs(c1); 
+				//graph.bfs(c1); 
 				elem.addClass("p1");
 			}
 			
@@ -136,9 +123,9 @@
 </aside>
 <article>
 	<div id="menu" class="open">
-		<a href="javascript:_class('menu', 'open')">Breadth First Search</a>
+		<a href="javascript:_class('menu', 'open')">Kruskal</a>
         <input type="button" value="Create" id="create" onclick="create();return false;">
-        <input type="button" value="Run BFS" id="bfs" onclick="bfs();return false;">
+        <input type="button" value="Run Kruskal" id="kruskal" onclick="kruskal();return false;">
 	</div>
 	<div id="container1"></div>
 </article>
@@ -156,7 +143,7 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
-	BFS on undirected graphs<br>
+	Kruskal on undirected graphs<br>
 	All nodes not connected to the initial node will be removed
 	</div>
 </div>
