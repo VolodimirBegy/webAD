@@ -103,12 +103,11 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
   			
   			rect.ij=""+(i)+":"+(j);
   			var um=this;
-  			rect.on('click', function() {
-  				var weight=parseInt(prompt("Weight:\n>=-999, <=999"));
-  				if(isNaN(weight) || weight<-999 ||weight>999)return;
-  				  				
+  			rect.on('click', function() {		  				
   		        var indexes=this.ij.split(":");
   		        if(um.matrix[indexes[0]][indexes[1]]==undefined && indexes[0]!=indexes[1]){
+  		        	var weight=parseInt(prompt("Weight:\n>=-999, <=999"));
+  	  				if(isNaN(weight) || weight<-999 ||weight>999)return;
   		        	um.matrix[indexes[0]][indexes[1]]=weight;
   		        	um.matrix[indexes[1]][indexes[0]]=weight;
   		        }
