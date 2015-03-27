@@ -117,6 +117,9 @@ WeightedUndirectedGraph.prototype.kruskal=function(cont){
 		if(this.i==this.edges.length)
 			 delay=1000;
 		
+		for(var k=0;k<graph.edges.length;k++)
+			graph.edges[k].color="black";
+		
 		this.A=[];
 	
 		this.p=new Array(this.nodes.length);
@@ -150,7 +153,7 @@ WeightedUndirectedGraph.prototype.kruskal=function(cont){
 				graph.edges[graph.i].color="lime";
 			}
 			else{
-				graph.edges[graph.i].color="red";
+				graph.edges[graph.i].color="#6699FF";
 			}
 			union(graph.edges[graph.i].u,graph.edges[graph.i].v);
 			
@@ -159,12 +162,7 @@ WeightedUndirectedGraph.prototype.kruskal=function(cont){
 			graph.draw(cont);
 			
 			if(graph.i<graph.edges.length)
-				step(graph);
-			else{
-				for(var k=0;k<graph.edges.length;k++)
-					graph.edges[k].color="black";
-			}
-			
+				step(graph);			
 		},2000)
 	}
 	

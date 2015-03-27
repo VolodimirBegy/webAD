@@ -264,12 +264,12 @@ UndirectedGraphView.prototype.draw=function(cont){
 			}
 			
 			var _stroke=0;
-			if(col=="red")
-				_stroke=1;
+			if(col=="#6699FF")
+				_stroke=1*this.scale;
 			else if(col=="black")
-				_stroke=2;
+				_stroke=2*this.scale;
 			else
-				_stroke=5;
+				_stroke=5*this.scale;
 			
 			var line = new Kinetic.Line({
 				points: [this.model.nodes[i].xPosition,this.model.nodes[i].yPosition,this.model.nodes[i].connectedTo[j].xPosition,this.model.nodes[i].connectedTo[j].yPosition],
@@ -291,7 +291,7 @@ UndirectedGraphView.prototype.draw=function(cont){
 				text: _weight,
 				fontSize: 25*this.scale,
 				fontFamily: 'Calibri',
-				fill: 'red'//,
+				fill: 'FF6600'//,
 				//width:_radius*2,
 				//align:'center'
 			});
