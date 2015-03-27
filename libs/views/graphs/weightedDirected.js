@@ -46,6 +46,9 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 	
 		var exists=false;
 		
+		var on=undefined;
+		var tn=undefined;
+		
 		for(var j=0;j<drawn.length;j++){
 			if(drawn[j]==this.model.edges[i].u){
 				exists=true;break;
@@ -81,15 +84,57 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				align:'center'
 			});
 			
+			circleFrom.val=valFrom;
+			valFrom.circle=circleFrom;
+			
+			v=this;	
+			
+			valFrom.on('dragmove', function() {
+
+				for(var k=0;k<this.circle.lines.length;k++){
+					this.circle.lines[k].setPoints([this.circle.getX(),this.circle.getY(),this.circle.connectedTo[k].getX(),this.circle.connectedTo[k].getY()]);
+				}
+				
+				for(var k=0;k<this.circle.weights.length;k++){
+					this.circle.weights[k].setX((this.circle.getX()+this.circle.connectedTo[k].getX())/2+(this.circle.getX()+this.circle.connectedTo[k].getX())/3);
+					this.circle.weights[k].setY((this.circle.getY()+this.circle.connectedTo[k].getY())/2+(this.circle.getY()+this.circle.connectedTo[k].getY())/3);
+				}
+				
+				v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].xPosition=parseInt(this.circle.getX());
+				v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].yPosition=parseInt(this.circle.getY());
+				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].index;
+
+				
+				for(var k=0;k<v.model.nodes.length;k++){
+					for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
+						if(v.model.nodes[k].connectedTo[p].index==_index){
+							v.model.nodes[k].connectedTo[p].xPosition=this.circle.getX();
+							v.model.nodes[k].connectedTo[p].yPosition=this.circle.getY();
+						}
+					}
+				}
+				
+				this.circle.setX(parseInt(this.getX())+_radius);
+				this.circle.setY(parseInt(this.getY())+_radius/4);
+		    });
+			
 			circles.push(circleFrom);
 			vals.push(valFrom);
+			
+			on=circleFrom;
+		}
+		else{
+			for(var j=0;j<circles.length;j++){
+				if(circles[j].val.getText()==this.model.edges[i].u.index){
+					on=circles[j];break;
+				}
+			}
 		}
 		
 		exists=false;
 			
 		for(var j=0;j<drawn.length;j++){
 			if(drawn[j]==this.model.edges[i].v){
-				
 				exists=true;break;
 			}
 		}
@@ -123,21 +168,71 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				align:'center'
 			});	
 			
+			circleTo.val=valTo;
+			valTo.circle=circleTo;
+			
+			v=this;	
+			
+			valTo.on('dragmove', function() {
+				for(var k=0;k<this.circle.lines.length;k++){
+					this.circle.lines[k].setPoints([this.circle.getX(),this.circle.getY(),this.circle.connectedTo[k].getX(),this.circle.connectedTo[k].getY()]);
+				}
+				
+				for(var k=0;k<this.circle.weights.length;k++){
+					this.circle.weights[k].setX((this.circle.getX()+this.circle.connectedTo[k].getX())/2+(this.circle.getX()+this.circle.connectedTo[k].getX())/3);
+					this.circle.weights[k].setY((this.circle.getY()+this.circle.connectedTo[k].getY())/2+(this.circle.getY()+this.circle.connectedTo[k].getY())/3);
+				}
+				
+				v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].xPosition=parseInt(this.circle.getX());
+				v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].yPosition=parseInt(this.circle.getY());
+				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].index;
+
+				
+				for(var k=0;k<v.model.nodes.length;k++){
+					for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
+						if(v.model.nodes[k].connectedTo[p].index==_index){
+							v.model.nodes[k].connectedTo[p].xPosition=this.circle.getX();
+							v.model.nodes[k].connectedTo[p].yPosition=this.circle.getY();
+						}
+					}
+				}
+				
+				this.circle.setX(parseInt(this.getX())+_radius);
+				this.circle.setY(parseInt(this.getY())+_radius/4);
+		    });
+			
 			circles.push(circleTo);
 			vals.push(valTo);
+			
+			tn=circleTo;
 		}
 		
-		var line = new Kinetic.Line({
-			points: [xFrom,yFrom,xTo,yTo],
-			stroke: 'black',
+		else{
+			for(var j=0;j<circles.length;j++){
+				if(circles[j].val.getText()==this.model.edges[i].v.index){
+					tn=circles[j];break;
+				}
+			}
+		}
+		
+		var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
+	    var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
+
+	    var line = new Kinetic.Line({
+	        points: [xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)],
+	        stroke: 'black',
 			strokeWidth: 2*this.scale
-		});
+	    });
+
+		
+		line.on=on;
+		line.tn=tn;
 		
 		lines.push(line);
 		
 		var weight = new Kinetic.Text({
-			x: (xFrom+xTo)/2,
-			y: (yFrom+yTo)/2,
+			x: (xFrom+xTo)/2+(xFrom+xTo)/3,
+			y: (yFrom+yTo)/2+(yFrom+yTo)/3,
 			text: this.model.edges[i].weight,
 			fontSize: 25*this.scale,
 			fontFamily: 'Calibri',
@@ -147,8 +242,147 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 		});
 		
 		weights.push(weight);
+		
+		if(on.connectedTo==undefined){
+			on.connectedTo=[];
+			on.lines=[];
+			on.weights=[];
+		}
+		
+		on.connectedTo.push(tn);
+		on.lines.push(line);
+		on.weights.push(weight);
+		
+		if(tn.connectedTo==undefined){
+			tn.connectedTo=[];
+			tn.lines=[];
+			tn.weights=[];
+			tn.connectedTo.push(on);
+			tn.lines.push(line);
+			tn.weights.push(weight);
+		}
+		
+		else{
+			var alreadyConnected;
+			for(var j=0;j<tn.lines;j++){
+				if(tn.lines[j].tn==on){
+					alreadyConnected=true;
+				}
+			}
+			if(!alreadyConnected){
+				tn.connectedTo.push(on);
+				tn.lines.push(line);
+				tn.weights.push(weight);
+			}
+		}
+		
+		v=this;	
+		
+		on.on('dragmove', function() {
+			for(var k=0;k<this.lines.length;k++){
+				//window.alert("in1");
+				var xTo=undefined;
+				var xFrom=undefined;
+				var yTo=undefined;
+				var xFrom=undefined;
+				if(this.lines[k].on==this){
+					 xFrom=this.getX();
+					 yFrom=this.getY();
+					 xTo=this.lines[k].tn.getX()-_radius;
+					 yTo=this.lines[k].tn.getY()-_radius;
+					 var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
+					 var angle = Math.atan2(yTo-yFrom,xTo-xFrom);	
+					 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
+				}
+				else if(this.lines[k].tn==this){
+					//window.alert("in2");
+					 xTo=this.getX()-_radius
+					 yTo=this.getY()-_radius;
+					 xFrom=this.lines[k].on.getX();
+					 yFrom=this.lines[k].on.getY();
+					 var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
+					 var angle = Math.atan2(yTo-yFrom,xTo-xFrom);	
+					 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
+				}
+				
+			}
+			
+			for(var k=0;k<this.weights.length;k++){
+				this.weights[k].setX((this.getX()+this.connectedTo[k].getX())/2+(this.getX()+this.connectedTo[k].getX())/3);
+				this.weights[k].setY((this.getY()+this.connectedTo[k].getY())/2+(this.getY()+this.connectedTo[k].getY())/3);
+			}
+			
+			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].xPosition=parseInt(this.getX());
+			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].yPosition=parseInt(this.getY());
+			var _index=v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].index;
+
+			
+			for(var k=0;k<v.model.nodes.length;k++){
+				for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
+					if(v.model.nodes[k].connectedTo[p].index==_index){
+						v.model.nodes[k].connectedTo[p].xPosition=this.getX();
+						v.model.nodes[k].connectedTo[p].yPosition=this.getY();
+					}
+				}
+			}
+			
+			this.val.setX(parseInt(this.getX())-_radius);
+			this.val.setY(this.getY()-_radius/4);
+	    });
+		
+		tn.on('dragmove', function() {
+			for(var k=0;k<this.lines.length;k++){
+				//window.alert("in1");
+				var xTo=undefined;
+				var xFrom=undefined;
+				var yTo=undefined;
+				var xFrom=undefined;
+				if(this.lines[k].on==this){
+					 xFrom=this.getX()
+					 yFrom=this.getY();
+					 xTo=this.lines[k].tn.getX();
+					 yTo=this.lines[k].tn.getY();
+					 var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
+					 var angle = Math.atan2(yTo-yFrom,xTo-xFrom);	
+					 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
+				}
+				else if(this.lines[k].tn==this){
+					//window.alert("in2");
+					 xTo=this.getX()
+					 yTo=this.getY();
+					 xFrom=this.lines[k].on.getX();
+					 yFrom=this.lines[k].on.getY();
+					 var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
+					 var angle = Math.atan2(yTo-yFrom,xTo-xFrom);	
+					 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
+				}
+				
+			}
+			
+			for(var k=0;k<this.weights.length;k++){
+				this.weights[k].setX((this.getX()+this.connectedTo[k].getX())/2+(this.getX()+this.connectedTo[k].getX())/3);
+				this.weights[k].setY((this.getY()+this.connectedTo[k].getY())/2+(this.getY()+this.connectedTo[k].getY())/3);
+			}
+			
+			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].xPosition=parseInt(this.getX());
+			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].yPosition=parseInt(this.getY());
+			var _index=v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].index;
+
+			
+			for(var k=0;k<v.model.nodes.length;k++){
+				for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
+					if(v.model.nodes[k].connectedTo[p].index==_index){
+						v.model.nodes[k].connectedTo[p].xPosition=this.getX();
+						v.model.nodes[k].connectedTo[p].yPosition=this.getY();
+					}
+				}
+			}
+			
+			this.val.setX(parseInt(this.getX())-_radius);
+			this.val.setY(this.getY()-_radius/4);
+	    });
 	}
-	
+
 	for(var i=0;i<lines.length;i++){
 		layer.add(lines[i]);
 	}

@@ -97,9 +97,6 @@ function WeightedUndirectedGraph(_matrix,con){
 	
 	addConnected(this,0);
 	
-	window.alert(this.nodes.length);
-	window.alert(this.edges.length);
-	
 	this.gridSize=Math.ceil(Math.sqrt(this.nodes.length));
 	var index=0;
 	for(var i=0;i<this.gridSize;i++){

@@ -25,7 +25,6 @@ function UnweightedUndirectedGraph(_matrix,_startNode,con){
 	this.view=new UnweightedUndirectedGraphView(this);
 	
 	this.nodes=[];
-	this.edges=[];
 	this.startNode=_startNode;
 
 	this.visited=[];
