@@ -114,11 +114,25 @@ WeightedUndirectedGraph.prototype.kruskal=function(cont){
 	var delay=0;
 	if(this.A==undefined ||(this.i==this.edges.length)){
 		
-		if(this.i==this.edges.length)
+		if(this.i==this.edges.length){
 			 delay=1000;
 		
-		for(var k=0;k<graph.edges.length;k++)
-			graph.edges[k].color="black";
+			for(var k=0;k<graph.edges.length;k++)
+				graph.edges[k].color="black";
+		}
+		
+		if(this.A==undefined){
+			//sortiere alle kanten 
+			function compare(a,b) {
+				  if (a.weight < b.weight)
+				     return -1;
+				  if (a.weight > b.weight)
+					  return 1;
+				  return 0;
+			}
+			
+			this.edges.sort(compare);
+		}
 		
 		this.A=[];
 	
@@ -129,19 +143,7 @@ WeightedUndirectedGraph.prototype.kruskal=function(cont){
 			makeSet(this.nodes[i]);
 		}
 		
-		//sortiere alle kanten 
-		function compare(a,b) {
-			  if (a.weight < b.weight)
-			     return -1;
-			  if (a.weight > b.weight)
-				  return 1;
-			  return 0;
-		}
-		
-		this.edges.sort(compare);
-		
 		this.i=0;
-	
 	}
 	
 	this.draw(cont);
