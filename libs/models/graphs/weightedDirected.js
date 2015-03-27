@@ -28,8 +28,8 @@ function Edge(u,v,w){
 	this.color="black";
 }
 
-function WeightedUndirectedGraph(_matrix,con){
-	this.view=new UndirectedGraphView(this);
+function WeightedDirectedGraph(_matrix,startNode,con){
+	this.view=new WeightedDirectedGraphView(this);
 	
 	this.nodes=[];
 	this.edges=[];
@@ -77,8 +77,7 @@ function WeightedUndirectedGraph(_matrix,con){
 				//ignore duplicates
 				var eExists=false;
 				for(var j=0;j<graph.edges.length;j++){
-					if((graph.edges[j].u==cNode && graph.edges[j].v==newNode) ||
-							(graph.edges[j].v==cNode && graph.edges[j].u==newNode)){
+					if(graph.edges[j].u==cNode && graph.edges[j].v==newNode){
 						eExists=true;break
 					}
 				}
@@ -95,10 +94,8 @@ function WeightedUndirectedGraph(_matrix,con){
 		}
 	}
 	
-	addConnected(this,0);
 	
-	window.alert(this.nodes.length);
-	window.alert(this.edges.length);
+	addConnected(this,startNode);
 	
 	this.gridSize=Math.ceil(Math.sqrt(this.nodes.length));
 	var index=0;
@@ -134,90 +131,7 @@ function WeightedUndirectedGraph(_matrix,con){
 	this.actStateID=0;
 }
 
-WeightedUndirectedGraph.prototype.kruskal=function(cont){
-	var delay=0;
-	if(this.A==undefined ||(this.i==this.edges.length)){
-		
-		if(this.i==this.edges.length){
-			 delay=1000;
-		
-			for(var k=0;k<graph.edges.length;k++)
-				graph.edges[k].color="black";
-		}
-		
-		if(this.A==undefined){
-			//sortiere alle kanten 
-			function compare(a,b) {
-				  if (a.weight < b.weight)
-				     return -1;
-				  if (a.weight > b.weight)
-					  return 1;
-				  return 0;
-			}
-			
-			this.edges.sort(compare);
-		}
-		
-		this.A=[];
-	
-		this.p=new Array(this.nodes.length);
-		
-		//make set fuer alle knoten
-		for(var i=0;i<this.nodes.length;i++){
-			makeSet(this.nodes[i]);
-		}
-		
-		this.i=0;
-	}
-	
-	this.draw(cont);
-	
-	function step(graph){
-		setTimeout(function(){
-			if(findSet(graph.edges[graph.i].u)!= findSet(graph.edges[graph.i].v)){
-				graph.A.push(graph.edges[graph.i]);
-				graph.edges[graph.i].color="lime";
-			}
-			else{
-				graph.edges[graph.i].color="#6699FF";
-			}
-			union(graph.edges[graph.i].u,graph.edges[graph.i].v);
-			
-			graph.i++;
-			
-			graph.draw(cont);
-			
-			if(graph.i<graph.edges.length)
-				step(graph);			
-		},2000)
-	}
-	
-	function startKruskal(graph){
-		setTimeout(function(){
-			step(graph);
-		},delay)
-	}
-	
-	startKruskal(this);
-	
-	function makeSet(x){
-		this.p[x.index]=x;
-	}
-	
-	function findSet(x){
-		if(x!=this.p[x.index]) return findSet(this.p[x.index]);
-		return this.p[x.index];
-	}
-	
-	function link(x,y){
-		this.p[y.index]=x;
-	}
-	
-	function union(x,y){
-		link(findSet(x),findSet(y));
-	}
-}
 
-WeightedUndirectedGraph.prototype.draw=function(cont){
+WeightedDirectedGraph.prototype.draw=function(cont){
 	this.view.draw(cont);
 }
