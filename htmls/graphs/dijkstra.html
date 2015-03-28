@@ -41,6 +41,9 @@
 		var cm = document.getElementById("containerMatrix");
 		matrix.draw(cm);
 		
+		var tf = $("#startNode");
+		tf.val("");
+		tf.css("background-color","white");
 		_class('createMatrix', 'hide');
 	}
 	
@@ -87,6 +90,11 @@
 			return;
 		}
 		else{
+			var elem = $("#p");
+			if(elem.hasClass("p1")){
+				clearTimes();
+				elem.removeClass("p1");
+			}
 			_class('createMatrix', 'hide');
 			var c1 = document.getElementById("container1");
 			graph=new WeightedDirectedGraph(_matrix.matrix,startNode,c1);

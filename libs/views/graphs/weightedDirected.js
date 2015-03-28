@@ -90,19 +90,59 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 			v=this;	
 			
 			valFrom.on('dragmove', function() {
-
 				for(var k=0;k<this.circle.lines.length;k++){
-					this.circle.lines[k].setPoints([this.circle.getX(),this.circle.getY(),this.circle.connectedTo[k].getX(),this.circle.connectedTo[k].getY()]);
+					//window.alert("in1");
+					var xTo=undefined;
+					var xFrom=undefined;
+					var yTo=undefined;
+					var xFrom=undefined;
+					var headlen = 15;
+					if(this.circle.lines[k].on==this.circle){
+						xFrom=this.circle.getX();
+						yFrom=this.circle.getY();
+						xTo=this.circle.lines[k].tn.getX();
+						yTo=this.circle.lines[k].tn.getY();
+						
+					    var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
+					}
+					else if(this.circle.lines[k].tn==this.circle){
+						xTo=this.circle.getX();
+						yTo=this.circle.getY();
+						xFrom=this.circle.lines[k].on.getX();
+						yFrom=this.circle.lines[k].on.getY();
+						
+						var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
+					}
+					
+					var xDiff=xTo-xFrom;
+					if(Math.abs(xDiff)>_radius){
+					    if(xDiff>0){xDiff=_radius;}
+					    else{xDiff=-_radius;}
+					 }
+					 
+					 xTo=xTo-xDiff;
+					 if(xDiff>0)
+						 this.circle.weights[k].setX(xTo-30);
+					 else
+						 this.circle.weights[k].setX(xTo+30);
+					 
+					 var yDiff=yTo-yFrom;
+					 if(Math.abs(yDiff)>_radius){
+					    if(yDiff>0){yDiff=_radius;}
+					    else{yDiff=-_radius;}
+					 }
+					 
+					 yTo=yTo-yDiff;
+					 if(yDiff>0)
+						 this.circle.weights[k].setY(yTo-30);
+					 else
+						 this.circle.weights[k].setY(yTo+30);
+					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
-				for(var k=0;k<this.circle.weights.length;k++){
-					this.circle.weights[k].setX((this.circle.getX()+this.circle.connectedTo[k].getX())/2+(this.circle.getX()+this.circle.connectedTo[k].getX())/3);
-					this.circle.weights[k].setY((this.circle.getY()+this.circle.connectedTo[k].getY())/2+(this.circle.getY()+this.circle.connectedTo[k].getY())/3);
-				}
-				
-				v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].xPosition=parseInt(this.circle.getX());
-				v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].yPosition=parseInt(this.circle.getY());
-				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].index;
+				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].xPosition=parseInt(this.circle.getX());
+				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].yPosition=parseInt(this.circle.getY());
+				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].index;
 
 				
 				for(var k=0;k<v.model.nodes.length;k++){
@@ -175,17 +215,58 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 			
 			valTo.on('dragmove', function() {
 				for(var k=0;k<this.circle.lines.length;k++){
-					this.circle.lines[k].setPoints([this.circle.getX(),this.circle.getY(),this.circle.connectedTo[k].getX(),this.circle.connectedTo[k].getY()]);
+					//window.alert("in1");
+					var xTo=undefined;
+					var xFrom=undefined;
+					var yTo=undefined;
+					var xFrom=undefined;
+					var headlen = 15;
+					if(this.circle.lines[k].on==this.circle){
+						xFrom=this.circle.getX();
+						yFrom=this.circle.getY();
+						xTo=this.circle.lines[k].tn.getX();
+						yTo=this.circle.lines[k].tn.getY();
+						
+					    var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
+					}
+					else if(this.circle.lines[k].tn==this.circle){
+						xTo=this.circle.getX();
+						yTo=this.circle.getY();
+						xFrom=this.circle.lines[k].on.getX();
+						yFrom=this.circle.lines[k].on.getY();
+						
+						var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
+					}
+					
+					var xDiff=xTo-xFrom;
+					if(Math.abs(xDiff)>_radius){
+					    if(xDiff>0){xDiff=_radius;}
+					    else{xDiff=-_radius;}
+					 }
+					 
+					 xTo=xTo-xDiff;
+					 if(xDiff>0)
+						 this.circle.weights[k].setX(xTo-30);
+					 else
+						 this.circle.weights[k].setX(xTo+30);
+					 
+					 var yDiff=yTo-yFrom;
+					 if(Math.abs(yDiff)>_radius){
+					    if(yDiff>0){yDiff=_radius;}
+					    else{yDiff=-_radius;}
+					 }
+					 
+					 yTo=yTo-yDiff;
+					 if(yDiff>0)
+						 this.circle.weights[k].setY(yTo-30);
+					 else
+						 this.circle.weights[k].setY(yTo+30);
+					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
-				for(var k=0;k<this.circle.weights.length;k++){
-					this.circle.weights[k].setX((this.circle.getX()+this.circle.connectedTo[k].getX())/2+(this.circle.getX()+this.circle.connectedTo[k].getX())/3);
-					this.circle.weights[k].setY((this.circle.getY()+this.circle.connectedTo[k].getY())/2+(this.circle.getY()+this.circle.connectedTo[k].getY())/3);
-				}
-				
-				v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].xPosition=parseInt(this.circle.getX());
-				v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].yPosition=parseInt(this.circle.getY());
-				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.circle.val.getText())]].index;
+				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].xPosition=parseInt(this.circle.getX());
+				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].yPosition=parseInt(this.circle.getY());
+				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].index;
 
 				
 				for(var k=0;k<v.model.nodes.length;k++){
@@ -215,13 +296,32 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 			}
 		}
 		
-		var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
+		var headlen = 15;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
 	    var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 
+	    var xDiff=tn.getX()-xFrom;
+	    if(Math.abs(xDiff)>_radius){
+	    	if(xDiff>0)xDiff=_radius;
+	    	else xDiff=-_radius;
+	    }
+	    
+	    xTo=xTo-xDiff;
+	    
+	    var yDiff=tn.getY()-yFrom;
+	    if(Math.abs(yDiff)>_radius){
+	    	if(yDiff>0)yDiff=_radius;
+	    	else yDiff=-_radius;
+	    }
+	    
+	    yTo=yTo-yDiff;
+	    
 	    var line = new Kinetic.Line({
 	        points: [xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)],
 	        stroke: 'black',
-			strokeWidth: 2*this.scale
+			strokeWidth: 2*this.scale,
+			shapeType: "line",
+			lineCap: 'round',
+			lineJoin: 'round'
 	    });
 
 		
@@ -230,9 +330,12 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 		
 		lines.push(line);
 		
+		var wX=xTo;
+		var wY=yTo;
+		
 		var weight = new Kinetic.Text({
-			x: (xFrom+xTo)/2+(xFrom+xTo)/3,
-			y: (yFrom+yTo)/2+(yFrom+yTo)/3,
+			x: wX,
+			y: wY,
 			text: this.model.edges[i].weight,
 			fontSize: 25*this.scale,
 			fontFamily: 'Calibri',
@@ -285,31 +388,48 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				var xFrom=undefined;
 				var yTo=undefined;
 				var xFrom=undefined;
+				var headlen = 15;
 				if(this.lines[k].on==this){
-					 xFrom=this.getX();
-					 yFrom=this.getY();
-					 xTo=this.lines[k].tn.getX()-_radius;
-					 yTo=this.lines[k].tn.getY()-_radius;
-					 var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
-					 var angle = Math.atan2(yTo-yFrom,xTo-xFrom);	
-					 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
+					xFrom=this.getX();
+					yFrom=this.getY();
+					xTo=this.lines[k].tn.getX();
+					yTo=this.lines[k].tn.getY();
+					
+				    var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 				}
 				else if(this.lines[k].tn==this){
-					//window.alert("in2");
-					 xTo=this.getX()-_radius
-					 yTo=this.getY()-_radius;
-					 xFrom=this.lines[k].on.getX();
-					 yFrom=this.lines[k].on.getY();
-					 var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
-					 var angle = Math.atan2(yTo-yFrom,xTo-xFrom);	
-					 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
+					xTo=this.getX();
+					yTo=this.getY();
+					xFrom=this.lines[k].on.getX();
+					yFrom=this.lines[k].on.getY();
+					
+					var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 				}
 				
-			}
-			
-			for(var k=0;k<this.weights.length;k++){
-				this.weights[k].setX((this.getX()+this.connectedTo[k].getX())/2+(this.getX()+this.connectedTo[k].getX())/3);
-				this.weights[k].setY((this.getY()+this.connectedTo[k].getY())/2+(this.getY()+this.connectedTo[k].getY())/3);
+				var xDiff=xTo-xFrom;
+				if(Math.abs(xDiff)>_radius){
+				    if(xDiff>0){xDiff=_radius;}
+				    else{xDiff=-_radius;}
+				 }
+				 
+				 xTo=xTo-xDiff;
+				 if(xDiff>0)
+					 this.weights[k].setX(xTo-30);
+				 else
+					 this.weights[k].setX(xTo+30);
+				 
+				 var yDiff=yTo-yFrom;
+				 if(Math.abs(yDiff)>_radius){
+				    if(yDiff>0){yDiff=_radius;}
+				    else{yDiff=-_radius;}
+				 }
+				 
+				 yTo=yTo-yDiff;
+				 if(yDiff>0)
+					 this.weights[k].setY(yTo-30);
+				 else
+					 this.weights[k].setY(yTo+30);
+				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 			}
 			
 			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].xPosition=parseInt(this.getX());
@@ -337,31 +457,48 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				var xFrom=undefined;
 				var yTo=undefined;
 				var xFrom=undefined;
+				var headlen = 15;
 				if(this.lines[k].on==this){
-					 xFrom=this.getX()
-					 yFrom=this.getY();
-					 xTo=this.lines[k].tn.getX();
-					 yTo=this.lines[k].tn.getY();
-					 var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
-					 var angle = Math.atan2(yTo-yFrom,xTo-xFrom);	
-					 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
+					xFrom=this.getX();
+					yFrom=this.getY();
+					xTo=this.lines[k].tn.getX();
+					yTo=this.lines[k].tn.getY();
+					
+				    var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 				}
 				else if(this.lines[k].tn==this){
-					//window.alert("in2");
-					 xTo=this.getX()
-					 yTo=this.getY();
-					 xFrom=this.lines[k].on.getX();
-					 yFrom=this.lines[k].on.getY();
-					 var headlen = 40;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
-					 var angle = Math.atan2(yTo-yFrom,xTo-xFrom);	
-					 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
+					xTo=this.getX();
+					yTo=this.getY();
+					xFrom=this.lines[k].on.getX();
+					yFrom=this.lines[k].on.getY();
+					
+					var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 				}
 				
-			}
-			
-			for(var k=0;k<this.weights.length;k++){
-				this.weights[k].setX((this.getX()+this.connectedTo[k].getX())/2+(this.getX()+this.connectedTo[k].getX())/3);
-				this.weights[k].setY((this.getY()+this.connectedTo[k].getY())/2+(this.getY()+this.connectedTo[k].getY())/3);
+				var xDiff=xTo-xFrom;
+				if(Math.abs(xDiff)>_radius){
+				    if(xDiff>0){xDiff=_radius;}
+				    else{xDiff=-_radius;}
+				 }
+				 
+				 xTo=xTo-xDiff;
+				 if(xDiff>0)
+					 this.weights[k].setX(xTo-30);
+				 else
+					 this.weights[k].setX(xTo+30);
+				 
+				 var yDiff=yTo-yFrom;
+				 if(Math.abs(yDiff)>_radius){
+				    if(yDiff>0){yDiff=_radius;}
+				    else{yDiff=-_radius;}
+				 }
+				 
+				 yTo=yTo-yDiff;
+				 if(yDiff>0)
+					 this.weights[k].setY(yTo-30);
+				 else
+					 this.weights[k].setY(yTo+30);
+				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
 			}
 			
 			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].xPosition=parseInt(this.getX());
