@@ -105,16 +105,6 @@ UndirectedGraphView.prototype.draw=function(cont){
 				
 				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].xPosition=parseInt(this.circle.getX());
 				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].yPosition=parseInt(this.circle.getY());
-				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].index;
-
-				for(var k=0;k<v.model.nodes.length;k++){
-					for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
-						if(v.model.nodes[k].connectedTo[p].index==_index){
-							v.model.nodes[k].connectedTo[p].xPosition=parseInt(this.circle.getX());
-							v.model.nodes[k].connectedTo[p].yPosition=parseInt(this.circle.getY());
-						}
-					}
-				}
 		    });
 			
 			valFrom.on('mouseover', function() {
@@ -212,17 +202,6 @@ UndirectedGraphView.prototype.draw=function(cont){
 					
 					v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].xPosition=parseInt(this.circle.getX());
 					v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].yPosition=parseInt(this.circle.getY());
-					var _index=v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].index;
-
-					
-					for(var k=0;k<v.model.nodes.length;k++){
-						for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
-							if(v.model.nodes[k].connectedTo[p].index==_index){
-								v.model.nodes[k].connectedTo[p].xPosition=parseInt(this.circle.getX());
-								v.model.nodes[k].connectedTo[p].yPosition=parseInt(this.circle.getY());
-							}
-						}
-					}
 			    });
 				
 				valTo.on('mouseover', function() {
@@ -332,17 +311,6 @@ UndirectedGraphView.prototype.draw=function(cont){
 			
 			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].xPosition=parseInt(this.getX());
 			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].yPosition=parseInt(this.getY());
-			var _index=v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].index;
-
-			
-			for(var k=0;k<v.model.nodes.length;k++){
-				for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
-					if(v.model.nodes[k].connectedTo[p].index==_index){
-						v.model.nodes[k].connectedTo[p].xPosition=this.getX();
-						v.model.nodes[k].connectedTo[p].yPosition=this.getY();
-					}
-				}
-			}
 			
 			this.val.setX(parseInt(this.getX())-_radius);
 			this.val.setY(this.getY()-_radius/4);

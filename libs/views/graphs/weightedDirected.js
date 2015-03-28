@@ -98,18 +98,18 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					var xFrom=undefined;
 					var headlen = 15;
 					if(this.circle.lines[k].on==this.circle){
-						xFrom=this.circle.getX();
-						yFrom=this.circle.getY();
-						xTo=this.circle.lines[k].tn.getX();
-						yTo=this.circle.lines[k].tn.getY();
+						xFrom=parseInt(this.circle.getX());
+						yFrom=parseInt(this.circle.getY());
+						xTo=parseInt(this.circle.lines[k].tn.getX());
+						yTo=parseInt(this.circle.lines[k].tn.getY());
 						
 					    var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 					}
 					else if(this.circle.lines[k].tn==this.circle){
-						xTo=this.circle.getX();
-						yTo=this.circle.getY();
-						xFrom=this.circle.lines[k].on.getX();
-						yFrom=this.circle.lines[k].on.getY();
+						xTo=parseInt(this.circle.getX());
+						yTo=parseInt(this.circle.getY());
+						xFrom=parseInt(this.circle.lines[k].on.getX());
+						yFrom=parseInt(this.circle.lines[k].on.getY());
 						
 						var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 					}
@@ -122,9 +122,9 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					 
 					 xTo=xTo-xDiff;
 					 if(xDiff>0)
-						 this.circle.weights[k].setX(xTo-30);
+						 this.circle.weights[k].setX(xTo-25);
 					 else
-						 this.circle.weights[k].setX(xTo+15);
+						 this.circle.weights[k].setX(xTo+10);
 					 
 					 var yDiff=yTo-yFrom;
 					 if(Math.abs(yDiff)>_radius){
@@ -136,23 +136,13 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					 if(yDiff>0)
 						 this.circle.weights[k].setY(yTo-30);
 					 else
-						 this.circle.weights[k].setY(yTo+15);
+						 this.circle.weights[k].setY(yTo+10);
+					 
 					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
 				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].xPosition=parseInt(this.circle.getX());
 				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].yPosition=parseInt(this.circle.getY());
-				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].index;
-
-				
-				for(var k=0;k<v.model.nodes.length;k++){
-					for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
-						if(v.model.nodes[k].connectedTo[p].index==_index){
-							v.model.nodes[k].connectedTo[p].xPosition=this.circle.getX();
-							v.model.nodes[k].connectedTo[p].yPosition=this.circle.getY();
-						}
-					}
-				}
 				
 				this.circle.setX(parseInt(this.getX())+_radius);
 				this.circle.setY(parseInt(this.getY())+_radius/4);
@@ -222,18 +212,18 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					var xFrom=undefined;
 					var headlen = 15;
 					if(this.circle.lines[k].on==this.circle){
-						xFrom=this.circle.getX();
-						yFrom=this.circle.getY();
-						xTo=this.circle.lines[k].tn.getX();
-						yTo=this.circle.lines[k].tn.getY();
+						xFrom=parseInt(this.circle.getX());
+						yFrom=parseInt(this.circle.getY());
+						xTo=parseInt(this.circle.lines[k].tn.getX());
+						yTo=parseInt(this.circle.lines[k].tn.getY());
 						
 					    var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 					}
 					else if(this.circle.lines[k].tn==this.circle){
-						xTo=this.circle.getX();
-						yTo=this.circle.getY();
-						xFrom=this.circle.lines[k].on.getX();
-						yFrom=this.circle.lines[k].on.getY();
+						xTo=parseInt(this.circle.getX());
+						yTo=parseInt(this.circle.getY());
+						xFrom=parseInt(this.circle.lines[k].on.getX());
+						yFrom=parseInt(this.circle.lines[k].on.getY());
 						
 						var angle = Math.atan2(yTo-yFrom,xTo-xFrom);
 					}
@@ -246,9 +236,9 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					 
 					 xTo=xTo-xDiff;
 					 if(xDiff>0)
-						 this.circle.weights[k].setX(xTo-30);
+						 this.circle.weights[k].setX(xTo-25);
 					 else
-						 this.circle.weights[k].setX(xTo+15);
+						 this.circle.weights[k].setX(xTo+10);
 					 
 					 var yDiff=yTo-yFrom;
 					 if(Math.abs(yDiff)>_radius){
@@ -260,24 +250,13 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					 if(yDiff>0)
 						 this.circle.weights[k].setY(yTo-30);
 					 else
-						 this.circle.weights[k].setY(yTo+15);
+						 this.circle.weights[k].setY(yTo+10);
 					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
 				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].xPosition=parseInt(this.circle.getX());
 				v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].yPosition=parseInt(this.circle.getY());
-				var _index=v.model.nodes[v.model.matrixLink[parseInt(this.getText())]].index;
 
-				
-				for(var k=0;k<v.model.nodes.length;k++){
-					for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
-						if(v.model.nodes[k].connectedTo[p].index==_index){
-							v.model.nodes[k].connectedTo[p].xPosition=this.circle.getX();
-							v.model.nodes[k].connectedTo[p].yPosition=this.circle.getY();
-						}
-					}
-				}
-				
 				this.circle.setX(parseInt(this.getX())+_radius);
 				this.circle.setY(parseInt(this.getY())+_radius/4);
 		    });
@@ -334,24 +313,24 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 		var wY=undefined;
 		
 		if(xTo>xFrom)
-			var wX=xTo+15;
+			var wX=xTo+10;
 		else
-			var wX=xTo-30;
+			var wX=xTo-25;
 		
 		if(yTo>yFrom)
 			var wY=yTo-30;
 		else
-			var wY=yTo+15;
+			var wY=yTo+10;
 		
 		if(yDiff>0)
 			 wY=yTo-30;
 		 else
-			 wY=yTo+15;
+			 wY=yTo+10;
 		
 		if(xDiff>0)
-			 wX=xTo-30;
+			 wX=xTo-25;
 		 else
-			 wX=xTo+15;
+			 wX=xTo+10;
 		
 		var weight = new Kinetic.Text({
 			x: wX,
@@ -434,9 +413,9 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				 
 				 xTo=xTo-xDiff;
 				 if(xDiff>0)
-					 this.weights[k].setX(xTo-30);
+					 this.weights[k].setX(xTo-25);
 				 else
-					 this.weights[k].setX(xTo+15);
+					 this.weights[k].setX(xTo+10);
 				 
 				 var yDiff=yTo-yFrom;
 				 if(Math.abs(yDiff)>_radius){
@@ -448,23 +427,12 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				 if(yDiff>0)
 					 this.weights[k].setY(yTo-30);
 				 else
-					 this.weights[k].setY(yTo+15);
+					 this.weights[k].setY(yTo+10);
 				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 			}
 			
 			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].xPosition=parseInt(this.getX());
 			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].yPosition=parseInt(this.getY());
-			var _index=v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].index;
-
-			
-			for(var k=0;k<v.model.nodes.length;k++){
-				for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
-					if(v.model.nodes[k].connectedTo[p].index==_index){
-						v.model.nodes[k].connectedTo[p].xPosition=this.getX();
-						v.model.nodes[k].connectedTo[p].yPosition=this.getY();
-					}
-				}
-			}
 			
 			this.val.setX(parseInt(this.getX())-_radius);
 			this.val.setY(this.getY()-_radius/4);
@@ -503,9 +471,9 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				 
 				 xTo=xTo-xDiff;
 				 if(xDiff>0)
-					 this.weights[k].setX(xTo-30);
+					 this.weights[k].setX(xTo-25);
 				 else
-					 this.weights[k].setX(xTo+15);
+					 this.weights[k].setX(xTo+10);
 				 
 				 var yDiff=yTo-yFrom;
 				 if(Math.abs(yDiff)>_radius){
@@ -517,23 +485,12 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				 if(yDiff>0)
 					 this.weights[k].setY(yTo-30);
 				 else
-					 this.weights[k].setY(yTo+15);
+					 this.weights[k].setY(yTo+10);
 				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
 			}
 			
 			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].xPosition=parseInt(this.getX());
 			v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].yPosition=parseInt(this.getY());
-			var _index=v.model.nodes[v.model.matrixLink[parseInt(this.val.getText())]].index;
-
-			
-			for(var k=0;k<v.model.nodes.length;k++){
-				for(var p=0;p<v.model.nodes[k].connectedTo.length;p++){
-					if(v.model.nodes[k].connectedTo[p].index==_index){
-						v.model.nodes[k].connectedTo[p].xPosition=this.getX();
-						v.model.nodes[k].connectedTo[p].yPosition=this.getY();
-					}
-				}
-			}
 			
 			this.val.setX(parseInt(this.getX())-_radius);
 			this.val.setY(this.getY()-_radius/4);
