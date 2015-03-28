@@ -124,7 +124,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					 if(xDiff>0)
 						 this.circle.weights[k].setX(xTo-30);
 					 else
-						 this.circle.weights[k].setX(xTo+30);
+						 this.circle.weights[k].setX(xTo+15);
 					 
 					 var yDiff=yTo-yFrom;
 					 if(Math.abs(yDiff)>_radius){
@@ -136,7 +136,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					 if(yDiff>0)
 						 this.circle.weights[k].setY(yTo-30);
 					 else
-						 this.circle.weights[k].setY(yTo+30);
+						 this.circle.weights[k].setY(yTo+15);
 					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
@@ -248,7 +248,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					 if(xDiff>0)
 						 this.circle.weights[k].setX(xTo-30);
 					 else
-						 this.circle.weights[k].setX(xTo+30);
+						 this.circle.weights[k].setX(xTo+15);
 					 
 					 var yDiff=yTo-yFrom;
 					 if(Math.abs(yDiff)>_radius){
@@ -260,7 +260,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 					 if(yDiff>0)
 						 this.circle.weights[k].setY(yTo-30);
 					 else
-						 this.circle.weights[k].setY(yTo+30);
+						 this.circle.weights[k].setY(yTo+15);
 					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
@@ -334,24 +334,24 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 		var wY=undefined;
 		
 		if(xTo>xFrom)
-			var wX=xTo+30;
+			var wX=xTo+15;
 		else
 			var wX=xTo-30;
 		
 		if(yTo>yFrom)
 			var wY=yTo-30;
 		else
-			var wY=yTo+30;
+			var wY=yTo+15;
 		
 		if(yDiff>0)
 			 wY=yTo-30;
 		 else
-			 wY=yTo+30;
+			 wY=yTo+15;
 		
 		if(xDiff>0)
 			 wX=xTo-30;
 		 else
-			 wX=xTo+30;
+			 wX=xTo+15;
 		
 		var weight = new Kinetic.Text({
 			x: wX,
@@ -436,7 +436,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				 if(xDiff>0)
 					 this.weights[k].setX(xTo-30);
 				 else
-					 this.weights[k].setX(xTo+30);
+					 this.weights[k].setX(xTo+15);
 				 
 				 var yDiff=yTo-yFrom;
 				 if(Math.abs(yDiff)>_radius){
@@ -448,7 +448,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				 if(yDiff>0)
 					 this.weights[k].setY(yTo-30);
 				 else
-					 this.weights[k].setY(yTo+30);
+					 this.weights[k].setY(yTo+15);
 				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 			}
 			
@@ -505,7 +505,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				 if(xDiff>0)
 					 this.weights[k].setX(xTo-30);
 				 else
-					 this.weights[k].setX(xTo+30);
+					 this.weights[k].setX(xTo+15);
 				 
 				 var yDiff=yTo-yFrom;
 				 if(Math.abs(yDiff)>_radius){
@@ -517,7 +517,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 				 if(yDiff>0)
 					 this.weights[k].setY(yTo-30);
 				 else
-					 this.weights[k].setY(yTo+30);
+					 this.weights[k].setY(yTo+15);
 				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
 			}
 			
