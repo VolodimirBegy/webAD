@@ -330,8 +330,28 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 		
 		lines.push(line);
 		
-		var wX=xTo;
-		var wY=yTo;
+		var wX=undefined
+		var wY=undefined;
+		
+		if(xTo>xFrom)
+			var wX=xTo+30;
+		else
+			var wX=xTo-30;
+		
+		if(yTo>yFrom)
+			var wY=yTo-30;
+		else
+			var wY=yTo+30;
+		
+		if(yDiff>0)
+			 wY=yTo-30;
+		 else
+			 wY=yTo+30;
+		
+		if(xDiff>0)
+			 wX=xTo-30;
+		 else
+			 wX=xTo+30;
 		
 		var weight = new Kinetic.Text({
 			x: wX,
