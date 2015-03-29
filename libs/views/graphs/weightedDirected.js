@@ -154,12 +154,12 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 			
 			var fSize=25*this.scale;
 			
-			var dTxt=""+this.model.dist[i];
+			var dTxt=""+this.model.dist[this.model.nodes[i].index];
 			if(dTxt==""+Number.MAX_VALUE)
 				dTxt="∞";
 			else{
-				if(intL(this.model.dist[i])>3){
-					var len=intL(this.model.dist[i]);
+				if(intL(this.model.dist[this.model.nodes[i].index])>3){
+					var len=intL(this.model.dist[this.model.nodes[i].index]);
 					var diff=len-3;
 					fSize=(25-(25/4*diff))*this.scale;
 				}
