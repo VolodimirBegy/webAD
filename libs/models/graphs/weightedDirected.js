@@ -170,10 +170,10 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 	this.draw(cont);
 	
 	var delay=2000;
-	
+	var stepDelay=2000;
 	function step(graph){
 		setTimeout(function(){
-			
+			stepDelay=2000;
 			var u=graph.Q[0];
 			var index=0;
 			
@@ -183,6 +183,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 				}
 			}
 			graph.S.push(u);
+			graph.Q.splice(index,1);
 			u.color="#00FFFF";
 			graph.draw(cont);
 			delay=2000;
@@ -215,6 +216,8 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 					}
 					else{
 						delay=0;
+						if(i==u.connectedTo.length-1)
+							stepDelay=0;
 					}
 					
 					i++
@@ -226,7 +229,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 					else{
 						if(graph.Q.length>0){
 							
-									graph.Q.splice(index,1);
+									//graph.Q.splice(index,1);
 									step(graph);
 									return;
 								
@@ -242,13 +245,12 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 			else{
 				if(graph.Q.length>0){
 					
-					graph.Q.splice(index,1);
 					step(graph);
 					return;
 				}
 			}
 			
-		},2000)
+		},stepDelay)
 	}
 
 	if(graph.Q.length>0)
