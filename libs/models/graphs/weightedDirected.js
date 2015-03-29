@@ -132,7 +132,7 @@ function WeightedDirectedGraph(_matrix,startNode,con){
 WeightedDirectedGraph.prototype.dijkstra=function(cont){
 	
 	if(this.Q==undefined || this.Q.length==0){
-		this.finished=false;
+		this.i=0;
 		for(var i=0;i<this.edges.length;i++)
 			this.edges[i].color="black";
 		
@@ -165,11 +165,11 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 	
 	this.draw(cont);
 	
-	var delay=2000;
+	this.delay=2000;
 	
 	function step(graph){
 		setTimeout(function(){
-			
+			graph.delay=0;
 			var u=graph.Q[0];
 			var index=0;
 			
@@ -181,13 +181,15 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 			graph.S.push(u);
 			u.color="#00FFFF";
 			graph.draw(cont);
-			delay=2000;
-			var i=0;
+
+			
 			//i<u.connectedTo.length
 			function processU(){
 				setTimeout(function(){
-					var v=u.connectedTo[i];
+
+					var v=u.connectedTo[graph.i];
 					var alt=graph.dist[u.index]+graph.costMatrix[u.index][v.index];
+					
 					if(alt<graph.dist[v.index]){
 						graph.dist[v.index]=alt;
 						
@@ -196,52 +198,63 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 						graph.prev[v.index]=u;
 						
 						//prev for v is u
+						
 						for(var j=0;j<graph.edges.length;j++){
 							if(graph.edges[j].u==u && graph.edges[j].v==v){
-								graph.edges[j].color="red";break;
+								graph.edges[j].color="lime";break;
 							}
 						}
 						for(var j=0;j<graph.edges.length;j++){
 							if(graph.edges[j].u==oldU && graph.edges[j].v==v){
-								graph.edges[j].color="black";break;
+								graph.edges[j].color="#6699FF";break;
 							}
 						}
-						delay=2000;
-						graph.draw(cont);
+
 					}
 					else{
-						delay=0;
+						
+						for(var j=0;j<graph.edges.length;j++){
+							if(graph.edges[j].u==u && graph.edges[j].v==v){
+								graph.edges[j].color="#6699FF";eIndex=j;_in=true;break;
+							}
+						}
 					}
 					
-					i++;
+					graph.draw(cont);
+			
+					
+					graph.i++;
 				
-					if(i<u.connectedTo.length){
+					if(graph.i<u.connectedTo.length){
 						processU(graph);
 						return;
 					}
 					else{
+						graph.i=0;
 						graph.Q.splice(index,1);
+						graph.delay=2000;
 						if(graph.Q.length>0){
 							step(graph);
 							return;
 						}
 					}
-				},delay)
+				},2000)
 			}
 			
-			if(i<u.connectedTo.length){
+			if(graph.i<u.connectedTo.length){
 				processU(graph);
 				return;
 			}
 			else{
 				graph.Q.splice(index,1);
+				graph.delay=2000;
 				if(graph.Q.length>0){
 					step(graph);
 					return;
 				}
 			}
 			
-		},2000)
+		},graph.delay)
 	}
 
 	if(graph.Q.length>0)

@@ -500,11 +500,19 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 	    }
 	    
 	    yTo=yTo-yDiff;
+	    var col=this.model.edges[i].color;
+		var _stroke=0;
+		if(col=="#6699FF")
+			_stroke=1*this.scale;
+		else if(col=="black")
+			_stroke=2*this.scale;
+		else
+			_stroke=5*this.scale;
 	    
 	    var line = new Kinetic.Line({
 	        points: [xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)],
 	        stroke: this.model.edges[i].color,
-			strokeWidth: 2*this.scale,
+			strokeWidth: _stroke,
 			shapeType: "line",
 			lineCap: 'round',
 			lineJoin: 'round'
