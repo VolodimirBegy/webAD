@@ -270,7 +270,7 @@ UndirectedGraphView.prototype.draw=function(cont){
 				text: _weight,
 				fontSize: 25*this.scale,
 				fontFamily: 'Calibri',
-				fill: 'FF6600'//,
+				fill: 'orange'//,
 				//width:_radius*2,
 				//align:'center'
 			});

@@ -560,7 +560,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 			text: this.model.edges[i].weight,
 			fontSize: fSize,
 			fontFamily: 'Calibri',
-			fill: 'FF6600'//,
+			fill: 'orange'//,
 			//width:_radius*2,
 			//align:'center'
 		});
