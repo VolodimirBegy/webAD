@@ -181,7 +181,11 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 					u=graph.Q[i];index=i;
 				}
 			}
-			graph.S.push(u);
+			
+			//because of return while pausing
+			if(!$.inArray(u,graph.S))
+				graph.S.push(u);
+			
 			u.color="#00FFFF";
 			graph.draw(cont);
 
