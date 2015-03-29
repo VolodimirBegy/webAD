@@ -183,7 +183,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 			}
 			
 			//because of return while pausing
-			if(!$.inArray(u,graph.S))
+			if($.inArray(u,graph.S)<0)
 				graph.S.push(u);
 			
 			u.color="#00FFFF";
