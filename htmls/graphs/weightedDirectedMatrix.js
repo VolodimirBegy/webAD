@@ -106,8 +106,8 @@ WeightedDirectedMatrix.prototype.draw=function(cont){
   			rect.on('click', function() {		  				
   		        var indexes=this.ij.split(":");
   		        if(um.matrix[indexes[0]][indexes[1]]==undefined && indexes[0]!=indexes[1]){
-  		        	var weight=parseInt(prompt("Weight:\n>=1, <=999"));
-  	  				if(isNaN(weight) || weight<1 ||weight>999)return;
+  		        	var weight=parseInt(prompt("Weight:\n>=1, <=9999"));
+  	  				if(isNaN(weight) || weight<1 ||weight>9999)return;
   		        	um.matrix[indexes[0]][indexes[1]]=weight;
   		        }
 
@@ -118,8 +118,8 @@ WeightedDirectedMatrix.prototype.draw=function(cont){
   			rect.on('touchend', function() {
   				var indexes=this.ij.split(":");
   		        if(um.matrix[indexes[0]][indexes[1]]==undefined && indexes[0]!=indexes[1]){
-  		        	var weight=parseInt(prompt("Weight:\n>=1, <=999"));
-  	  				if(isNaN(weight) || weight<1 ||weight>999)return;
+  		        	var weight=parseInt(prompt("Weight:\n>=1, <=9999"));
+  	  				if(isNaN(weight) || weight<1 ||weight>9999)return;
   		        	um.matrix[indexes[0]][indexes[1]]=weight;
   		        }
 
@@ -153,11 +153,23 @@ WeightedDirectedMatrix.prototype.draw=function(cont){
   	  				strokeWidth: 2*this.scale
   	  			});
   	  			
+		  	  	function intL(number) {
+		  	  	    return number.toString().length;
+		  	  	}
+		  	  	
+  	  			var fSize=25*this.scale;
+  	  			
+  	  			if(intL(this.matrix[i][j])>3){
+  	  				var len=intL(this.matrix[i][j]);
+  	  				var diff=len-3;
+  	  				fSize=(25-(25/4*diff))*this.scale;
+  	  			}
+  	  			
 	  	  		weight = new Kinetic.Text({
 					x: set.getX(),
 					y: set.getY()+set.getHeight()/4,
 					text: this.matrix[i][j],
-					fontSize: 25*this.scale,
+					fontSize: fSize,
 					fontFamily: 'Calibri',
 					fill: 'black',
 					width: set.getWidth(),

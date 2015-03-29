@@ -18,6 +18,12 @@ function WeightedDirectedGraphView(_model){
 	this.scale=1;
 }
 
+function intL(number) {
+	if(number!=undefined)
+		return number.toString().length;
+	else return 0;
+}
+
 WeightedDirectedGraphView.prototype.zoomIn=function(cont){
   if(this.scale<2.5)this.scale=this.scale+0.1;
   this.draw(cont);
@@ -41,6 +47,207 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 	var H=undefined;
 	var W=undefined;
 	var drawn=[];
+	
+	if(this.model.S!=undefined && this.model.S.length>0){
+	
+		var outerX=0;
+		for(var i=0;i<this.model.nodes.length;i++){
+			if(this.model.nodes[i].xPosition>outerX)
+				outerX=this.model.nodes[i].xPosition;
+		}
+		
+		outerX+=2*_radius;
+		
+		
+		
+		var dist = new Kinetic.Rect({
+				x: outerX,
+				y: 50*this.scale,
+				width: 120*this.scale,
+				height: 50*this.scale,
+				fill: 'white',
+				stroke: 'black',
+				strokeWidth: 2*this.scale
+		});
+
+		
+		
+		
+		var dt = new Kinetic.Text({
+			x: dist.getX()+5*this.scale,
+			y: dist.getY()+dist.getHeight()/2,
+			text: "Distance",
+			fontSize: 25*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black',
+		});
+		
+		var processed = new Kinetic.Rect({
+			x: outerX,
+			y: dist.getY()+dist.getHeight(),
+			width: 120*this.scale,
+			height: 50*this.scale,
+			fill: 'white',
+			stroke: 'black',
+			strokeWidth: 2*this.scale
+		});
+		
+		var pt = new Kinetic.Text({
+			x: processed.getX()+5*this.scale,
+			y: processed.getY()+processed.getHeight()/2,
+			text: "Processed?",
+			fontSize: 25*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black',
+		});
+		
+		var previous = new Kinetic.Rect({
+			x: outerX,
+			y: processed.getY()+processed.getHeight(),
+			width: 120*this.scale,
+			height: 50*this.scale,
+			fill: 'white',
+			stroke: 'black',
+			strokeWidth: 2*this.scale
+		});
+		
+		var prt = new Kinetic.Text({
+			x: previous.getX()+5*this.scale,
+			y: previous.getY()+previous.getHeight()/2,
+			text: "Previous",
+			fontSize: 25*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black',
+		});
+		var lastX=previous.getX()+previous.getWidth();
+		
+		//nodes list:
+		for(var i=0;i<this.model.nodes.length;i++){
+			var nodeRect = new Kinetic.Rect({
+				x: lastX,
+				y: 0,
+				width: 50*this.scale,
+				height: 50*this.scale,
+				fill: 'white',
+				stroke: 'black',
+				strokeWidth: 2*this.scale
+			});
+			
+			var nodeText = new Kinetic.Text({
+				x: nodeRect.getX()+5*this.scale,
+				y: nodeRect.getY()+nodeRect.getHeight()/2,
+				text: this.model.nodes[i].index,
+				fontSize: 25*this.scale,
+				fontFamily: 'Calibri',
+				fill: 'black',
+			});
+			
+			var distanceRect = new Kinetic.Rect({
+				x: lastX,
+				y: 50*this.scale,
+				width: 50*this.scale,
+				height: 50*this.scale,
+				fill: 'white',
+				stroke: 'black',
+				strokeWidth: 2*this.scale
+			});
+			
+			var fSize=25*this.scale;
+			
+			var dTxt=""+this.model.dist[i];
+			if(dTxt==""+Number.MAX_VALUE)
+				dTxt="∞";
+			else{
+				if(intL(this.model.dist[i])>3){
+					var len=intL(this.model.dist[i]);
+					var diff=len-3;
+					fSize=(25-(25/4*diff))*this.scale;
+				}
+			}
+	  	  	
+			var distanceText = new Kinetic.Text({
+				x: distanceRect.getX()+5*this.scale,
+				y: distanceRect.getY()+distanceRect.getHeight()/2,
+				text: dTxt,
+				fontSize: fSize,
+				fontFamily: 'Calibri',
+				fill: 'black',
+			});
+			
+			var pfill="lime";
+			var procText="No";
+			for(var j=0;j<this.model.S.length;j++){
+				if(this.model.S[j].index==this.model.nodes[i].index){
+					pfill="#00FFFF";procText="Yes";break
+				}
+			}
+			
+			var processedRect = new Kinetic.Rect({
+				x: lastX,
+				y: 100*this.scale,
+				width: 50*this.scale,
+				height: 50*this.scale,
+				fill: pfill,
+				stroke: 'black',
+				strokeWidth: 2*this.scale
+			});
+			
+			var processedText = new Kinetic.Text({
+				x: processedRect.getX()+5*this.scale,
+				y: processedRect.getY()+processedRect.getHeight()/2,
+				text: procText,
+				fontSize: 25*this.scale,
+				fontFamily: 'Calibri',
+				fill: 'black',
+			});
+			
+			var prevRect = new Kinetic.Rect({
+				x: lastX,
+				y: 150*this.scale,
+				width: 50*this.scale,
+				height: 50*this.scale,
+				fill: 'white',
+				stroke: 'black',
+				strokeWidth: 2*this.scale
+			});
+			
+			var pTxt="-";
+			
+			if(this.model.prev[this.model.nodes[i].index]!=undefined){
+				pTxt=this.model.prev[this.model.nodes[i].index].index;
+			}
+			
+			var prevText = new Kinetic.Text({
+				x: prevRect.getX()+5*this.scale,
+				y: prevRect.getY()+prevRect.getHeight()/2,
+				text: pTxt,
+				fontSize: 25*this.scale,
+				fontFamily: 'Calibri',
+				fill: 'black',
+			});
+			
+			lastX=nodeRect.getX()+nodeRect.getWidth();
+			layer.add(nodeRect);
+			layer.add(nodeText);
+			layer.add(distanceRect);
+			layer.add(distanceText);
+			layer.add(processedRect);
+			layer.add(processedText);
+			layer.add(prevRect);
+			layer.add(prevText);
+		}
+		
+		W=lastX+100*this.scale;
+		
+		layer.add(dist);
+		layer.add(processed);
+		layer.add(previous);
+		
+		layer.add(dt);
+		layer.add(pt);
+		layer.add(prt);
+		
+	}
 	
 	for(var i=0;i<this.model.edges.length;i++){
 	
@@ -296,7 +503,7 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 	    
 	    var line = new Kinetic.Line({
 	        points: [xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)],
-	        stroke: 'black',
+	        stroke: this.model.edges[i].color,
 			strokeWidth: 2*this.scale,
 			shapeType: "line",
 			lineCap: 'round',
@@ -331,12 +538,19 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 			 wX=xTo-25;
 		 else
 			 wX=xTo+10;
+  	  	
+		var fSize=25*this.scale;
+		if(intL(this.model.edges[i].weight)>3){
+			var len=intL(this.model.edges[i].weight);
+			var diff=len-3;
+			fSize=(25-(25/4*diff))*this.scale;
+		}
 		
 		var weight = new Kinetic.Text({
 			x: wX,
 			y: wY,
 			text: this.model.edges[i].weight,
-			fontSize: 25*this.scale,
+			fontSize: fSize,
 			fontFamily: 'Calibri',
 			fill: 'FF6600'//,
 			//width:_radius*2,

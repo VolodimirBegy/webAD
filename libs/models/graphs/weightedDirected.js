@@ -33,6 +33,8 @@ function WeightedDirectedGraph(_matrix,startNode,con){
 	
 	this.nodes=[];
 	this.edges=[];
+
+	this.costMatrix=_matrix;
 	
 	this.matrixLink=new Array(_matrix.length);
 	
@@ -131,6 +133,129 @@ function WeightedDirectedGraph(_matrix,startNode,con){
 	this.actStateID=0;
 }
 
+WeightedDirectedGraph.prototype.dijkstra=function(cont){
+	
+	if(this.Q==undefined || this.Q.length==0){
+		this.finished=false;
+		for(var i=0;i<this.edges.length;i++)
+			this.edges[i].color="black";
+		
+		for(var i=1;i<this.nodes.length;i++){
+			this.nodes[i].color="lime";
+		}
+		
+		this.dist=new Array(this.costMatrix.length);
+		this.prev=new Array(this.costMatrix.length);
+		this.S=[];
+		
+		var source=this.nodes[0];
+		this.S.push(source);
+		this.dist[source.index]=0;
+		this.prev[source.index]=undefined;
+		
+		this.draw(cont);
+		this.Q=[];
+		
+		for(var i=0;i<this.nodes.length;i++){
+			var v=this.nodes[i];
+			if(v!=source){
+				this.dist[v.index]=Number.MAX_VALUE;
+				this.prev[v.index]=undefined;
+			}
+			
+			this.Q.push(v);
+		}
+	}
+	
+	this.draw(cont);
+	
+	var delay=2000;
+	
+	function step(graph){
+		setTimeout(function(){
+			
+			var u=graph.Q[0];
+			var index=0;
+			
+			for(var i=0;i<graph.Q.length;i++){
+				if(graph.dist[graph.Q[i].index]<graph.dist[u.index]){
+					u=graph.Q[i];index=i;
+				}
+			}
+			graph.S.push(u);
+			u.color="#00FFFF";
+			graph.draw(cont);
+			delay=2000;
+			var i=0;
+			//i<u.connectedTo.length
+			function processU(){
+				setTimeout(function(){
+					var v=u.connectedTo[i];
+					var alt=graph.dist[u.index]+graph.costMatrix[u.index][v.index];
+					if(alt<graph.dist[v.index]){
+						graph.dist[v.index]=alt;
+						
+						var oldU=graph.prev[v.index];
+						
+						graph.prev[v.index]=u;
+						
+						//prev for v is u
+						for(var j=0;j<graph.edges.length;j++){
+							if(graph.edges[j].u==u && graph.edges[j].v==v){
+								graph.edges[j].color="red";break;
+							}
+						}
+						for(var j=0;j<graph.edges.length;j++){
+							if(graph.edges[j].u==oldU && graph.edges[j].v==v){
+								graph.edges[j].color="black";break;
+							}
+						}
+						delay=2000;
+						graph.draw(cont);
+					}
+					else{
+						delay=0;
+					}
+					
+					i++
+					//add included edge here...
+					if(i<u.connectedTo.length){
+						processU(graph);
+						return;
+					}
+					else{
+						if(graph.Q.length>0){
+							
+									graph.Q.splice(index,1);
+									step(graph);
+									return;
+								
+							}
+					}
+				},delay)
+			}
+			
+			if(i<u.connectedTo.length){
+				processU(graph);
+				return;
+			}
+			else{
+				if(graph.Q.length>0){
+					
+					graph.Q.splice(index,1);
+					step(graph);
+					return;
+				}
+			}
+			
+		},2000)
+	}
+
+	if(graph.Q.length>0)
+		step(this);
+	
+	
+}
 
 WeightedDirectedGraph.prototype.draw=function(cont){
 	this.view.draw(cont);
