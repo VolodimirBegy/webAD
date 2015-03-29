@@ -213,20 +213,18 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 						delay=0;
 					}
 					
-					i++
-					//add included edge here...
+					i++;
+				
 					if(i<u.connectedTo.length){
 						processU(graph);
 						return;
 					}
 					else{
+						graph.Q.splice(index,1);
 						if(graph.Q.length>0){
-							
-									graph.Q.splice(index,1);
-									step(graph);
-									return;
-								
-							}
+							step(graph);
+							return;
+						}
 					}
 				},delay)
 			}
@@ -236,9 +234,8 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 				return;
 			}
 			else{
+				graph.Q.splice(index,1);
 				if(graph.Q.length>0){
-					
-					graph.Q.splice(index,1);
 					step(graph);
 					return;
 				}
@@ -249,7 +246,6 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 
 	if(graph.Q.length>0)
 		step(this);
-	
 	
 }
 

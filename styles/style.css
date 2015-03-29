@@ -1,7 +1,7 @@
 @font-face {font-family:Ubuntu;src:url(Ubuntu-Regular.ttf)}
 
 html {height:100%;width:100%;min-height:300px;min-width:500px}
-body {height:100%;;min-height:300px;min-width:500px;position:relative;padding:0;margin:0;font-family:'Ubuntu'}
+body {height:100%;min-height:300px;min-width:500px;position:relative;padding:0;margin:0;font-family:'Ubuntu'}
 body:before {content:'Please turn off AdBlock in your browser!';font-size:30px;margin-top:150px;color:#900;position:absolute;top:0;left:0;right:0;bottom:0;text-align:center}
 
 header, aside, footer, article {position:absolute}
