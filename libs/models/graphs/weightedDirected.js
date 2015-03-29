@@ -132,6 +132,7 @@ function WeightedDirectedGraph(_matrix,startNode,con){
 WeightedDirectedGraph.prototype.dijkstra=function(cont){
 	
 	if(this.Q==undefined || this.Q.length==0){
+		this.uSet=false;
 		this.i=0;
 		for(var i=0;i<this.edges.length;i++)
 			this.edges[i].color="black";
@@ -165,12 +166,14 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 	
 	this.draw(cont);
 	
-	this.delay=2000;
+	var delay=2000;
+	if(this.uSet)delay=0;
 	
 	function step(graph){
 		setTimeout(function(){
 			graph.delay=0;
 			var u=graph.Q[0];
+			graph.uSet=true;
 			var index=0;
 			
 			for(var i=0;i<graph.Q.length;i++){
@@ -232,6 +235,8 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 					else{
 						graph.i=0;
 						graph.Q.splice(index,1);
+						graph.uSet=false;
+						delay=2000;
 						graph.delay=2000;
 						if(graph.Q.length>0){
 							step(graph);
@@ -247,6 +252,8 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 			}
 			else{
 				graph.Q.splice(index,1);
+				graph.uSet=false;
+				delay=2000;
 				graph.delay=2000;
 				if(graph.Q.length>0){
 					step(graph);
@@ -254,7 +261,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 				}
 			}
 			
-		},graph.delay)
+		},delay)
 	}
 
 	if(graph.Q.length>0)
