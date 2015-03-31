@@ -37,9 +37,10 @@
 		if(isNaN(amount)||amount<2)return;
 		
 		var matrix=new WeightedDirectedMatrix(amount);
-		_matrix=matrix;
 		var cm = document.getElementById("containerMatrix");
-		matrix.draw(cm);
+		matrix.initStage(cm);
+		_matrix=matrix;
+		matrix.draw();
 		
 		var tf = $("#startNode");
 		tf.val("");
@@ -106,8 +107,7 @@
 			clearTimes();
 			var elem = $("#p");
 			elem.addClass("p1");
-			var c1 = document.getElementById("container1");
-			graph.dijkstra(c1);
+			graph.dijkstra();
 		}
 		else{
 			window.alert("No graph created");
@@ -115,23 +115,19 @@
 	}
 	
 	function zoomIn(){
-		var c1 = document.getElementById("container1");
-		graph.view.zoomIn(c1);
+		graph.view.zoomIn();
 	}
 	
 	function zoomOut(){
-		var c1 = document.getElementById("container1");
-		graph.view.zoomOut(c1);
+		graph.view.zoomOut();
 	}
 	
 	function zoomInMatrix(){
-		var cm = document.getElementById("containerMatrix");
-		_matrix.zoomIn(cm);
+		_matrix.zoomIn();
 	}
 	
 	function zoomOutMatrix(){
-		var cm = document.getElementById("containerMatrix");
-		_matrix.zoomOut(cm);
+		_matrix.zoomOut();
 	}
 	
 	function un_pause(){
@@ -142,8 +138,7 @@
 				elem.removeClass("p1");
 			}
 			else{
-				var c1 = document.getElementById("container1");
-				graph.dijkstra(c1); 
+				graph.dijkstra(); 
 				elem.addClass("p1");
 			}
 			

@@ -25,10 +25,8 @@ function Node(){
 	
 }
 
-function BinSearchTree(con){
-
+function BinSearchTree(){
 	this.view=new BinTreeView(this);
-	this.context=con;
 	this.db=TAFFY();
 	this.root=undefined;
 	this.actStateID=0;
@@ -71,7 +69,7 @@ BinSearchTree.prototype.replaceThis=function(toCopy){
 
 }
 
-BinSearchTree.prototype.prev=function(con){
+BinSearchTree.prototype.prev=function(){
 	if(this.actStateID>1){
 		var tmp_db=this.db;
 		var prev_id=this.actStateID-1;
@@ -79,11 +77,11 @@ BinSearchTree.prototype.prev=function(con){
 		var rs=tmp_db({id:prev_id}).select("state");
 		//make actual node to THIS:
       	this.replaceThis(rs[0]);
-      	this.draw(con);
+      	this.draw();
 	}
 }
 
-BinSearchTree.prototype.next=function(con){
+BinSearchTree.prototype.next=function(){
 	if(this.actStateID<this.db().count()){
 		var tmp_db=this.db;
 		var next_id=this.actStateID+1;
@@ -91,30 +89,30 @@ BinSearchTree.prototype.next=function(con){
 		var rs=tmp_db({id:next_id}).select("state");
 		//make actual node to THIS:
       	this.replaceThis(rs[0]);
-      	this.draw(con);
+      	this.draw();
 	}
 }
 
-BinSearchTree.prototype.firstState=function(con){
+BinSearchTree.prototype.firstState=function(){
 	var tmp_db=this.db;
 	this.actStateID=1;
 	var rs=tmp_db({id:1}).select("state");
 	//make actual node to THIS:
      this.replaceThis(rs[0]);
-     this.draw(con);
+     this.draw();
 }
 
-BinSearchTree.prototype.lastState=function(con){
+BinSearchTree.prototype.lastState=function(){
 	var tmp_db=this.db;
 	var last_id=tmp_db().count();
 	this.actStateID=last_id;
 	var rs=tmp_db({id:last_id}).select("state");
 	//make actual node to THIS:
      this.replaceThis(rs[0]);
-     this.draw(con);
+     this.draw();
 }
 
-BinSearchTree.prototype.add=function(con) {
+BinSearchTree.prototype.add=function() {
      //code snippet for disabling while actState!=last
 	//var count=this.db().count();
 
@@ -127,7 +125,7 @@ BinSearchTree.prototype.add=function(con) {
 		
 	if(this.root==undefined){
 		this.root=node;
-		this.draw(con);
+		this.draw();
 		this.saveInDB();
 	}
 
@@ -138,7 +136,7 @@ BinSearchTree.prototype.add=function(con) {
 		
 		this.root.color="coral";
 		if(val!=undefined)
-			this.draw(con);
+			this.draw();
 		
 		var lc=0;
 		function doLoop(tree){
@@ -149,7 +147,7 @@ BinSearchTree.prototype.add=function(con) {
 					actNode.leftChild=node;
 					actNode.leftChild.parent=actNode;
 					added=true;
-					tree.draw(con);
+					tree.draw();
 				}
 
 				else if(actNode.value<=node.value && actNode.rightChild==undefined){
@@ -157,7 +155,7 @@ BinSearchTree.prototype.add=function(con) {
 					actNode.rightChild=node;
 					actNode.rightChild.parent=actNode;
 					added=true;
-					tree.draw(con);
+					tree.draw();
 				}
 
 				else if(actNode.value>node.value && actNode.leftChild!=undefined){
@@ -166,7 +164,7 @@ BinSearchTree.prototype.add=function(con) {
 					actNode.parent=tmpParent;
 					actNode.color="coral";
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 				}
 
 				else if(actNode.value<=node.value && actNode.rightChild!=undefined){
@@ -175,7 +173,7 @@ BinSearchTree.prototype.add=function(con) {
 					actNode.parent=tmpParent;
 					actNode.color="coral";
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 				}
 				
 				if(!added){
@@ -275,7 +273,7 @@ BinSearchTree.prototype.saveInDB=function(){
 	this.actStateID=nextID;
 }
 
-BinSearchTree.prototype.search=function(con) {
+BinSearchTree.prototype.search=function() {
 
 	var value=parseInt(prompt("Search for:"));
 	if(isNaN(value))return;
@@ -299,7 +297,7 @@ BinSearchTree.prototype.search=function(con) {
 		var actNode=root;
 		
 		tree.root.color="coral";
-		tree.draw(con);
+		tree.draw();
 		
 		var lc=0;
 		function doLoop(tree){
@@ -307,13 +305,13 @@ BinSearchTree.prototype.search=function(con) {
 				tree.root.color="#ADFF2F";
 				if(actNode.value>value && actNode.leftChild==undefined){
 					actNode.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 					return;
 				}
 
 				else if(actNode.value<value && actNode.rightChild==undefined){
 					actNode.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 					return;
 				}
 
@@ -323,7 +321,7 @@ BinSearchTree.prototype.search=function(con) {
 					actNode.parent=tmpParent;
 					actNode.color="coral";
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 				}
 
 				else if(actNode.value<value && actNode.rightChild!=undefined){
@@ -332,7 +330,7 @@ BinSearchTree.prototype.search=function(con) {
 					actNode.parent=tmpParent;
 					actNode.color="coral";
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 				}
 				
 				else if(actNode.value==value){
@@ -341,11 +339,11 @@ BinSearchTree.prototype.search=function(con) {
 					//actNode.set({parent: tmpParent});
 					actNode.color="gold";
 					//actNode.get("parent").set({color:"#ADFF2F"});
-					tree.draw(con);
+					tree.draw();
 					
 					setTimeout(function(){
 						actNode.color="#ADFF2F";
-						tree.draw(con);
+						tree.draw();
 					},1000)
 					return;
 				}
@@ -364,7 +362,7 @@ BinSearchTree.prototype.search=function(con) {
 }
 
 
-BinSearchTree.prototype.remove=function(con) { 
+BinSearchTree.prototype.remove=function() { 
 	//var count=this.db().count();
 
 	//if(count==this.actStateID){
@@ -382,7 +380,7 @@ BinSearchTree.prototype.remove=function(con) {
 		var actNode=root;
 		
 		this.root.color="coral";
-		this.draw(con);
+		this.draw();
 		
 		var lc=0;
 		function doLoop(tree){
@@ -390,13 +388,13 @@ BinSearchTree.prototype.remove=function(con) {
 				tree.root.color="#ADFF2F";
 				if(actNode.value>value && actNode.leftChild==undefined){
 					actNode.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 					return;
 				}
 
 				else if(actNode.value<value && actNode.rightChild==undefined){
 					actNode.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 					return;
 				}
 
@@ -406,7 +404,7 @@ BinSearchTree.prototype.remove=function(con) {
 					actNode.parent=tmpParent;
 					actNode.color="coral";
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 				}
 
 				else if(actNode.value<value && actNode.rightChild!=undefined){
@@ -415,7 +413,7 @@ BinSearchTree.prototype.remove=function(con) {
 					actNode.parent=tmpParent;
 					actNode.color="coral";
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 				}
 				
 				else if(actNode.value==value){
@@ -432,7 +430,7 @@ BinSearchTree.prototype.remove=function(con) {
 					//actNode.set({parent: tmpParent});
 					actNode.color="gold";
 					//actNode.get("parent").set({color:"#ADFF2F"});
-					tree.draw(con);
+					tree.draw();
 				
 					setTimeout(function(){
 					var noKids=new Boolean();
@@ -630,7 +628,7 @@ BinSearchTree.prototype.remove=function(con) {
 								oldLeft.parent=newNode;
 							}
 						}
-						tree.draw(con);
+						tree.draw();
 						tree.saveInDB();
 					},1000)
 
@@ -652,7 +650,7 @@ BinSearchTree.prototype.remove=function(con) {
 
 }
 
-BinSearchTree.prototype.random=function(con){
+BinSearchTree.prototype.random=function(){
 	//var count=this.db().count();
 
 	//if(count==this.actStateID){
@@ -665,12 +663,12 @@ BinSearchTree.prototype.random=function(con){
 		}
 		
 		this.saveInDB();
-		this.draw(con);
+		this.draw();
 	
 	//}
 }
 
-BinSearchTree.prototype.draw=function(c1){
-	this.view.draw(c1);
+BinSearchTree.prototype.draw=function(){
+	this.view.draw();
 }
 

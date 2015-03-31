@@ -18,17 +18,27 @@ function HashTableView(_model){
 	this.model=_model;
 }
 
-HashTableView.prototype.zoomIn=function(cont){
+HashTableView.prototype.initStage=function(cont){
+	this.stage = new Kinetic.Stage({
+  		container: cont,
+  		draggable: true,
+		width: 0,
+		height: 0
+	}); 
+}
+
+HashTableView.prototype.zoomIn=function(){
 	if(this.scale<3)this.scale=this.scale+0.1;
-	this.draw(this.model,cont);
+	this.draw();
 }
 
-HashTableView.prototype.zoomOut=function(cont){
+HashTableView.prototype.zoomOut=function(){
 	if(this.scale>0.5)this.scale=this.scale-0.1;
-	this.draw(this.model,cont);
+	this.draw();
 }
 
-HashTableView.prototype.draw=function(m,cont){
+HashTableView.prototype.draw=function(){
+	var m=this.model;
 	var h=100+m.rows.length*70*this.scale;
   	var maxOverflow=0;
       
@@ -48,14 +58,11 @@ HashTableView.prototype.draw=function(m,cont){
   		binIndexLen=m.manipulatedBin.length*10*this.scale
 	var w=(maxOverflow+1)*m.b*90*this.scale+2*(m.rows[0].index.length*10)*this.scale+binIndexLen+200*this.scale;
       
-	var stage = new Kinetic.Stage({
-		container: cont,
-		width: w,
-		height: h
-	}); 
-
+  	this.stage.setWidth(w);
+	this.stage.setHeight(h);
+	this.stage.removeChildren();
+	
 	var layer = new Kinetic.Layer();
-	var group = new Kinetic.Group();
 
 	var info = new Kinetic.Text({
 		x: m.rows[0].index.length*10*this.scale,
@@ -135,7 +142,7 @@ HashTableView.prototype.draw=function(m,cont){
 					stroke: 'black',
 					strokeWidth: 2*this.scale,
 				});
-				group.add(pointer);
+				layer.add(pointer);
 				
 				if(m.rows[i].overflow==undefined && m.manipulatedIndex==m.rows[i].index){
 					//var calcText=m.manipulated+"="+m.manipulatedBin;
@@ -156,16 +163,16 @@ HashTableView.prototype.draw=function(m,cont){
 							fontFamily: 'Calibri',
 							fill: 'red'
 						});
-						group.add(calc1);
-						group.add(calc2);
+						layer.add(calc1);
+						layer.add(calc2);
 					//}
 				}
 			}
 
-			group.add(rect);
-			group.add(textVal);
+			layer.add(rect);
+			layer.add(textVal);
 		}
-		group.add(text);
+		layer.add(text);
 		//overflows
 		var baseRow=m.rows[i];
 		var actRow=m.rows[i].overflow;
@@ -193,7 +200,7 @@ HashTableView.prototype.draw=function(m,cont){
 						stroke: "black",
 						strokeWidth:2*this.scale
 					});
-					group.add(arrow);
+					layer.add(arrow);
 				}
 				else
 					bucketX=prevBucket.getX()+prevBucket.getWidth()*1.03;
@@ -239,11 +246,11 @@ HashTableView.prototype.draw=function(m,cont){
 						strokeWidth: 2*this.scale
 					});
 					lastPointer=pointer;
-					group.add(pointer);
+					layer.add(pointer);
 				}
 					  
-				group.add(overflow);
-				group.add(overflowVal);
+				layer.add(overflow);
+				layer.add(overflowVal);
 				prevBucket=overflow;
 				first=false;
 			}
@@ -268,8 +275,8 @@ HashTableView.prototype.draw=function(m,cont){
 				fontFamily: 'Calibri',
 				fill: 'red'
 			});
-			group.add(calc1);
-			group.add(calc2);
+			layer.add(calc1);
+			layer.add(calc2);
 		}
 		
 		if(i==m.rows.length-1 && m.newBlockVals!=undefined && m.newBlockVals.length>0){
@@ -290,13 +297,12 @@ HashTableView.prototype.draw=function(m,cont){
 					fontFamily: 'Calibri',
 					fill: 'red'
 				});
-				group.add(nb1);
-				group.add(nb2);
+				layer.add(nb1);
+				layer.add(nb2);
 			}
 		}
 	}
-	group.add(info);
-	// add the shape to the layer
-	layer.add(group);
-	stage.add(layer);		
+	layer.add(info);
+	
+	this.stage.add(layer);	
 }

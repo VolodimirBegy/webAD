@@ -33,6 +33,14 @@ function Vector(){
 }
 
 Vector.prototype.init=function(){
+	this.elements=[];
+
+	this.pivot=undefined;
+	this.range=undefined;
+	this.sortedElements=[];
+	
+	this.paused=false;
+	this.finished=false;
 	this.saveInDB();
 }
 
@@ -118,7 +126,7 @@ Vector.prototype.replaceThis=function(toCopy){
 	}
 }
 
-Vector.prototype.prev=function(con){
+Vector.prototype.prev=function(){
 	if(this.paused){
 		if(this.actStateID>1){
 			var tmp_db=this.db;
@@ -127,14 +135,14 @@ Vector.prototype.prev=function(con){
 			var rs=tmp_db({id:prev_id}).select("state");
 			//make actual node to THIS:
 	      	this.replaceThis(rs[0]);
-	      	this.draw(con);
+	      	this.draw();
 		}
 	}
 	else
 		window.alert("Pause the sorting first!");
 }
 
-Vector.prototype.next=function(con){
+Vector.prototype.next=function(){
 	if(this.paused){
 		if(this.actStateID<this.db().count()){
 			var tmp_db=this.db;
@@ -143,27 +151,27 @@ Vector.prototype.next=function(con){
 			var rs=tmp_db({id:next_id}).select("state");
 			//make actual node to THIS:
 	      	this.replaceThis(rs[0]);
-	      	this.draw(con);
+	      	this.draw();
 		}
 	}
 	else
 		window.alert("Pause the sorting first!");
 }
 
-Vector.prototype.firstState=function(con){
+Vector.prototype.firstState=function(){
 	if(this.paused){
 		var tmp_db=this.db;
 		this.actStateID=1;
 		var rs=tmp_db({id:1}).select("state");
 		//make actual node to THIS:
 	     this.replaceThis(rs[0]);
-	     this.draw(con);
+	     this.draw();
 	}
 	else
 		window.alert("Pause the sorting first!");
 }
 
-Vector.prototype.lastState=function(con){
+Vector.prototype.lastState=function(){
 	if(this.paused){
 		var tmp_db=this.db;
 		var last_id=tmp_db().count();
@@ -171,7 +179,7 @@ Vector.prototype.lastState=function(con){
 		var rs=tmp_db({id:last_id}).select("state");
 		//make actual node to THIS:
 	     this.replaceThis(rs[0]);
-	     this.draw(con);
+	     this.draw();
 	}
 	else
 		window.alert("Pause the sorting first!");
@@ -237,7 +245,7 @@ Vector.prototype.setColorsQuicksort=function(){
 	}
 }
 
-Vector.prototype.quicksort=function(con){
+Vector.prototype.quicksort=function(){
 	
 	function partition(vector){
 		var range=vector.range.split("-");
@@ -250,7 +258,7 @@ Vector.prototype.quicksort=function(con){
 			}
 			
 			vector.setColorsQuicksort();
-			vector.draw(con);
+			vector.draw();
 			vector.saveInDB();
 			function delayedDrawing(vector){
 				setTimeout(function(){
@@ -258,7 +266,7 @@ Vector.prototype.quicksort=function(con){
 					vector.setColorsQuicksort();
 					//sorted INDEX!!!
 					//vector.saveInDB();
-					//vector.draw(con);
+					//vector.draw();
 					
 					//can go left if r!=0 and left part has non yellow elements
 					
@@ -274,7 +282,7 @@ Vector.prototype.quicksort=function(con){
 			vector.r=range[1];
 			}
 			vector.setColorsQuicksort();
-			vector.draw(con);
+			vector.draw();
 			vector.saveInDB();
 			function step(vector){	
 				var rToLeftDelay=1000;
@@ -289,7 +297,7 @@ Vector.prototype.quicksort=function(con){
 						if(vector.elements[vector.l].value<vector.elements[vector.pivot].value && vector.l<vector.r){
 							vector.l=vector.l+1;
 							vector.setColorsQuicksort();
-							vector.draw(con);
+							vector.draw();
 							vector.saveInDB();
 							lToRight(vector);
 						}
@@ -316,7 +324,7 @@ Vector.prototype.quicksort=function(con){
 						if(vector.elements[vector.r].value>=vector.elements[vector.pivot].value && vector.r>range[0]){
 							vector.r=vector.r-1;
 							vector.setColorsQuicksort();
-							vector.draw(con);
+							vector.draw();
 							vector.saveInDB();
 							rToLeft(vector);
 						}
@@ -326,7 +334,7 @@ Vector.prototype.quicksort=function(con){
 							vector.elements[vector.l].value=vector.elements[vector.r].value;
 							vector.elements[vector.r].value=tmp;
 							vector.setColorsQuicksort();
-							vector.draw(con);
+							vector.draw();
 							vector.saveInDB();
 							step(vector);
 						}
@@ -337,7 +345,7 @@ Vector.prototype.quicksort=function(con){
 							
 							//if you want more detailed animation of partition, drwa this and delay next step:
 							//vector.setColorsQuicksort();
-							//vector.draw(con);
+							//vector.draw();
 							//vector.saveInDB();
 							
 							//sorted INDEX!!!
@@ -386,7 +394,7 @@ Vector.prototype.quicksort=function(con){
 								}
 								else{
 									vector.pivot=undefined;vector.r=undefined;
-									vector.l=undefined;vector.draw(con);vector.saveInDB();return;
+									vector.l=undefined;vector.draw();vector.saveInDB();return;
 								}
 							}
 						}
@@ -425,6 +433,6 @@ Vector.prototype.size=function(){
 	 return this.elements.length;
  }
 
-Vector.prototype.draw=function(con){
-	 this.view.draw(con);
+Vector.prototype.draw=function(){
+	 this.view.draw();
  }

@@ -9,8 +9,8 @@
 
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND RIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR RIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN RACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 function Row (){
@@ -31,7 +31,7 @@ function HashTable(){
 	this.actStateID=0;
 }
 
-HashTable.prototype.init=function(c1){
+HashTable.prototype.init=function(){
 	var s=parseInt(prompt("Size:"));
 	if(isNaN(s))return;
 	
@@ -46,7 +46,7 @@ HashTable.prototype.init=function(c1){
 	}
 	
 	this.saveInDB();
-	this.draw(c1);
+	this.draw();
 }
 
 HashTable.prototype.copy=function(){
@@ -84,43 +84,43 @@ HashTable.prototype.replaceThis=function(ht){
 	this.calc=undefined;
 }
 
-HashTable.prototype.prev=function(con){
+HashTable.prototype.prev=function(){
 	if(this.actStateID>1){
 		var tmp_db=this.db;
 		var prev_id=this.actStateID-1;
 		this.actStateID=prev_id;
 		var rs=tmp_db({id:prev_id}).select("state");
 		this.replaceThis(rs[0]);
-		this.draw(con);
+		this.draw();
 	}
 }
 
-HashTable.prototype.next=function(con){
+HashTable.prototype.next=function(){
 	if(this.actStateID<this.db().count()){
 		var tmp_db=this.db;
 		var next_id=this.actStateID+1;
 		this.actStateID=next_id;
 		var rs=tmp_db({id:next_id}).select("state");
 		this.replaceThis(rs[0]);
-		this.draw(con);
+		this.draw();
 	}
 }
 
-HashTable.prototype.firstState=function(con){
+HashTable.prototype.firstState=function(){
 	var tmp_db=this.db;
 	this.actStateID=1;
 	var rs=tmp_db({id:1}).select("state");
 	this.replaceThis(rs[0]);
-	this.draw(con);
+	this.draw();
 }
 
-HashTable.prototype.lastState=function(con){
+HashTable.prototype.lastState=function(){
 	var tmp_db=this.db;
 	var last_id=tmp_db().count();
 	this.actStateID=last_id;
 	var rs=tmp_db({id:last_id}).select("state");
 	this.replaceThis(rs[0]);
-	this.draw(con);
+	this.draw();
 }
 
 HashTable.prototype.saveInDB=function(){
@@ -141,10 +141,9 @@ HashTable.prototype.saveInDB=function(){
 	
 	this.db=tmp_db;
 	this.actStateID=nextID;
-	console.log(nextID);
 }
 
-HashTable.prototype.extend=function(cont){
+HashTable.prototype.extend=function(){
 	
 		var vals=[];
 		
@@ -164,11 +163,11 @@ HashTable.prototype.extend=function(cont){
 		
 		this.fillFactor=0;
 		this.overflow=vals;
-		this.draw(cont);
-		this.add(cont,vals,0);
+		this.draw();
+		this.add(vals,0);
 }
 
-HashTable.prototype.add=function(cont,toAdd,addIndex){
+HashTable.prototype.add=function(toAdd,addIndex){
 	this.cal=undefined;
 	var counter=0;
 	var prevI;
@@ -224,17 +223,17 @@ HashTable.prototype.add=function(cont,toAdd,addIndex){
 							
 							ht.fillFactor=filled/ht.rows.length;
 
-							ht.draw(cont);
+							ht.draw();
 							
 							function modify(ht){
 								setTimeout(function(){
 									if(ht.fillFactor>0.7 && toAdd==undefined){
-										ht.extend(cont);
+										ht.extend();
 										return;
 									}
 									
 									if(addIndex!=undefined && addIndex<toAdd.length-1){
-										ht.add(cont,toAdd,addIndex+1);
+										ht.add(toAdd,addIndex+1);
 										return;
 									}
 	
@@ -248,7 +247,7 @@ HashTable.prototype.add=function(cont,toAdd,addIndex){
 							
 							else{
 								ht.overflow=[];
-								ht.draw(cont);
+								ht.draw();
 								
                              	ht.saveInDB();
                              	ht.working=false;
@@ -269,7 +268,7 @@ HashTable.prototype.add=function(cont,toAdd,addIndex){
 							tmpRow.color="red";
 							tmpRow.extraCheck=true;
 							searchingNextFree=true;
-							ht.draw(cont);
+							ht.draw();
 						}
 					}
 					else{
@@ -294,17 +293,17 @@ HashTable.prototype.add=function(cont,toAdd,addIndex){
 							
 							ht.fillFactor=filled/ht.rows.length;
 
-							ht.draw(cont);
+							ht.draw();
 							
 							function modify(ht){
 								setTimeout(function(){
 									if(ht.fillFactor>0.7 && toAdd==undefined){
-										ht.extend(cont);
+										ht.extend();
 										return;
 									}
 									
 									if(addIndex!=undefined && addIndex<toAdd.length-1){
-										ht.add(cont,toAdd,addIndex+1);
+										ht.add(toAdd,addIndex+1);
 										return;
 									}
 	
@@ -316,7 +315,7 @@ HashTable.prototype.add=function(cont,toAdd,addIndex){
 							}
 							else{
 								ht.overflow=[];
-								ht.draw(cont);
+								ht.draw();
 								
                              	ht.saveInDB();
                              	ht.working=false;
@@ -330,7 +329,7 @@ HashTable.prototype.add=function(cont,toAdd,addIndex){
 							ht.actCalc=index;
 							tmpRow.color="red";
 							tmpRow.extraCheck=true;
-							ht.draw(cont);
+							ht.draw();
 						}
 					}
 					prevI=index;
@@ -352,7 +351,7 @@ HashTable.prototype.add=function(cont,toAdd,addIndex){
 		
 }
 
-HashTable.prototype.search=function(cont){
+HashTable.prototype.search=function(){
 
 	//var count=this.db().count();
 	var counter=0;
@@ -385,7 +384,7 @@ HashTable.prototype.search=function(cont){
 								ht.actCalc=index;
 							}
 							tmpRow.color="red";
-							ht.draw(cont);
+							ht.draw();
 							ht.calc=undefined;
 							if(tmpRow.value==newVal){
 								window.alert("Found");
@@ -409,7 +408,7 @@ HashTable.prototype.search=function(cont){
 							}
 							tmpRow.color="red";
 							searchingNextFree=true;
-							ht.draw(cont);
+							ht.draw();
 						}
 					}
 					else{
@@ -420,7 +419,7 @@ HashTable.prototype.search=function(cont){
 							ht.calc="a"+counter+" = ("+inI+" + "+"1) mod "+ht.rows.length+" = "+index;
 							ht.actCalc=index;
 							tmpRow.color="red";
-							ht.draw(cont);
+							ht.draw();
 							ht.calc=undefined;
 							if(tmpRow.value==newVal){
 								window.alert("Found");
@@ -437,11 +436,11 @@ HashTable.prototype.search=function(cont){
 							ht.calc="a"+counter+" = ("+inI+" + "+"1) mod "+ht.rows.length+" = "+index;
 							ht.actCalc=index;
 							tmpRow.color="red";
-							ht.draw(cont);
+							ht.draw();
 						}
 					}
 					if(counter==ht.rows.length-1){
-						ht.draw(cont);
+						ht.draw();
 						ht.calc=undefined;
 						if(tmpRow.value==newVal){
 							window.alert("Found");
@@ -481,7 +480,7 @@ function isPrime(n){
     return true;
 }
 
-HashTable.prototype.remove=function(cont){
+HashTable.prototype.remove=function(){
 	//var count=this.db().count();
 	var counter=0;
 	var prevI;
@@ -513,7 +512,7 @@ HashTable.prototype.remove=function(cont){
 									tmpRow.value=undefined;
 									tmpRow.extraCheck=true;
 									tmpRow.occupied=false;
-									ht.draw(cont);
+									ht.draw();
 									ht.calc=undefined;
 									
 									ht.saveInDB();
@@ -533,7 +532,7 @@ HashTable.prototype.remove=function(cont){
 									}
 									tmpRow.color="red";
 									searchingNextFree=true;
-									ht.draw(cont);
+									ht.draw();
 								}
 								else if(tmpRow.occupied==false && tmpRow.extraCheck==false){
 									if(counter==0){
@@ -548,7 +547,7 @@ HashTable.prototype.remove=function(cont){
 									}
 									tmpRow.color="red";
 									//tmpRow.calc=undefined;
-									ht.draw(cont);
+									ht.draw();
 									ht.calc=undefined;
 									window.alert("Value not found!");
 									ht.working=false;
@@ -570,7 +569,7 @@ HashTable.prototype.remove=function(cont){
 										ht.rows[i].color="black";
 									}
 							
-									ht.draw(cont);	
+									ht.draw();	
 									ht.calc=undefined;
 									
 									ht.saveInDB();
@@ -584,7 +583,7 @@ HashTable.prototype.remove=function(cont){
 									ht.calc="a"+counter+" = ("+inI+" + "+"1) mod "+ht.rows.length+" = "+index;
 									ht.actCalc=index;
 									tmpRow.color="red";
-									ht.draw(cont);
+									ht.draw();
 								}
 								else if((tmpRow.occupied==false && tmpRow.extraCheck==false)||(tmpRow.occupied==true&&tmpRow.extraCheck==false&&tmpRow.value!=remVal)){
 									var inI=index-1;
@@ -594,7 +593,7 @@ HashTable.prototype.remove=function(cont){
 									
 									tmpRow.color="red";
 									tmpRow.calc=undefined;
-									ht.draw(cont);
+									ht.draw();
 									ht.calc=undefined;
 									window.alert("Value not found!");
 									ht.working=false;
@@ -604,7 +603,7 @@ HashTable.prototype.remove=function(cont){
 							if(counter==ht.rows.length-1){
 								window.alert("Value not found!");
 								//ht.calc=undefined;
-								ht.draw(cont);
+								ht.draw();
 								ht.calc=undefined;
 								ht.working=false;
 								return;
@@ -629,6 +628,6 @@ HashTable.prototype.remove=function(cont){
 	//}
 }
 
-HashTable.prototype.draw=function(cont){
-	this.view.draw(this,cont);
+HashTable.prototype.draw=function(){
+	this.view.draw();
 }

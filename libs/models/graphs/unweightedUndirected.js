@@ -21,7 +21,7 @@ function Node(){
 	this.connectedWeights=[];
 }
 
-function UnweightedUndirectedGraph(_matrix,_startNode,con){
+function UnweightedUndirectedGraph(_matrix,_startNode,c1){
 	this.view=new UnweightedUndirectedGraphView(this);
 	
 	this.nodes=[];
@@ -108,14 +108,14 @@ function UnweightedUndirectedGraph(_matrix,_startNode,con){
 			this.nodes[i].connectedTo[j].yPosition=tmpN.yPosition;
 		}
 	}
-	
-	this.draw(con);
+	this.view.initStage(c1);
+	this.draw();
 	
 	this.db=TAFFY();
 	this.actStateID=0;
 }
 
-UnweightedUndirectedGraph.prototype.dfs=function(cont){
+UnweightedUndirectedGraph.prototype.dfs=function(){
 	//push into stack-> process upper -> push 
 	// cause initial has always index 0
 	var delay=0;
@@ -125,7 +125,7 @@ UnweightedUndirectedGraph.prototype.dfs=function(cont){
 			this.nodes[j].oColor="lime";
 		}
 		this.nodes[0].color="#00FFFF";this.nodes[0].oColor="#00FFFF";
-		this.visited=[];this.draw(cont);delay=1000;
+		this.visited=[];this.draw();delay=1000;
 	}
 	
 	if(this.stack==undefined)
@@ -140,7 +140,7 @@ UnweightedUndirectedGraph.prototype.dfs=function(cont){
 			graph.stack[k].oColor="red";
 		}
 		
-		graph.draw(cont);
+		graph.draw();
 		
 		function processAct(graph){
 			setTimeout(function (){
@@ -150,7 +150,7 @@ UnweightedUndirectedGraph.prototype.dfs=function(cont){
 				
 				graph.visited.push(graph.stack[graph.stack.length-1]);
 				graph.stack.splice(graph.stack.length-1,1);
-				graph.draw(cont);
+				graph.draw();
 				//process connected
 				for(i=0;i<graph.nodes[ai].connectedTo.length;i++){
 					var exists=false;
@@ -189,7 +189,7 @@ UnweightedUndirectedGraph.prototype.dfs=function(cont){
 	
 }
 
-UnweightedUndirectedGraph.prototype.bfs=function(cont){
+UnweightedUndirectedGraph.prototype.bfs=function(){
 	//push into stack-> process upper -> push 
 	// cause initial has always index 0
 	var delay=0;
@@ -199,7 +199,7 @@ UnweightedUndirectedGraph.prototype.bfs=function(cont){
 			this.nodes[j].oColor="lime";
 		}
 		this.nodes[0].color="#00FFFF";this.nodes[0].oColor="#00FFFF";
-		this.visited=[];this.draw(cont);delay=1000;
+		this.visited=[];this.draw();delay=1000;
 	}
 	if(this.queue==undefined)
 		this.queue=[];
@@ -213,7 +213,7 @@ UnweightedUndirectedGraph.prototype.bfs=function(cont){
 			graph.queue[k].oColor="red";
 		}
 		
-		graph.draw(cont);
+		graph.draw();
 		
 		function processAct(graph){
 			setTimeout(function (){
@@ -223,7 +223,7 @@ UnweightedUndirectedGraph.prototype.bfs=function(cont){
 				
 				graph.visited.push(graph.queue[0]);
 				graph.queue.splice(0,1);
-				graph.draw(cont);
+				graph.draw();
 				//process connected
 				for(i=0;i<graph.nodes[ai].connectedTo.length;i++){
 					var exists=false;
@@ -259,6 +259,6 @@ UnweightedUndirectedGraph.prototype.bfs=function(cont){
 	startBFS(this);
 }
 
-UnweightedUndirectedGraph.prototype.draw=function(cont){
-	this.view.draw(cont);
+UnweightedUndirectedGraph.prototype.draw=function(){
+	this.view.draw();
 }

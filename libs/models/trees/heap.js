@@ -23,9 +23,8 @@ function Node(){
 	this.yPosition=0;
 }
 
-function Heap(con){
+function Heap(){
 	this.view=new HeapView(this);
-	this.context=con;
 	this.db=TAFFY();
 	this.nodes=[];
 	this.sorted=[];
@@ -114,7 +113,7 @@ Heap.prototype.replaceThis=function(toCopy){
 
 }
 
-Heap.prototype.prev=function(con){
+Heap.prototype.prev=function(){
 	if(this.actStateID>1){
 		var tmp_db=this.db;
 		var prev_id=this.actStateID-1;
@@ -122,11 +121,11 @@ Heap.prototype.prev=function(con){
 		var rs=tmp_db({id:prev_id}).select("state");
 		//make actual node to THIS:
       	this.replaceThis(rs[0]);
-      	this.draw(con);
+      	this.draw();
 	}
 }
 
-Heap.prototype.next=function(con){
+Heap.prototype.next=function(){
 	if(this.actStateID<this.db().count()){
 		var tmp_db=this.db;
 		var next_id=this.actStateID+1;
@@ -134,30 +133,30 @@ Heap.prototype.next=function(con){
 		var rs=tmp_db({id:next_id}).select("state");
 		//make actual node to THIS:
       	this.replaceThis(rs[0]);
-      	this.draw(con);
+      	this.draw();
 	}
 }
 
-Heap.prototype.firstState=function(con){
+Heap.prototype.firstState=function(){
 	var tmp_db=this.db;
 	this.actStateID=1;
 	var rs=tmp_db({id:1}).select("state");
 	//make actual node to THIS:
      this.replaceThis(rs[0]);
-     this.draw(con);
+     this.draw();
 }
 
-Heap.prototype.lastState=function(con){
+Heap.prototype.lastState=function(){
 	var tmp_db=this.db;
 	var last_id=tmp_db().count();
 	this.actStateID=last_id;
 	var rs=tmp_db({id:last_id}).select("state");
 	//make actual node to THIS:
      this.replaceThis(rs[0]);
-     this.draw(con);
+     this.draw();
 }
 
-Heap.prototype.add=function(c1) {
+Heap.prototype.add=function() {
     //code snippet for disabling while actState!=last
 	//var count=this.db().count();
 
@@ -174,7 +173,7 @@ Heap.prototype.add=function(c1) {
 	this.nodes.push(node);
 	if(this.nodes.length==1){
 		this.root=this.nodes[0];
-		this.draw(c1);
+		this.draw();
 		this.working=false;
 		this.saveInDB();
 		return;
@@ -193,7 +192,7 @@ Heap.prototype.add=function(c1) {
 			this.nodes[parIndex].rightChild=this.nodes[actIndex];
 		}
 		
-		this.draw(c1);
+		this.draw();
 		
 		//check if swap is needed
 		
@@ -209,7 +208,7 @@ Heap.prototype.add=function(c1) {
 					//window.alert("in1");
 					heap.nodes[actIndex].color="#FF00E1";
 					heap.nodes[parIndex].color="#FF00E1";
-					heap.draw(c1);
+					heap.draw();
 					
 					var temp=heap.nodes[actIndex].value;
 					heap.nodes[actIndex].value=heap.nodes[parIndex].value;
@@ -221,7 +220,7 @@ Heap.prototype.add=function(c1) {
 							
 							heap.nodes[actIndex].color="#51DBED";
 							heap.nodes[parIndex].color="#51DBED";
-							heap.draw(c1);
+							heap.draw();
 							
 							actIndex=parIndex;
 							parIndex=Math.floor((actIndex-1)/2);
@@ -243,13 +242,13 @@ Heap.prototype.add=function(c1) {
 					//window.alert("in2");
 					heap.nodes[actIndex].color="#44FF00";
 					heap.nodes[parIndex].color="#44FF00";
-					heap.draw(c1);
+					heap.draw();
 					
 					function delayedDrawing(heap){
 						setTimeout(function (){
 							heap.nodes[actIndex].color="#51DBED";
 							heap.nodes[parIndex].color="#51DBED";
-							heap.draw(c1);
+							heap.draw();
 							heap.working=false;
 							heap.saveInDB();
 							return;
@@ -362,7 +361,7 @@ Heap.prototype.saveInDB=function(){
 }
 
 
-Heap.prototype.removeMinimum=function(c1) { 
+Heap.prototype.removeMinimum=function() { 
 	if(this.nodes.length<1){
 		window.alert("Heap is empty!");
 		return;
@@ -372,7 +371,7 @@ Heap.prototype.removeMinimum=function(c1) {
 		if(this.nodes.length==1){
 			this.nodes=[];
 			this.root=undefined
-			this.draw(c1);
+			this.draw();
 			this.saveInDB();
 			this.working=false;
 			return;
@@ -383,7 +382,7 @@ Heap.prototype.removeMinimum=function(c1) {
 			
 			this.nodes[0].color="#FF00E1";
 			this.nodes[this.nodes.length-1].color="#FF00E1";
-			this.draw(c1);
+			this.draw();
 			
 			var temp=this.nodes[0].value;
 			this.nodes[0].value=heap.nodes[this.nodes.length-1].value;
@@ -395,7 +394,7 @@ Heap.prototype.removeMinimum=function(c1) {
 					
 					heap.nodes[0].color="#51DBED";
 					heap.nodes[heap.nodes.length-1].color="#51DBED";
-					heap.draw(c1);
+					heap.draw();
 					
 					delayedDrawing2(heap);
 				},1000)
@@ -405,7 +404,7 @@ Heap.prototype.removeMinimum=function(c1) {
 				
 				setTimeout(function (){
 					heap.nodes[heap.nodes.length-1].color="red";
-					heap.draw(c1);
+					heap.draw();
 					
 					heap.nodes[heap.nodes.length-1].parent=undefined;
 					var actIndex=heap.nodes.length-1;
@@ -429,7 +428,7 @@ Heap.prototype.removeMinimum=function(c1) {
 			function delayedDrawing3(heap){
 				
 				setTimeout(function (){
-					heap.draw(c1);
+					heap.draw();
 					if(heap.nodes.length==1){
 						heap.saveInDB();
 						heap.working=false;
@@ -460,7 +459,7 @@ Heap.prototype.removeMinimum=function(c1) {
 						heap.nodes[actIndex].color="#44FF00";
 						heap.nodes[minKidIndex].color="#44FF00";
 						
-						heap.draw(c1);
+						heap.draw();
 						
 						heap.nodes[actIndex].color="#51DBED";
 						heap.nodes[minKidIndex].color="#51DBED";
@@ -470,7 +469,7 @@ Heap.prototype.removeMinimum=function(c1) {
 						heap.nodes[actIndex].color="#FF00E1";
 						heap.nodes[minKidIndex].color="#FF00E1";
 						
-						heap.draw(c1);
+						heap.draw();
 						
 						var temp=heap.nodes[actIndex].value;
 						heap.nodes[actIndex].value=heap.nodes[minKidIndex].value;
@@ -484,7 +483,7 @@ Heap.prototype.removeMinimum=function(c1) {
 			function delayedDrawing4(heap){
 				
 				setTimeout(function (){
-					heap.draw(c1);
+					heap.draw();
 					
 					heap.saveInDB();
 					heap.working=false;
@@ -498,7 +497,7 @@ Heap.prototype.removeMinimum=function(c1) {
 				setTimeout(function (){
 					heap.nodes[actIndex].color="#51DBED";
 					heap.nodes[minKidIndex].color="#51DBED";
-					heap.draw(c1);
+					heap.draw();
 					
 					actIndex=minKidIndex;
 					if(heap.nodes[actIndex].leftChild==undefined && heap.nodes[actIndex].rightChild==undefined){
@@ -518,7 +517,7 @@ Heap.prototype.removeMinimum=function(c1) {
 	}
 }
 
-Heap.prototype.sort=function(c1) { 
+Heap.prototype.sort=function() { 
 
 		this.working=true;
 		if(this.nodes.length==1){
@@ -528,7 +527,7 @@ Heap.prototype.sort=function(c1) {
 			this.nodes=[];
 			this.root=undefined
 			
-			this.draw(c1);
+			this.draw();
 			this.saveInDB();
 			this.working=false;
 			return;
@@ -538,7 +537,7 @@ Heap.prototype.sort=function(c1) {
 			
 			this.nodes[0].color="#FF00E1";
 			this.nodes[this.nodes.length-1].color="#FF00E1";
-			this.draw(c1);
+			this.draw();
 			
 			var temp=this.nodes[0].value;
 			this.nodes[0].value=heap.nodes[this.nodes.length-1].value;
@@ -550,7 +549,7 @@ Heap.prototype.sort=function(c1) {
 					
 					heap.nodes[0].color="#51DBED";
 					heap.nodes[heap.nodes.length-1].color="#51DBED";
-					heap.draw(c1);
+					heap.draw();
 					
 					delayedDrawing2(heap);
 				},1000)
@@ -560,7 +559,7 @@ Heap.prototype.sort=function(c1) {
 				
 				setTimeout(function (){
 					heap.nodes[heap.nodes.length-1].color="red";
-					heap.draw(c1);
+					heap.draw();
 					
 					heap.nodes[heap.nodes.length-1].parent=undefined;
 					var actIndex=heap.nodes.length-1;
@@ -588,13 +587,13 @@ Heap.prototype.sort=function(c1) {
 			function delayedDrawing3(heap){
 				
 				setTimeout(function (){
-					heap.draw(c1);
+					heap.draw();
 					if(heap.nodes.length==1){
 						heap.saveInDB();
 						
 						function removeNext(heap){
 							setTimeout(function(){
-								heap.sort(c1);
+								heap.sort();
 							},1000)
 						}
 						
@@ -626,7 +625,7 @@ Heap.prototype.sort=function(c1) {
 						heap.nodes[actIndex].color="#44FF00";
 						heap.nodes[minKidIndex].color="#44FF00";
 						
-						heap.draw(c1);
+						heap.draw();
 						
 						heap.nodes[actIndex].color="#51DBED";
 						heap.nodes[minKidIndex].color="#51DBED";
@@ -636,7 +635,7 @@ Heap.prototype.sort=function(c1) {
 						heap.nodes[actIndex].color="#FF00E1";
 						heap.nodes[minKidIndex].color="#FF00E1";
 						
-						heap.draw(c1);
+						heap.draw();
 						
 						var temp=heap.nodes[actIndex].value;
 						heap.nodes[actIndex].value=heap.nodes[minKidIndex].value;
@@ -650,14 +649,14 @@ Heap.prototype.sort=function(c1) {
 			function delayedDrawing4(heap){
 				
 				setTimeout(function (){
-					heap.draw(c1);
+					heap.draw();
 					
 					heap.saveInDB();
 					heap.working=false;
 					
 					function removeNext(heap){
 						setTimeout(function(){
-							heap.sort(c1);
+							heap.sort();
 						},1000)
 					}
 					
@@ -673,7 +672,7 @@ Heap.prototype.sort=function(c1) {
 				setTimeout(function (){
 					heap.nodes[actIndex].color="#51DBED";
 					heap.nodes[minKidIndex].color="#51DBED";
-					heap.draw(c1);
+					heap.draw();
 					
 					actIndex=minKidIndex;
 					if(heap.nodes[actIndex].leftChild==undefined && heap.nodes[actIndex].rightChild==undefined){
@@ -681,7 +680,7 @@ Heap.prototype.sort=function(c1) {
 						
 						function removeNext(heap){
 							setTimeout(function(){
-								heap.sort(c1);
+								heap.sort();
 							},1000)
 						}
 						
@@ -700,11 +699,11 @@ Heap.prototype.sort=function(c1) {
 		}
 }
 
-Heap.prototype.buildMaxHeap=function(c1){
+Heap.prototype.buildMaxHeap=function(){
 	if(this.nodes.length==1){
 		heap.saveInDB();
 		window.alert("Max Heap built. Starting to sort...");
-		this.sort(c1);
+		this.sort();
 		return;
 	}
 		
@@ -735,21 +734,21 @@ Heap.prototype.buildMaxHeap=function(c1){
 				heap.nodes[actIndex].color="#44FF00";
 				heap.nodes[maxKidIndex].color="#44FF00";
 				
-				heap.draw(c1);
+				heap.draw();
 				
 				heap.nodes[actIndex].color="#51DBED";
 				heap.nodes[maxKidIndex].color="#51DBED";
 				
 				function delayedDrawing(heap){
 					setTimeout(function (){
-						heap.draw(c1);
+						heap.draw();
 						if(lastHeapified==0){
 							heap.saveInDB();
 					
 							function pSort(heap){
 								setTimeout(function(){
 									window.alert("Max Heap built. Starting to sort...");
-									heap.sort(c1);
+									heap.sort();
 								},1000)
 							}
 							pSort(heap);
@@ -771,7 +770,7 @@ Heap.prototype.buildMaxHeap=function(c1){
 				heap.nodes[actIndex].color="#FF00E1";
 				heap.nodes[maxKidIndex].color="#FF00E1";
 				
-				heap.draw(c1);
+				heap.draw();
 				
 				var temp=heap.nodes[actIndex].value;
 				heap.nodes[actIndex].value=heap.nodes[maxKidIndex].value;
@@ -782,7 +781,7 @@ Heap.prototype.buildMaxHeap=function(c1){
 					setTimeout(function (){
 						heap.nodes[actIndex].color="#51DBED";
 						heap.nodes[maxKidIndex].color="#51DBED";
-						heap.draw(c1);
+						heap.draw();
 						
 						actIndex=maxKidIndex;
 						if(heap.nodes[actIndex].leftChild==undefined && heap.nodes[actIndex].rightChild==undefined){
@@ -792,7 +791,7 @@ Heap.prototype.buildMaxHeap=function(c1){
 								function pSort(heap){
 									setTimeout(function(){
 										window.alert("Max Heap built. Starting to sort...");
-										heap.sort(c1);
+										heap.sort();
 									},1000)
 								}
 								pSort(heap);
@@ -821,7 +820,7 @@ Heap.prototype.buildMaxHeap=function(c1){
 	sink(this);
 }
 
-Heap.prototype.random=function(con){
+Heap.prototype.random=function(){
 	//var count=this.db().count();
 
 	//if(count==this.actStateID){
@@ -835,11 +834,11 @@ Heap.prototype.random=function(con){
 		}
 		
 		this.saveInDB();
-		this.draw(con);
+		this.draw();
 	//}
 }
 
-Heap.prototype.randomHeapsort=function(con){
+Heap.prototype.randomHeapsort=function(){
 	this.working=true;
 	this.root=undefined;
 	this.nodes=[];
@@ -851,19 +850,19 @@ Heap.prototype.randomHeapsort=function(con){
 	}
 		
 	//this.saveInDB();
-	this.draw(con);
+	this.draw();
 	
 	function bmh(heap){
 		setTimeout(function (){
 			window.alert("Starting to build max heap...");
-			heap.buildMaxHeap(con);
+			heap.buildMaxHeap();
 		},1000)
 	}
 	bmh(this);
 	return;
 }
 
-Heap.prototype.getElementsByPrompt=function(con){
+Heap.prototype.getElementsByPrompt=function(){
 	this.working=true;
 	this.nodes=[];
 	this.root=undefined;
@@ -882,22 +881,22 @@ Heap.prototype.getElementsByPrompt=function(con){
 	}
 	
 	if(_in){
-		this.draw(con); 
+		this.draw(); 
 		function bmh(heap){
 			setTimeout(function (){
 				window.alert("Starting to build max heap...");
-				heap.buildMaxHeap(con);
+				heap.buildMaxHeap();
 			},1000)
 		}
 		bmh(this);
 	}
 	else{
 		this.working=false;
-		this.randomHeapsort(con);
+		this.randomHeapsort();
 	}
 	return;
 }
 
-Heap.prototype.draw=function(c1){
-	this.view.draw(c1);
+Heap.prototype.draw=function(){
+	this.view.draw();
 }

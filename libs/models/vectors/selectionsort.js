@@ -34,6 +34,15 @@ function Vector(){
 }
 
 Vector.prototype.init=function(){
+	this.elements=[];
+	this.sorted=false;
+	this.i=0;
+	this.j=0;
+
+	this.sstmpmin=0;
+	
+	this.paused=false;
+	this.finished=false;
 	this.saveInDB();
 }
 

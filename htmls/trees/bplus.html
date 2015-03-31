@@ -19,8 +19,14 @@
 </head>
 
 <script>
-	var tree = new BPlusTree();
+	var tree = undefined;
 
+	function init(){
+		tree=new BPlusTree();
+		var c1 = document.getElementById("container1");
+		tree.view.initStage(c1);
+	}
+	
 	function clearTimes(){
 		var pids = window.setTimeout(function() {}, 0);
 
@@ -53,77 +59,65 @@
 					finished=false;
 			}
 		}while(!finished);
-		var c1 = document.getElementById("container1");
-		tree.draw(c1);
+		
+		tree.draw();
 	}
 	
 	function create(){
 		clearTimes();
-		//tree=new BPlusTree();
-		var c1 = document.getElementById("container1");
-		tree.init(c1);
+		tree.init();
 	}
 	
 	function add(){
 		clearTimes();
-		var c1 = document.getElementById("container1");
-		tree.add(c1);
+		tree.add();
 	}
 	
 	function search(){
 		clearTimes();
-		var c1 = document.getElementById("container1");
-		tree.search(c1);	
+		tree.search();	
 	}
 	
 	function rem(){
 		clearTimes();
-		var c1 = document.getElementById("container1");
-		tree.remove(c1);
+		tree.remove();
 	}
 	
 	function random(){
 		clearTimes();
-		var c1 = document.getElementById("container1");
-		tree.random(c1);
+		tree.random();
 	}
 	
 	function pre(){
 		clearTimes();
-		var c1 = document.getElementById("container1");
-		tree.prev(c1);
+		tree.prev();
 	}
 	
 	function next(){
 		clearTimes();
-		var c1 = document.getElementById("container1");
-		tree.next(c1);
+		tree.next();
 	}
 	
 	function first(){
 		clearTimes();
-		var c1 = document.getElementById("container1");
-		tree.firstState(c1);
+		tree.firstState();
 	}
 	
 	function last(){
 		clearTimes();
-		var c1 = document.getElementById("container1");
-		tree.lastState(c1);
+		tree.lastState();
 	}
 	
 	function zoomIn(){
-     	var c1 = document.getElementById("container1");
-     	tree.view.zoomIn(c1);
+     	tree.view.zoomIn();
 	}
 	
 	function zoomOut(){
-     	var c1 = document.getElementById("container1");
-     	tree.view.zoomOut(c1);
+     	tree.view.zoomOut();
 	}
 </script>
 
-<body id="body" class="page">
+<body id="body" class="page" onload="init();return false;">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

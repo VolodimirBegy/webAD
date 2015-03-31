@@ -37,9 +37,11 @@
 		if(isNaN(amount)||amount<1)return;
 		
 		var matrix=new UnweightedUndirectedMatrix(amount);
-		_matrix=matrix;
 		var cm = document.getElementById("containerMatrix");
-		matrix.draw(cm);
+		matrix.initStage(cm);
+		_matrix=matrix;
+		
+		matrix.draw();
 		
 		var tf = $("#startNode");
 		tf.val("");
@@ -65,12 +67,10 @@
 		_class('createMatrix', 'hide');
 		var c1 = document.getElementById("container1");
 		graph=new UnweightedUndirectedGraph(_matrix.matrix,startNode,c1);
-		//window.alert(graph.matrix);
 	}
 	
 	function zoomIn(){
-		var c1 = document.getElementById("container1");
-		graph.view.zoomIn(c1);
+		graph.view.zoomIn();
 	}
 	
 	function dfs(){
@@ -78,8 +78,7 @@
 			clearTimes();
 			var elem = $("#p");
 			elem.addClass("p1");
-			var c1 = document.getElementById("container1");
-			graph.dfs(c1);
+			graph.dfs();
 		}
 		else{
 			window.alert("No graph created");
@@ -87,18 +86,15 @@
 	}
 	
 	function zoomOut(){
-		var c1 = document.getElementById("container1");
-		graph.view.zoomOut(c1);
+		graph.view.zoomOut();
 	}
 	
 	function zoomInMatrix(){
-		var cm = document.getElementById("containerMatrix");
-		_matrix.zoomIn(cm);
+		_matrix.zoomIn();
 	}
 	
 	function zoomOutMatrix(){
-		var cm = document.getElementById("containerMatrix");
-		_matrix.zoomOut(cm);
+		_matrix.zoomOut();
 	}
 	
 	function un_pause(){
@@ -109,8 +105,7 @@
 				elem.removeClass("p1");
 			}
 			else{
-				var c1 = document.getElementById("container1");
-				graph.dfs(c1); 
+				graph.dfs(); 
 				elem.addClass("p1");
 			}
 			

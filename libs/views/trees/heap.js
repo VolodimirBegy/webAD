@@ -18,17 +18,26 @@ function HeapView(_model){
 	this.scale=1;
 }
 
-HeapView.prototype.zoomIn=function(cont){
+HeapView.prototype.initStage=function(cont){
+	this.stage = new Kinetic.Stage({
+  		container: cont,
+  		draggable: true,
+		width: 0,
+		height: 0
+	}); 
+}
+
+HeapView.prototype.zoomIn=function(){
   if(this.scale<3)this.scale=this.scale+0.1;
-  this.draw(cont);
+  this.draw();
 }
 
-HeapView.prototype.zoomOut=function(cont){
+HeapView.prototype.zoomOut=function(){
   if(this.scale>0.5)this.scale=this.scale-0.1;
-  this.draw(cont);
+  this.draw();
 }
 
-HeapView.prototype.draw=function(cont){
+HeapView.prototype.draw=function(){
 	
 	var tmpNodes=[];
 	if(this.model.root!=undefined)
@@ -36,7 +45,9 @@ HeapView.prototype.draw=function(cont){
 	var level=1;
 	var finished=new Boolean();
 	finished=false;
-	
+	var cacheCircle=[];
+	var cacheRect=[];
+	var cacheText=[];
 	//determine levels
 	do{
 		finished=true;
@@ -61,8 +72,6 @@ HeapView.prototype.draw=function(cont){
 	var _radius=20*this.scale;
 
 	var layer = new Kinetic.Layer();
-	  
-	var group = new Kinetic.Group();
 	
 	var al=1;
 	tmpNodes=[];
@@ -115,7 +124,9 @@ HeapView.prototype.draw=function(cont){
 					strokeWidth: 4*this.scale,
 					//draggable: true
 				});
-						  
+				
+				
+				
 				var val = new Kinetic.Text({
 					x: circle.getX()-40*this.scale,
 					y: circle.getY()-7*this.scale,
@@ -126,6 +137,8 @@ HeapView.prototype.draw=function(cont){
 					width: 80*this.scale,
 					align: 'center'
 				});
+				
+				
 	
 				if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined){
 					var lineColor="blue";
@@ -140,11 +153,13 @@ HeapView.prototype.draw=function(cont){
 					});
 				}
 			}
-				
-			group.add(circle);
-			group.add(val);
+			
+			layer.add(circle);
+			layer.add(val);
 			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined && tmpNodes[i]!=this.model.root)
-				group.add(line);
+				layer.add(line);
+			
+			
 		}
 		
 		finished=true;
@@ -196,9 +211,10 @@ HeapView.prototype.draw=function(cont){
 			fill: 'black',
 		});
 	
-		group.add(rect);
-		group.add(text);
-		group.add(index);
+		layer.add(rect);
+		layer.add(text);
+		layer.add(index);
+		
 		
 		firstSortedX=rect.getX()+rect.getWidth()+2*this.scale;
 		firstSortedIndex=i+1;
@@ -234,14 +250,12 @@ HeapView.prototype.draw=function(cont){
 			fill: 'black',
 		});
 	
-		group.add(rect);
-		group.add(text);
-		group.add(index);
+		layer.add(rect);
+		layer.add(text);
+		layer.add(index);
 		
 		firstSortedIndex++;
 	}
-	
-	layer.add(group);
 	
 	var w=firstXLastLevel+(this.model.nodes.length*42*this.scale+this.model.sorted.length*42*this.scale)+250*this.scale;
 	var h=500;
@@ -250,12 +264,10 @@ HeapView.prototype.draw=function(cont){
 	if(this.scale>1.1)
 		h*=this.scale;
 	if(w<1000)w=1000;
-  	var stage = new Kinetic.Stage({
-  		container: cont,
-  		draggable: true,
-		width: w,
-		height: h
-	}); 
-	
-	stage.add(layer);	  
+  	
+	this.stage.setWidth(w);
+	this.stage.setHeight(h);
+	this.stage.removeChildren();
+	this.stage.add(layer);	
+
 }

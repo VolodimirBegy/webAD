@@ -20,6 +20,12 @@
 
 <script>
 	var vec=undefined;
+	
+	function init(){
+		vec=new Vector;
+		var c1 = document.getElementById("container1");
+		vec.view.initStage(c1);
+	}
 
 	function clearTimes(){
 		var pids = window.setTimeout(function() {}, 0);
@@ -31,46 +37,36 @@
 
 	function create(){
 		clearTimes();
-		vec = new Vector();
 		vec.init();
-		//document.getElementById("un_pause").className = "pause";
-		var c1 = document.getElementById("container1");
 		vec.getElementsByPrompt();
-		vec.selectionSort(c1);
+		vec.selectionSort();
 		var elem = $("#p");
 		elem.addClass("p1");
 	}	
 
 	function rand(){
 		clearTimes();
-		vec = new Vector();
 		vec.init();
-		//document.getElementById("un_pause").className = "pause";
-		var c1 = document.getElementById("container1");
 		vec.setRandomElements();
-		vec.selectionSort(c1); 
+		vec.selectionSort(); 
 		var elem = $("#p");
 		elem.addClass("p1");
 	}
 	
 	function pre(){
-		var c1 = document.getElementById("container1");
-		vec.prev(c1);
+		vec.prev();
 	}
 	
 	function next(){
-		var c1 = document.getElementById("container1");
-		vec.next(c1);
+		vec.next();
 	}
 	
 	function first(){
-		var c1 = document.getElementById("container1");
-		vec.firstState(c1);
+		vec.firstState();
 	}
 	
 	function last(){
-		var c1 = document.getElementById("container1");
-		vec.lastState(c1);
+		vec.lastState();
 	}
 	
 	function un_pause(){
@@ -83,8 +79,7 @@
 			}
 			else{
 				vec.paused=false;
-				var c1 = document.getElementById("container1");
-				vec.selectionSort(c1); 
+				vec.selectionSort(); 
 				elem.addClass("p1");
 			}
 			
@@ -94,18 +89,16 @@
 	}
 	
 	function zoomIn(){
-     	var c1 = document.getElementById("container1");
-     	vec.view.zoomIn(c1);
+     	vec.view.zoomIn();
 	}
 	
 	function zoomOut(){
-     	var c1 = document.getElementById("container1");
-     	vec.view.zoomOut(c1);
+     	vec.view.zoomOut();
 	}
 
 </script>
 
-<body id="body" class="page">
+<body id="body" class="page" onload="init();return false;">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

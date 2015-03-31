@@ -24,7 +24,7 @@ function Edge(u,v,w){
 	this.color="black";
 }
 
-function WeightedDirectedGraph(_matrix,startNode,con){
+function WeightedDirectedGraph(_matrix,startNode,c1){
 	this.view=new WeightedDirectedGraphView(this);
 	
 	this.nodes=[];
@@ -122,14 +122,14 @@ function WeightedDirectedGraph(_matrix,startNode,con){
 			this.nodes[i].connectedTo[j].yPosition=tmpN.yPosition;
 		}
 	}
-	
-	this.draw(con);
+	this.view.initStage(c1);
+	this.draw();
 	
 	this.db=TAFFY();
 	this.actStateID=0;
 }
 
-WeightedDirectedGraph.prototype.dijkstra=function(cont){
+WeightedDirectedGraph.prototype.dijkstra=function(){
 	var delay=2000;
 	
 	if(this.Q==undefined || this.Q.length==0){
@@ -152,7 +152,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 		this.dist[source.index]=0;
 		this.prev[source.index]=undefined;
 		
-		this.draw(cont);
+		this.draw();
 		this.Q=[];
 		
 		for(var i=0;i<this.nodes.length;i++){
@@ -166,7 +166,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 		}
 	}
 	
-	this.draw(cont);
+	this.draw();
 	
 	if(this.uSet)delay=0;
 	
@@ -187,7 +187,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 				graph.S.push(u);
 			
 			u.color="#00FFFF";
-			graph.draw(cont);
+			graph.draw();
 
 			
 			//i<u.connectedTo.length
@@ -227,7 +227,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 						}
 					}
 					
-					graph.draw(cont);
+					graph.draw();
 			
 					
 					graph.i++;
@@ -273,6 +273,6 @@ WeightedDirectedGraph.prototype.dijkstra=function(cont){
 	
 }
 
-WeightedDirectedGraph.prototype.draw=function(cont){
-	this.view.draw(cont);
+WeightedDirectedGraph.prototype.draw=function(){
+	this.view.draw();
 }

@@ -9,7 +9,7 @@
 
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND RIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -28,7 +28,7 @@ function Edge(u,v,w){
 	this.color="black";
 }
 
-function WeightedUndirectedGraph(_matrix,con){
+function WeightedUndirectedGraph(_matrix,c1){
 	this.view=new UndirectedGraphView(this);
 	
 	this.nodes=[];
@@ -124,14 +124,14 @@ function WeightedUndirectedGraph(_matrix,con){
 			this.nodes[i].connectedTo[j].yPosition=tmpN.yPosition;
 		}
 	}
-	
-	this.draw(con);
+	this.view.initStage(c1);
+	this.draw();
 	
 	this.db=TAFFY();
 	this.actStateID=0;
 }
 
-WeightedUndirectedGraph.prototype.kruskal=function(cont){
+WeightedUndirectedGraph.prototype.kruskal=function(){
 	var delay=0;
 	if(this.A==undefined ||(this.i==this.edges.length)){
 		
@@ -167,7 +167,7 @@ WeightedUndirectedGraph.prototype.kruskal=function(cont){
 		this.i=0;
 	}
 	
-	this.draw(cont);
+	this.draw();
 	
 	function step(graph){
 		setTimeout(function(){
@@ -182,7 +182,7 @@ WeightedUndirectedGraph.prototype.kruskal=function(cont){
 			
 			graph.i++;
 			
-			graph.draw(cont);
+			graph.draw();
 			
 			if(graph.i<graph.edges.length)
 				step(graph);			
@@ -215,6 +215,6 @@ WeightedUndirectedGraph.prototype.kruskal=function(cont){
 	}
 }
 
-WeightedUndirectedGraph.prototype.draw=function(cont){
-	this.view.draw(cont);
+WeightedUndirectedGraph.prototype.draw=function(){
+	this.view.draw();
 }

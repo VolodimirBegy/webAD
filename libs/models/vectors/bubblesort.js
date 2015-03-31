@@ -32,6 +32,13 @@ function Vector(){
 }
 
 Vector.prototype.init=function(){
+	this.elements=[];
+	this.finished=false;
+	this.i=0;
+	this.j=0;
+	
+	this.paused=false;
+	this.finished=false;
 	this.saveInDB();
 }
 
@@ -105,7 +112,7 @@ Vector.prototype.replaceThis=function(toCopy){
 	}
 }
 
-Vector.prototype.prev=function(con){
+Vector.prototype.prev=function(){
 	if(this.paused){
 		if(this.actStateID>1){
 			var tmp_db=this.db;
@@ -114,14 +121,14 @@ Vector.prototype.prev=function(con){
 			var rs=tmp_db({id:prev_id}).select("state");
 			//make actual node to THIS:
 	      	this.replaceThis(rs[0]);
-	      	this.draw(con);
+	      	this.draw();
 		}
 	}
 	else
 		window.alert("Pause the sorting first!");
 }
 
-Vector.prototype.next=function(con){
+Vector.prototype.next=function(){
 	if(this.paused){
 		if(this.actStateID<this.db().count()){
 			var tmp_db=this.db;
@@ -130,27 +137,27 @@ Vector.prototype.next=function(con){
 			var rs=tmp_db({id:next_id}).select("state");
 			//make actual node to THIS:
 	      	this.replaceThis(rs[0]);
-	      	this.draw(con);
+	      	this.draw();
 		}
 	}
 	else
 		window.alert("Pause the sorting first!");
 }
 
-Vector.prototype.firstState=function(con){
+Vector.prototype.firstState=function(){
 	if(this.paused){
 		var tmp_db=this.db;
 		this.actStateID=1;
 		var rs=tmp_db({id:1}).select("state");
 		//make actual node to THIS:
 	     this.replaceThis(rs[0]);
-	     this.draw(con);
+	     this.draw();
 	}
 	else
 		window.alert("Pause the sorting first!");
 }
 
-Vector.prototype.lastState=function(con){
+Vector.prototype.lastState=function(){
 	if(this.paused){
 		var tmp_db=this.db;
 		var last_id=tmp_db().count();
@@ -158,7 +165,7 @@ Vector.prototype.lastState=function(con){
 		var rs=tmp_db({id:last_id}).select("state");
 		//make actual node to THIS:
 	     this.replaceThis(rs[0]);
-	     this.draw(con);
+	     this.draw();
 	}
 	else
 		window.alert("Pause the sorting first!");
@@ -208,11 +215,11 @@ Vector.prototype.setColorsBubbleSort=function(){
 	}
 }
 
-Vector.prototype.bubbleSort=function(con){
+Vector.prototype.bubbleSort=function(){
 	//this.finished=false;
 	if(this.elements.length==1 || this.finished){
 		this.elements[0].color="#F7D358";
-		this.draw(con);
+		this.draw();
 		this.saveInDB();
 		return;
 	}
@@ -220,7 +227,7 @@ Vector.prototype.bubbleSort=function(con){
 	function step(vector){
 		vector.setColorsBubbleSort();
 		vector.saveInDB();
-	 	vector.draw(con);
+	 	vector.draw();
 	 	var firstDelay=0;
         setTimeout(function(){
 					 function sort(vector){
@@ -238,7 +245,7 @@ Vector.prototype.bubbleSort=function(con){
 							 vector.setColorsBubbleSort();
 							 if(extraState)
 								 vector.saveInDB();
-							 vector.draw(con);
+							 vector.draw();
 							 
 							 function delay(vector){
       							 setTimeout(function(){
@@ -246,7 +253,7 @@ Vector.prototype.bubbleSort=function(con){
           							 if(vector.i<vector.j){
           								 vector.setColorsBubbleSort();
 	          							 vector.saveInDB();
-	          							 vector.draw(con);
+	          							 vector.draw();
 	          							 sort(vector);
           							 }
           							 else if((vector.swapflag)||(!vector.swapflag && !vector.isSorted())){
@@ -259,7 +266,7 @@ Vector.prototype.bubbleSort=function(con){
           								 vector.finished=true;
           								 vector.setColorsBubbleSort();
 	          							 vector.saveInDB();
-	          							 vector.draw(con);
+	          							 vector.draw();
           							 }
           							 
       							 	},300)
@@ -306,6 +313,6 @@ Vector.prototype.size=function(){
 	 return this.elements.length;
  }
 
-Vector.prototype.draw=function(con){
-	 this.view.draw(con);
+Vector.prototype.draw=function(){
+	 this.view.draw();
  }

@@ -8,28 +8,33 @@ function WeightedUndirectedMatrix(_number){
 	this.scale=1;
 }
 
-WeightedUndirectedMatrix.prototype.zoomIn=function(c1){
+WeightedUndirectedMatrix.prototype.initStage=function(cont){
+	this.stage = new Kinetic.Stage({
+  		container: cont,
+  		draggable: true,
+		width: 0,
+		height: 0
+	}); 
+}
+
+WeightedUndirectedMatrix.prototype.zoomIn=function(){
 	if(this.scale<1.5)this.scale=this.scale+0.1;
-	this.draw(c1);
+	this.draw();
 }
 
-WeightedUndirectedMatrix.prototype.zoomOut=function(c1){
+WeightedUndirectedMatrix.prototype.zoomOut=function(){
 	if(this.scale>0.5)this.scale=this.scale-0.1;
-	this.draw(c1);
+	this.draw();
 }
 
-WeightedUndirectedMatrix.prototype.draw=function(cont){
+WeightedUndirectedMatrix.prototype.draw=function(){
 	//var rects=;
 	var dim=(75+this.number*50)*this.scale;
-  	var stage = new Kinetic.Stage({
-  		container: cont,
-		width: dim,
-		height: dim
-	}); 
+	this.stage.setHeight(dim);
+	this.stage.setWidth(dim);
+	this.stage.removeChildren();
 
   	var layer = new Kinetic.Layer();
-	  
-	var group = new Kinetic.Group();
   	
 	var rects=new Array(this.number);
 	for(var i=0;i<this.number;i++){
@@ -112,7 +117,7 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
   		        	um.matrix[indexes[1]][indexes[0]]=weight;
   		        }
 
-  		        um.draw(cont);
+  		        um.draw();
   		        return;
   		    });
   			
@@ -125,20 +130,20 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
   		        	um.matrix[indexes[1]][indexes[0]]=weight;
   		        }
 
-  		        um.draw(cont);
+  		        um.draw();
   		        return;
   		    });
   			
   			rects[i][j]=rect;
-  			group.add(rect);
+  			layer.add(rect);
   		}
   		
-  		group.add(numH);
-	  	group.add(numV);
-	  	group.add(numHparallel);
-	  	group.add(numVparallel);
-	  	group.add(lineH);
-		group.add(lineV);
+  		layer.add(numH);
+	  	layer.add(numV);
+	  	layer.add(numHparallel);
+	  	layer.add(numVparallel);
+	  	layer.add(lineH);
+		layer.add(lineV);
   	}
 
   	
@@ -175,7 +180,7 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
 	  		        um.matrix[indexes[0]][indexes[1]]=undefined;
 	  		        um.matrix[indexes[1]][indexes[0]]=undefined;
 	  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
-	  		        um.draw(cont);
+	  		        um.draw();
 	  		        return;
 	  		    });
 	  	  		
@@ -184,7 +189,7 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
 	  		        um.matrix[indexes[0]][indexes[1]]=undefined;
 	  		        um.matrix[indexes[1]][indexes[0]]=undefined;
 	  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
-	  		        um.draw(cont);
+	  		        um.draw();
 	  		        return;
 	  		    });
 	  	  		
@@ -193,7 +198,7 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
 	  		        um.matrix[indexes[0]][indexes[1]]=undefined;
 	  		        um.matrix[indexes[1]][indexes[0]]=undefined;
 	  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
-	  		        um.draw(cont);
+	  		        um.draw();
 	  		        return;
 	  		    });
 		  	  	
@@ -202,12 +207,12 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
 	  		        um.matrix[indexes[0]][indexes[1]]=undefined;
 	  		        um.matrix[indexes[1]][indexes[0]]=undefined;
 	  		        //window.alert(um.matrix[indexes[0]][indexes[1]]);
-	  		        um.draw(cont);
+	  		        um.draw();
 	  		        return;
 	  		    });
   	  			
-  				group.add(set);
-  				group.add(weight);
+  				layer.add(set);
+  				layer.add(weight);
   			}
   		}
   	}
@@ -224,9 +229,8 @@ WeightedUndirectedMatrix.prototype.draw=function(cont){
 		strokeWidth: 2*this.scale,
 	});
 		
-	group.add(lineH);
-	group.add(lineV);
-  	
-	layer.add(group);
-	stage.add(layer);	  
+	layer.add(lineH);
+	layer.add(lineV);
+
+	this.stage.add(layer);	  
 }

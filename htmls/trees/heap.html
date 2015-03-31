@@ -19,12 +19,14 @@
 </head>
 
 <script>
-	//function create(){
-	
-		var c1 = document.getElementById("container1");
-		var heap = new Heap(c1);
-		heap.init();
-	//}
+		var heap = undefined;
+		
+		function init(){
+			var c1 = document.getElementById("container1");
+			heap=new Heap();
+			heap.init();
+			heap.view.initStage(c1);
+		}
 	
 		function clearTimes(){
 			var pids = window.setTimeout(function() {}, 0);
@@ -62,66 +64,57 @@
 	
 	function add(){
 		if(!heap.working){
-			var c1 = document.getElementById("container1");
-			heap.add(c1);
+			heap.add();
 		}
 	}
 	
 	function rem(){
 		if(!heap.working){
-			var c1 = document.getElementById("container1");
-			heap.removeMinimum(c1);
+			heap.removeMinimum();
 		}
 		
 	}
 	
 	function random(){
 		if(!heap.working){
-			var c1 = document.getElementById("container1");
-			heap.random(c1);
+			heap.random();
 		}
 	}
 	
 	function pre(){
 		if(!heap.working){
-			var c1 = document.getElementById("container1");
-			heap.prev(c1);
+			heap.prev();
 		}
 	}
 	
 	function next(){
 		if(!heap.working){
-			var c1 = document.getElementById("container1");
-			heap.next(c1);
+			heap.next();
 		}
 	}
 	
 	function first(){
 		if(!heap.working){
-			var c1 = document.getElementById("container1");
-			heap.firstState(c1);
+			heap.firstState();
 		}
 	}
 	
 	function last(){
 		if(!heap.working){
-			var c1 = document.getElementById("container1");
-			heap.lastState(c1);
+			heap.lastState();
 		}
 	}
 	
 	function zoomIn(){
-     	var c1 = document.getElementById("container1");
-     	heap.view.zoomIn(c1);
+     	heap.view.zoomIn();
 	}
 	
 	function zoomOut(){
-     	var c1 = document.getElementById("container1");
-     	heap.view.zoomOut(c1);
+     	heap.view.zoomOut();
 	}
 </script>
 
-<body id="body" class="page">
+<body id="body" class="page" onload="init();return false;">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

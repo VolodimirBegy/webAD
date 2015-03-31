@@ -18,17 +18,26 @@ function BinTreeView(_model){
 	this.scale=1;
 }
 
-BinTreeView.prototype.zoomIn=function(cont){
+BinTreeView.prototype.initStage=function(cont){
+	this.stage = new Kinetic.Stage({
+  		container: cont,
+  		draggable: true,
+		width: 0,
+		height: 0
+	}); 
+}
+
+BinTreeView.prototype.zoomIn=function(){
   if(this.scale<2.5)this.scale=this.scale+0.1;
-  this.draw(cont);
+  this.draw();
 }
 
-BinTreeView.prototype.zoomOut=function(cont){
+BinTreeView.prototype.zoomOut=function(){
   if(this.scale>0.5)this.scale=this.scale-0.1;
-  this.draw(cont);
+  this.draw();
 }
 
-BinTreeView.prototype.draw=function(cont){
+BinTreeView.prototype.draw=function(){
 	
 	var tmpNodes=[];
 	if(this.model.root!=undefined)
@@ -67,16 +76,12 @@ BinTreeView.prototype.draw=function(cont){
 	if(this.scale>1.1)
 		h*=this.scale;
 	if(w<1000)w=1000;
-  	var stage = new Kinetic.Stage({
-  		container: cont,
-  		draggable: true,
-		width: w,
-		height: h
-	}); 
+	
+	this.stage.setHeight(h);
+	this.stage.setWidth(w);
+	this.stage.removeChildren();
 
 	var layer = new Kinetic.Layer();
-	  
-	var group = new Kinetic.Group();
 	
 	var al=1;
 	tmpNodes=[];
@@ -153,10 +158,10 @@ BinTreeView.prototype.draw=function(cont){
 				}
 			}
 				
-			group.add(circle);
-			group.add(val);
+			layer.add(circle);
+			layer.add(val);
 			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined && tmpNodes[i]!=this.model.root)
-				group.add(line);
+				layer.add(line);
 		}
 		
 		finished=true;
@@ -176,6 +181,5 @@ BinTreeView.prototype.draw=function(cont){
 		al++;
 	}while(!finished);
 	
-	layer.add(group);
-	stage.add(layer);	  
+	this.stage.add(layer);	  
 }

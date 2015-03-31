@@ -18,24 +18,31 @@ function BPlusTreeView(_model){
 	this.scale=1;
 }
 
-BPlusTreeView.prototype.zoomIn=function(c1){
+BPlusTreeView.prototype.initStage=function(cont){
+	this.stage = new Kinetic.Stage({
+  		container: cont,
+  		draggable: true,
+		width: 0,
+		height: 0
+	}); 
+}
+
+BPlusTreeView.prototype.zoomIn=function(){
   if(this.scale<3)this.scale=this.scale+0.1;
-  this.draw(c1);
+  this.draw();
 }
 
-BPlusTreeView.prototype.zoomOut=function(c1){
+BPlusTreeView.prototype.zoomOut=function(){
   if(this.scale>0.5)this.scale=this.scale-0.1;
-  this.draw(c1);
+  this.draw();
 }
 
-BPlusTreeView.prototype.draw=function(con){
+BPlusTreeView.prototype.draw=function(){
 	
 	var _radiusX=57*this.model.order*this.scale;
 	var _radius=20*this.scale;
 	var lastX=0,lastY=0;
 	var layer = new Kinetic.Layer();
-	  
-	var group = new Kinetic.Group();
 	
 	var tmpNodes=[];
 	if(this.model.root!=undefined)
@@ -212,8 +219,8 @@ BPlusTreeView.prototype.draw=function(con){
 						//align: 'center'
 					});
 					
-					group.add(circle);
-					group.add(val);
+					layer.add(circle);
+					layer.add(val);
 					
 				}
 
@@ -266,9 +273,9 @@ BPlusTreeView.prototype.draw=function(con){
 
 			
 			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined)
-				group.add(line);
+				layer.add(line);
 			if(tmpNodes[i].is_leaf && i<tmpNodes.length-1)
-				group.add(arrow);
+				layer.add(arrow);
 		}
 		
 		finished=true;
@@ -296,13 +303,8 @@ BPlusTreeView.prototype.draw=function(con){
 	if(h<500)h=500;
 	if(w<1000)w=1000;
 	
-	var stage = new Kinetic.Stage({
-  		container: con,
-  		draggable: true,
-		width: w,
-		height: h
-	}); 
-	
-	layer.add(group);
-	stage.add(layer);	  
+	this.stage.setWidth(w);
+	this.stage.setHeight(h);
+	this.stage.removeChildren();
+	this.stage.add(layer);	  
 }

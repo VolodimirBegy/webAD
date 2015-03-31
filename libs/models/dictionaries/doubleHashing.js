@@ -31,7 +31,7 @@ function DoubleHashing(){
 	this.actStateID=0;
 }
 
-DoubleHashing.prototype.init=function(c1){
+DoubleHashing.prototype.init=function(){
 	this.rows=[];
 	this.fillFactor=0;
 	this.calc=undefined;
@@ -47,7 +47,7 @@ DoubleHashing.prototype.init=function(c1){
 	}
 	
 	this.saveInDB();
-	this.draw(c1);
+	this.draw();
 }
 
 DoubleHashing.prototype.copy=function(){
@@ -87,43 +87,43 @@ DoubleHashing.prototype.replaceThis=function(ht){
 	this.prime=this.prime;
 }
 
-DoubleHashing.prototype.prev=function(con){
+DoubleHashing.prototype.prev=function(){
 	if(this.actStateID>1){
 		var tmp_db=this.db;
 		var prev_id=this.actStateID-1;
 		this.actStateID=prev_id;
 		var rs=tmp_db({id:prev_id}).select("state");
 		this.replaceThis(rs[0]);
-		this.draw(con);
+		this.draw();
 	}
 }
 
-DoubleHashing.prototype.next=function(con){
+DoubleHashing.prototype.next=function(){
 	if(this.actStateID<this.db().count()){
 		var tmp_db=this.db;
 		var next_id=this.actStateID+1;
 		this.actStateID=next_id;
 		var rs=tmp_db({id:next_id}).select("state");
 		this.replaceThis(rs[0]);
-		this.draw(con);
+		this.draw();
 	}
 }
 
-DoubleHashing.prototype.firstState=function(con){
+DoubleHashing.prototype.firstState=function(){
 	var tmp_db=this.db;
 	this.actStateID=1;
 	var rs=tmp_db({id:1}).select("state");
 	this.replaceThis(rs[0]);
-	this.draw(con);
+	this.draw();
 }
 
-DoubleHashing.prototype.lastState=function(con){
+DoubleHashing.prototype.lastState=function(){
 	var tmp_db=this.db;
 	var last_id=tmp_db().count();
 	this.actStateID=last_id;
 	var rs=tmp_db({id:last_id}).select("state");
 	this.replaceThis(rs[0]);
-	this.draw(con);
+	this.draw();
 }
 
 DoubleHashing.prototype.saveInDB=function(){
@@ -146,7 +146,7 @@ DoubleHashing.prototype.saveInDB=function(){
 	this.actStateID=nextID;
 }
 
-DoubleHashing.prototype.extend=function(cont){
+DoubleHashing.prototype.extend=function(){
 	
 		var vals=[];
 		
@@ -174,11 +174,11 @@ DoubleHashing.prototype.extend=function(cont){
 		
 		this.fillFactor=0;
 		this.overflow=vals;
-		this.draw(cont);
-		this.add(cont,vals,0);
+		this.draw();
+		this.add(vals,0);
 }
 
-DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
+DoubleHashing.prototype.add=function(toAdd,addIndex){
 	this.cal=undefined;
 	
 	var counter=0;
@@ -207,7 +207,7 @@ DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
 			var index=newVal%this.rows.length;
 			var searchingNextFree=false;
 			var tmpRow=this.rows[index];
-			console.log(newVal);
+
 			function addInner(ht){
 				setTimeout(function(){
 			
@@ -233,17 +233,17 @@ DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
 							
 							ht.fillFactor=filled/ht.rows.length;
 
-							ht.draw(cont);
+							ht.draw();
 							
 							function modify(ht){
 								setTimeout(function(){
 									if(ht.fillFactor>0.7 && toAdd==undefined){
-										ht.extend(cont);
+										ht.extend();
 										return;
 									}
 									
 									if(addIndex!=undefined && addIndex<toAdd.length-1){
-										ht.add(cont,toAdd,addIndex+1);
+										ht.add(toAdd,addIndex+1);
 										return;
 									}
 	
@@ -257,7 +257,7 @@ DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
 							
 							else{
 								//ht.overflow=[];
-								ht.draw(cont);
+								ht.draw();
                              	ht.saveInDB();
                              	ht.working=false;
 								return;
@@ -275,7 +275,7 @@ DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
 							tmpRow.color="red";
 							tmpRow.extraCheck=true;
 							searchingNextFree=true;
-							ht.draw(cont);
+							ht.draw();
 						}
 					}
 					else{
@@ -298,17 +298,17 @@ DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
 							
 							ht.fillFactor=filled/ht.rows.length;
 
-							ht.draw(cont);
+							ht.draw();
 							
 							function modify2(ht){
 								setTimeout(function(){
 									if(ht.fillFactor>0.7 && toAdd==undefined){
-										ht.extend(cont);
+										ht.extend();
 										return;
 									}
 									
 									if(addIndex!=undefined && addIndex<toAdd.length-1){
-										ht.add(cont,toAdd,addIndex+1);
+										ht.add(toAdd,addIndex+1);
 										return;
 									}
 	
@@ -320,7 +320,7 @@ DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
 							}
 							else{
 								//ht.overflow=[];
-								ht.draw(cont);
+								ht.draw();
                              	ht.saveInDB();
                              	ht.working=false;
 								return;
@@ -331,7 +331,7 @@ DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
 							ht.actCalc=index;
 							tmpRow.color="red";
 							tmpRow.extraCheck=true;
-							ht.draw(cont);
+							ht.draw();
 						}
 					}
 					prevI=index;
@@ -355,7 +355,7 @@ DoubleHashing.prototype.add=function(cont,toAdd,addIndex){
 		
 }
 
-DoubleHashing.prototype.search=function(cont){
+DoubleHashing.prototype.search=function(){
 	
 	//var count=this.db().count();
 	var counter=0;
@@ -386,7 +386,7 @@ DoubleHashing.prototype.search=function(cont){
 								ht.actCalc=index;
 							}
 							tmpRow.color="red";
-							ht.draw(cont);
+							ht.draw();
 							ht.calc=undefined;
 							if(tmpRow.value==newVal){
 								window.alert("Found");
@@ -409,7 +409,7 @@ DoubleHashing.prototype.search=function(cont){
 							}
 							tmpRow.color="red";
 							searchingNextFree=true;
-							ht.draw(cont);
+							ht.draw();
 						}
 					}
 					else{
@@ -418,7 +418,7 @@ DoubleHashing.prototype.search=function(cont){
 							ht.calc="a"+counter+" = ("+prevI+" + "+" ( "+ht.prime+" - ( "+newVal+" mod "+ht.prime+" ) ) ) mod "+ht.rows.length+" = "+index;
 							ht.actCalc=index;
 							tmpRow.color="red";
-							ht.draw(cont);
+							ht.draw();
 							ht.calc=undefined;
 							if(tmpRow.value==newVal){
 								window.alert("Found");
@@ -434,11 +434,11 @@ DoubleHashing.prototype.search=function(cont){
 							ht.calc="a"+counter+" = ("+prevI+" + "+" ( "+ht.prime+" - ( "+newVal+" mod "+ht.prime+" ) ) ) mod "+ht.rows.length+" = "+index;
 							ht.actCalc=index;
 							tmpRow.color="red";
-							ht.draw(cont);
+							ht.draw();
 						}
 					}
 					if(counter==ht.rows.length-1){
-						ht.draw(cont);
+						ht.draw();
 						ht.calc=undefined;
 						if(tmpRow.value==newVal){
 							window.alert("Found");
@@ -478,7 +478,7 @@ function isPrime(n){
     return true;
 }
 
-DoubleHashing.prototype.remove=function(cont){
+DoubleHashing.prototype.remove=function(){
 	//var count=this.db().count();
 	var counter=0;
 	var prevI;
@@ -508,7 +508,7 @@ DoubleHashing.prototype.remove=function(cont){
 									tmpRow.value=undefined;
 									tmpRow.extraCheck=true;
 									tmpRow.occupied=false;
-									ht.draw(cont);
+									ht.draw();
 									ht.calc=undefined;
 									
 									ht.saveInDB();
@@ -526,7 +526,7 @@ DoubleHashing.prototype.remove=function(cont){
 									}
 									tmpRow.color="red";
 									searchingNextFree=true;
-									ht.draw(cont);
+									ht.draw();
 								}
 								else if(tmpRow.occupied==false && tmpRow.extraCheck==false){
 									if(counter==0){
@@ -539,7 +539,7 @@ DoubleHashing.prototype.remove=function(cont){
 									}
 									tmpRow.color="red";
 									//tmpRow.calc=undefined;
-									ht.draw(cont);
+									ht.draw();
 									ht.calc=undefined;
 									window.alert("Value not found!");
 									ht.working=false;
@@ -559,7 +559,7 @@ DoubleHashing.prototype.remove=function(cont){
 										ht.rows[i].color="black";
 									}
 							
-									ht.draw(cont);	
+									ht.draw();	
 									ht.calc=undefined;
 									
 									ht.saveInDB();
@@ -571,7 +571,7 @@ DoubleHashing.prototype.remove=function(cont){
 									ht.calc="a"+counter+" = ("+prevI+" + "+" ( "+ht.prime+" - ( "+remVal+" mod "+ht.prime+" ) ) ) mod "+ht.rows.length+" = "+index;
 									ht.actCalc=index;
 									tmpRow.color="red";
-									ht.draw(cont);
+									ht.draw();
 								}
 								else if((tmpRow.occupied==false && tmpRow.extraCheck==false)||(tmpRow.occupied==true&&tmpRow.extraCheck==false&&tmpRow.value!=remVal)){
 									ht.calc="a"+counter+" = ("+prevI+" + "+" ( "+ht.prime+" - ( "+remVal+" mod "+ht.prime+" ) ) ) mod "+ht.rows.length+" = "+index;
@@ -579,7 +579,7 @@ DoubleHashing.prototype.remove=function(cont){
 									
 									tmpRow.color="red";
 									tmpRow.calc=undefined;
-									ht.draw(cont);
+									ht.draw();
 									ht.calc=undefined;
 									window.alert("Value not found!");
 									ht.working=false;
@@ -589,7 +589,7 @@ DoubleHashing.prototype.remove=function(cont){
 							if(counter==ht.rows.length-1){
 								window.alert("Value not found!");
 								//ht.calc=undefined;
-								ht.draw(cont);
+								ht.draw();
 								ht.calc=undefined;
 								ht.working=false;
 								return;
@@ -612,6 +612,6 @@ DoubleHashing.prototype.remove=function(cont){
 	//}
 }
 
-DoubleHashing.prototype.draw=function(cont){
-	this.view.draw(this,cont);
+DoubleHashing.prototype.draw=function(){
+	this.view.draw();
 }

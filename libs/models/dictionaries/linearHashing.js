@@ -33,12 +33,12 @@ function LinearHashing(){
 	this.actStateID=0;
 }
 
-LinearHashing.prototype.init=function(c1){
+LinearHashing.prototype.init=function(){
 
 	var b=parseInt(prompt("Bucket size:\n(>0)"));
 	var d=parseInt(prompt("D:\n(>0)"));
 	
-	if(isNaN(b)||isNaN(d)||b<1||d<0)return;
+	if(isNaN(b)||isNaN(d)||b<1||d<1)return;
 	this.d=d;
 	this.b=b;
 	
@@ -53,7 +53,7 @@ LinearHashing.prototype.init=function(c1){
 	
 	this.saveInDB();
 	
-	this.draw(c1);
+	this.draw();
 }
 
 LinearHashing.prototype.copy=function(){
@@ -138,43 +138,43 @@ LinearHashing.prototype.replaceThis=function(ht){
 	this.nts=ht.nts;
 }
 
-LinearHashing.prototype.prev=function(con){
+LinearHashing.prototype.prev=function(){
 	if(this.actStateID>1){
 		var tmp_db=this.db;
 		var prev_id=this.actStateID-1;
 		this.actStateID=prev_id;
 		var rs=tmp_db({id:prev_id}).select("state");
 		this.replaceThis(rs[0]);
-		this.draw(con);
+		this.draw();
 	}
 }
 
-LinearHashing.prototype.next=function(con){
+LinearHashing.prototype.next=function(){
 	if(this.actStateID<this.db().count()){
 		var tmp_db=this.db;
 		var next_id=this.actStateID+1;
 		this.actStateID=next_id;
 		var rs=tmp_db({id:next_id}).select("state");
 		this.replaceThis(rs[0]);
-		this.draw(con);
+		this.draw();
 	}
 }
 
-LinearHashing.prototype.firstState=function(con){
+LinearHashing.prototype.firstState=function(){
 	var tmp_db=this.db;
 	this.actStateID=1;
 	var rs=tmp_db({id:1}).select("state");
 	this.replaceThis(rs[0]);
-	this.draw(con);
+	this.draw();
 }
 
-LinearHashing.prototype.lastState=function(con){
+LinearHashing.prototype.lastState=function(){
 	var tmp_db=this.db;
 	var last_id=tmp_db().count();
 	this.actStateID=last_id;
 	var rs=tmp_db({id:last_id}).select("state");
 	this.replaceThis(rs[0]);
-	this.draw(con);
+	this.draw();
 }
 
 LinearHashing.prototype.saveInDB=function(){
@@ -204,7 +204,7 @@ function decbin(dec,length){
 	return out;  
 }
 
-LinearHashing.prototype.add=function(cont){
+LinearHashing.prototype.add=function(){
 	if(this.rows.length>0){
 		var newVal=parseInt(prompt("Add:\n (values > 99999 are ignored)"));
 		if(isNaN(newVal)||newVal>99999)return;
@@ -239,7 +239,7 @@ LinearHashing.prototype.add=function(cont){
 			
         	this.saveInDB();
         	
-        	this.draw(cont);
+        	this.draw();
         	this.newBlockVals=[];
     		this.newBlockBins=[];
 			return;
@@ -272,7 +272,7 @@ LinearHashing.prototype.add=function(cont){
 				this.working=false;
 	        	this.saveInDB();
 	        	
-	        	this.draw(cont);
+	        	this.draw();
 	        	this.newBlockVals=[];
 	    		this.newBlockBins=[];
 				return;
@@ -301,7 +301,7 @@ LinearHashing.prototype.add=function(cont){
 					if(this.manipulatedBin.length<this.d)
 						this.manipulatedBin=decbin(newVal,this.d);
 				}
-				this.draw(cont);
+				this.draw();
 				//delay
 				function to_split(ht){
 					setTimeout(function (){
@@ -372,7 +372,7 @@ LinearHashing.prototype.add=function(cont){
 						ht.working=false;						
 			        	ht.saveInDB();
 						
-			        	ht.draw(cont);
+			        	ht.draw();
 			        	ht.newBlockVals=[];
 			    		ht.newBlockBins=[];
 						return;
@@ -388,7 +388,7 @@ LinearHashing.prototype.add=function(cont){
 	}
 }
 
-LinearHashing.prototype.remove=function(cont){
+LinearHashing.prototype.remove=function(){
 	if(this.rows.length>0){
 		var remVal=parseInt(prompt("Remove:"));
 		if(isNaN(remVal))return;
@@ -438,7 +438,7 @@ LinearHashing.prototype.remove=function(cont){
 				}
 				
 				this.working=false;
-				this.draw(cont);
+				this.draw();
 				window.alert("Value not found!");
 				return;
 			}
@@ -461,7 +461,7 @@ LinearHashing.prototype.remove=function(cont){
 					ht.manipulationInProgress=false;
 					ht.saveInDB();
 					
-					ht.draw(cont);
+					ht.draw();
 					return;
 				}
 				
@@ -482,7 +482,7 @@ LinearHashing.prototype.remove=function(cont){
 						ht.manipulationInProgress=false;
 			        	ht.saveInDB();
 						
-						ht.draw(cont);return;
+						ht.draw();return;
 					}
 					else{
 						actBlock=overflow;
@@ -496,7 +496,7 @@ LinearHashing.prototype.remove=function(cont){
 				ht.manipulationInProgress=false;
 	        	ht.saveInDB();
 				
-				ht.draw(cont);return;
+				ht.draw();return;
 			},1000)
 		}
 		this.manipulationInProgress=true;
@@ -516,14 +516,14 @@ LinearHashing.prototype.remove=function(cont){
 				this.manipulatedBin=decbin(remVal,this.d);
 		}
 		
-		this.draw(cont);
+		this.draw();
 	}
 	else{
 		window.alert("Table not created!");
 	}
 }
 
-LinearHashing.prototype.search=function(cont){
+LinearHashing.prototype.search=function(){
 	if(this.rows.length>0){
 		var searchVal=parseInt(prompt("Search for:"));
 		if(isNaN(searchVal))return;
@@ -572,7 +572,7 @@ LinearHashing.prototype.search=function(cont){
 				}
 				
 				this.working=false;
-				this.draw(cont);
+				this.draw();
 				window.alert("Value not found!");
 				return;
 			}
@@ -593,7 +593,7 @@ LinearHashing.prototype.search=function(cont){
 				this.manipulatedBin=decbin(searchVal,this.d);
 		}
 		
-		this.draw(cont);
+		this.draw();
 		//this.manipulationInProgress=false;
 	}
 	else{
@@ -602,6 +602,6 @@ LinearHashing.prototype.search=function(cont){
 }
 
 
-LinearHashing.prototype.draw=function(cont){
-	this.view.draw(this,cont);
+LinearHashing.prototype.draw=function(){
+	this.view.draw();
 }

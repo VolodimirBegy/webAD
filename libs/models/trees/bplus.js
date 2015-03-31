@@ -33,13 +33,13 @@ function BPlusTree(){
 	this.history="";
 }
 
-BPlusTree.prototype.init=function(con){
+BPlusTree.prototype.init=function(){
 	var o=parseInt(prompt("Order k:"));
 	if(isNaN(o)||o<1)return;
 	this.root=undefined;
 	this.history="";
 	this.order=o;
-	this.draw(con);
+	this.draw();
 	
 	this.saveInDB();
 }
@@ -157,7 +157,7 @@ BPlusTree.prototype.replaceThis=function(toCopy){
 		this.root=undefined;
 }
 
-BPlusTree.prototype.prev=function(con){
+BPlusTree.prototype.prev=function(){
 	if(this.actStateID>1){
 		var tmp_db=this.db;
 		var prev_id=this.actStateID-1;
@@ -165,11 +165,11 @@ BPlusTree.prototype.prev=function(con){
 		var rs=tmp_db({id:prev_id}).select("state");
 		//make actual node to THIS:
       	this.replaceThis(rs[0]);
-      	this.draw(con);
+      	this.draw();
 	}
 }
 
-BPlusTree.prototype.next=function(con){
+BPlusTree.prototype.next=function(){
 	if(this.actStateID<this.db().count()){
 		var tmp_db=this.db;
 		var next_id=this.actStateID+1;
@@ -177,11 +177,11 @@ BPlusTree.prototype.next=function(con){
 		var rs=tmp_db({id:next_id}).select("state");
 		//make actual node to THIS:
       	this.replaceThis(rs[0]);
-      	this.draw(con);
+      	this.draw();
 	}
 }
 
-BPlusTree.prototype.firstState=function(con){
+BPlusTree.prototype.firstState=function(){
 
 	var tmp_db=this.db;
 	this.actStateID=1;
@@ -189,10 +189,10 @@ BPlusTree.prototype.firstState=function(con){
 	//make actual node to THIS:
      this.replaceThis(rs[0]);
 
-     this.draw(con);
+     this.draw();
 }
 
-BPlusTree.prototype.lastState=function(con){
+BPlusTree.prototype.lastState=function(){
 
 	var tmp_db=this.db;
 	var last_id=tmp_db().count();
@@ -201,11 +201,11 @@ BPlusTree.prototype.lastState=function(con){
 	//make actual node to THIS:
      this.replaceThis(rs[0]);
 
-     this.draw(con);
+     this.draw();
 }
 
 
-BPlusTree.prototype.add=function(con) {
+BPlusTree.prototype.add=function() {
 	var val=parseInt(prompt("Add:\n(Values <-99 and >999 are ignored"));
 	var origVal=val;
 	if(isNaN(val)||val<-99||val>999)return;
@@ -219,7 +219,7 @@ BPlusTree.prototype.add=function(con) {
 		var root=new Node();
 		root.keys[0]=val;
 		this.root=root;
-		this.draw(con);
+		this.draw();
 		var count=this.db().count();
      	if(count!=this.actStateID){
            	for(var i=this.actStateID+1;i<=count;++i){
@@ -238,7 +238,7 @@ BPlusTree.prototype.add=function(con) {
 		//find target leaf node first:
 		var actNode=this.root;
 		actNode.color="#FF8000";
-		this.draw(con);
+		this.draw();
 
 			function whileLoop(tree,actNode){
 				setTimeout(function (){
@@ -259,7 +259,7 @@ BPlusTree.prototype.add=function(con) {
 					actNode.color="#FF8000";
 					
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 					actNode.parent.neededKid=undefined;
 					if(!actNode.is_leaf)whileLoop(tree,actNode);
 					
@@ -288,7 +288,7 @@ BPlusTree.prototype.add=function(con) {
 		function forLoop(tree,actNode){
 			setTimeout(function(){
 				
-				for(var i=0;i<actNode.keys.length;i++){if(actNode.keys[i]==val){actNode.color="#ADFF2F";tree.draw(con);return;}}
+				for(var i=0;i<actNode.keys.length;i++){if(actNode.keys[i]==val){actNode.color="#ADFF2F";tree.draw();return;}}
 				actNode.color="#ADFF2F";
 				//the target node has available space for one more key.
 				if(actNode.keys.length<tree.order*2){
@@ -509,7 +509,7 @@ BPlusTree.prototype.add=function(con) {
 							rightSibling.parent=newRoot;
 								
 							tree.root=newRoot;
-							tree.draw(con);
+							tree.draw();
 
 					     	tree.history+="a"+origVal;
 							tree.saveInDB();
@@ -532,7 +532,7 @@ BPlusTree.prototype.add=function(con) {
 							}
 							actNode.parent.pointers.splice(index,0,rightSibling);
 							rightSibling.parent=actNode.parent;
-							tree.draw(con);
+							tree.draw();
 
 					     	tree.history+="a"+origVal;
 							tree.saveInDB();
@@ -549,7 +549,7 @@ BPlusTree.prototype.add=function(con) {
 						}
 					}
 				}
-				tree.draw(con);
+				tree.draw();
 
 			},steps*1000+1000)
 		}
@@ -1119,7 +1119,7 @@ function getRandomInt(min, max) {
 	  return Math.floor(Math.random() * (max - min)) + min;
 }
 
-BPlusTree.prototype.random=function(con){
+BPlusTree.prototype.random=function(){
 	this.root=undefined;
 	this.history="";
 	var number=parseInt(Math.random()*25,10);
@@ -1130,12 +1130,12 @@ BPlusTree.prototype.random=function(con){
 		this.addFixed(parseInt(getRandomInt(0,100),10));
 	}
 	
-	this.draw(con);
+	this.draw();
 	this.saveInDB();
 }
 
 
-BPlusTree.prototype.remove=function(con){
+BPlusTree.prototype.remove=function(){
 	
 	if(this.order<0){
 		window.alert("Create the tree first!");return;
@@ -1151,7 +1151,7 @@ BPlusTree.prototype.remove=function(con){
 		//find target leaf node first:
 		var actNode=this.root;
 		actNode.color="#FF8000";
-		this.draw(con);
+		this.draw();
 
 			function whileLoop(tree,actNode){
 				setTimeout(function (){
@@ -1172,7 +1172,7 @@ BPlusTree.prototype.remove=function(con){
 					actNode.color="#FF8000";
 					
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 					actNode.parent.neededKid=undefined;
 					if(!actNode.is_leaf)whileLoop(tree,actNode);
 					
@@ -1206,7 +1206,7 @@ BPlusTree.prototype.remove=function(con){
 				//window.alert("in");
 				var found=false;
 				for(var i=0;i<actNode.keys.length;i++){if(actNode.keys[i]==val)found=true;}
-				if(!found){actNode.parent.neededKid=undefined;tree.draw(con);return;}
+				if(!found){actNode.parent.neededKid=undefined;tree.draw();return;}
 				
 				//if no underflow will occur
 				if(actNode==tree.root){
@@ -1377,12 +1377,12 @@ BPlusTree.prototype.remove=function(con){
 						
 						 	tree.history+="r"+val;
 							tree.saveInDB();
-							tree.draw(con);return;
+							tree.draw();return;
 						}
 						if((actNode.parent!=tree.root && actNode.parent.keys.length>=tree.order)||actNode.parent==tree.root){
 						 	tree.history+="r"+val;
 							tree.saveInDB();
-							tree.draw(con);return;
+							tree.draw();return;
 						}
 						
 						actNode=actNode.parent;
@@ -1456,7 +1456,7 @@ BPlusTree.prototype.remove=function(con){
 						}
 					}
 				}
-				tree.draw(con);
+				tree.draw();
 				
 			 	tree.history+="r"+val;
 				tree.saveInDB();
@@ -1468,7 +1468,7 @@ BPlusTree.prototype.remove=function(con){
 	
 }
 
-BPlusTree.prototype.search=function(con){
+BPlusTree.prototype.search=function(){
 	if(this.order<0){
 		window.alert("Create the tree first!");return;
 	}
@@ -1483,7 +1483,7 @@ BPlusTree.prototype.search=function(con){
 		//find target leaf node first:
 		var actNode=this.root;
 		actNode.color="#FF8000";
-		this.draw(con);
+		this.draw();
 
 			function whileLoop(tree,actNode){
 				setTimeout(function (){
@@ -1504,7 +1504,7 @@ BPlusTree.prototype.search=function(con){
 					actNode.color="#FF8000";
 					
 					actNode.parent.color="#ADFF2F";
-					tree.draw(con);
+					tree.draw();
 					actNode.parent.neededKid=undefined;
 					if(!actNode.is_leaf)whileLoop(tree,actNode);
 					else{
@@ -1512,7 +1512,7 @@ BPlusTree.prototype.search=function(con){
 							setTimeout(function(){
 									actNode.color="#ADFF2F";
 									actNode.parent.neededKid=undefined;
-									tree.draw(con);
+									tree.draw();
 									return;
 							},1000)
 						}
@@ -1526,7 +1526,7 @@ BPlusTree.prototype.search=function(con){
 			function notFound(tree){
 				setTimeout(function(){
 						actNode.color="#ADFF2F";
-						tree.draw(con);
+						tree.draw();
 						return;
 				},1000)
 			}
@@ -1537,7 +1537,6 @@ BPlusTree.prototype.search=function(con){
 	}
 }
 
-BPlusTree.prototype.draw=function(con){
-	
-	this.view.draw(con);
+BPlusTree.prototype.draw=function(){
+	this.view.draw();
 }

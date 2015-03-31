@@ -18,23 +18,32 @@ function WeightedDirectedGraphView(_model){
 	this.scale=1;
 }
 
+WeightedDirectedGraphView.prototype.initStage=function(cont){
+	this.stage = new Kinetic.Stage({
+  		container: cont,
+  		draggable: true,
+		width: 0,
+		height: 0
+	}); 
+}
+
 function intL(number) {
 	if(number!=undefined)
 		return number.toString().length;
 	else return 0;
 }
 
-WeightedDirectedGraphView.prototype.zoomIn=function(cont){
+WeightedDirectedGraphView.prototype.zoomIn=function(){
   if(this.scale<2.5)this.scale=this.scale+0.1;
-  this.draw(cont);
+  this.draw();
 }
 
-WeightedDirectedGraphView.prototype.zoomOut=function(cont){
+WeightedDirectedGraphView.prototype.zoomOut=function(){
   if(this.scale>0.5)this.scale=this.scale-0.1;
-  this.draw(cont);
+  this.draw();
 }
 
-WeightedDirectedGraphView.prototype.draw=function(cont){
+WeightedDirectedGraphView.prototype.draw=function(){
 	
 	var _radius=25*this.scale;
 	
@@ -732,7 +741,6 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 		layer.add(vals[i]);
 	}
 	
-	//layer.add(group);
 	var w=(25+75*this.model.gridSize)*this.scale;
 	var h=(25+75*this.model.gridSize)*this.scale;
 	
@@ -741,11 +749,10 @@ WeightedDirectedGraphView.prototype.draw=function(cont){
 	
 	if(H>h)h=H;
 	if(W>w)w=W;
-  	var stage = new Kinetic.Stage({
-  		container: cont,
-		width: w,
-		height: h,
-	}); 
-	stage.add(layer);
+	
+	this.stage.setHeight(h);
+	this.stage.setWidth(w);
+	this.stage.removeChildren();
+	this.stage.add(layer);
 						  
 }

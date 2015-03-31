@@ -19,10 +19,16 @@
 </head>
 
 <script>
-	var ht = new LinearHashing();
+	var ht = undefined();
+	
+	function init(){
+		ht=new LinearHashing();
+		var c1 = document.getElementById("container1");
+		ht.view.initStage(c1);	
+	}
  
 	function clearTimes(){
-		var c1 = document.getElementById("container1");
+		
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
@@ -36,79 +42,69 @@
 	function create(){
 		if(!ht.working){
 			clearTimes();
-			var c1 = document.getElementById("container1");
-			ht.init(c1);
+			ht.init();
 		}
 	}
 	
 	function add(){
 		if(!ht.working){
 			clearTimes();
-			var c1 = document.getElementById("container1");
-			ht.add(c1);
+			ht.add();
 		}
 	}
 	
 	function search(){
 		if(!ht.working){
 			clearTimes();
-			var c1 = document.getElementById("container1");
-			ht.search(c1);
+			ht.search();
 		}
 	}
 	
 	function rem(){
 		if(!ht.working){
 			clearTimes();
-			var c1 = document.getElementById("container1");
-			ht.remove(c1);
+			ht.remove();
 		}
 	}
 	
 	function pre(){
 		if(!ht.working){
 			clearTimes();
-			var c1 = document.getElementById("container1");
-			ht.prev(c1);
+			ht.prev();
 		}
 	}
 	
 	function next(){
 		if(!ht.working){
 			clearTimes();
-			var c1 = document.getElementById("container1");
-			ht.next(c1);
+			ht.next();
 		}
 	}
 	
 	function first(){
 		if(!ht.working){
 			clearTimes();
-			var c1 = document.getElementById("container1");
-			ht.firstState(c1);
+			ht.firstState();
 		}
 	}
 	
 	function last(){
 		if(!ht.working){
 			clearTimes();
-			var c1 = document.getElementById("container1");
-			ht.lastState(c1);
+			ht.lastState();
 		}
 	}
 	
 	function zoomIn(){
-     	var c1 = document.getElementById("container1");
-     	ht.view.zoomIn(c1);
+     	ht.view.zoomIn();
 	}
 	
 	function zoomOut(){
-     	var c1 = document.getElementById("container1");
-     	ht.view.zoomOut(c1);
+     	ht.view.zoomOut();
 	}
 </script>
 
-<body id="body" class="page">
+<body id="body" class="page" onload="init();return false;">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

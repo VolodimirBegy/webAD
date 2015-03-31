@@ -18,21 +18,28 @@ function HashTableView(_model){
 	this.model=_model;
 }
 
-HashTableView.prototype.zoomIn=function(cont){
+HashTableView.prototype.initStage=function(cont){
+	this.stage = new Kinetic.Stage({
+  		container: cont,
+  		draggable: true,
+		width: 0,
+		height: 0
+	}); 
+}
+
+HashTableView.prototype.zoomIn=function(){
 	if(this.scale<3)this.scale=this.scale+0.1;
-	this.draw(this.model,cont);
+	this.draw();
 }
 
-HashTableView.prototype.zoomOut=function(cont){
+HashTableView.prototype.zoomOut=function(){
 	if(this.scale>0.2)this.scale=this.scale-0.1;
-	this.draw(this.model,cont);
+	this.draw();
 }
 
-HashTableView.prototype.draw=function(m,cont){
-	
+HashTableView.prototype.draw=function(){
+	var m=this.model
 	var layer = new Kinetic.Layer();
-		  
-	var group = new Kinetic.Group();
 		
 	var hash = new Kinetic.Text({
 		x: 50*this.scale,
@@ -128,17 +135,15 @@ HashTableView.prototype.draw=function(m,cont){
 			fill: m.rows[i].color,
 		});
 		  
-		group.add(rect);
-		group.add(text);
-		group.add(textVal);
+		layer.add(rect);
+		layer.add(text);
+		layer.add(textVal);
 	}
-	group.add(hash);
-	group.add(calc);
-	group.add(fillFactor);
-	group.add(toAdd);
+	layer.add(hash);
+	layer.add(calc);
+	layer.add(fillFactor);
+	layer.add(toAdd);
 
-	// add the shape to the layer
-	layer.add(group);
 	
 	var h=100*this.scale+m.rows.length*100*this.scale;
 	var w=0;
@@ -152,11 +157,8 @@ HashTableView.prototype.draw=function(m,cont){
 	else
 		w=toAdd.getX()+toAdd.getWidth();
 	
-	var stage = new Kinetic.Stage({
-		container: cont,
-		width: w,
-		height: h
-	}); 
-	
-	stage.add(layer);
+	this.stage.setWidth(w);
+	this.stage.setHeight(h);
+	this.stage.removeChildren();
+	this.stage.add(layer);	
 }

@@ -18,17 +18,26 @@ function VectorView(_model){
 	this.scale=1;
 }
 
-VectorView.prototype.zoomIn=function(cont){
+VectorView.prototype.initStage=function(cont){
+	this.stage = new Kinetic.Stage({
+  		container: cont,
+  		draggable: true,
+		width: 0,
+		height: 0
+	}); 
+}
+
+VectorView.prototype.zoomIn=function(){
 	if(this.scale<3)this.scale=this.scale+0.1;
-	this.draw(cont);
+	this.draw();
 }
 
-VectorView.prototype.zoomOut=function(cont){
+VectorView.prototype.zoomOut=function(){
 	if(this.scale>0.2)this.scale=this.scale-0.1;
-	this.draw(cont);
+	this.draw();
 }
 
-VectorView.prototype.draw=function(cont){
+VectorView.prototype.draw=function(){
 
 	var w=this.model.size()*30*this.scale;
 	var biggestNum=0;
@@ -38,14 +47,12 @@ VectorView.prototype.draw=function(cont){
 	}
 	var h=(45+biggestNum*3)*this.scale;
 	
-	var stage = new Kinetic.Stage({
-		container: cont,
-		width: w,
-		height: h
-	});
+	this.stage.setHeight(h);
+	this.stage.setWidth(w);
+	this.stage.removeChildren();
 
 	var layer = new Kinetic.Layer();
-	var group = new Kinetic.Group();//{
+
 	var range=this.model.range.split("-");
 	
 	for(var i=this.model.size()-1;i>-1;i--){
@@ -125,19 +132,17 @@ VectorView.prototype.draw=function(cont){
 		});
 		
 		if(this.model.pivot==i){
-			group.add(pivot);
+			layer.add(pivot);
 		}
 		if(this.model.l==i){
-			group.add(L);
+			layer.add(L);
 		}
 		if(this.model.r==i){
-			group.add(R);
+			layer.add(R);
 		}
-		group.add(rect);
-		group.add(text);
-		layer.add(group);
-		
+		layer.add(rect);
+		layer.add(text);
 	}
-	stage.add(layer);
+	this.stage.add(layer);
 	
 }
