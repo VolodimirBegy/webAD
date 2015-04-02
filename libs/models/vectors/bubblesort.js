@@ -20,15 +20,8 @@ function Element(value){
 
 function Vector(){
 	this.view=new VectorView(this);
-	this.elements=[];
-	this.finished=false;
-	this.i=0;
-	this.j=0;
-	
-	this.paused=false;
 	this.db=TAFFY();
 	this.actStateID=0;
-	this.finished=false;
 }
 
 Vector.prototype.init=function(){
@@ -36,9 +29,15 @@ Vector.prototype.init=function(){
 	this.finished=false;
 	this.i=0;
 	this.j=0;
-	
+	this.speed=5;
 	this.paused=false;
 	this.finished=false;
+	
+	this.col1="#00FF80";
+	this.col2="#FF0000";
+	this.col3="#F7D358";
+	this.col4="#CC2EFA";
+	
 	this.saveInDB();
 }
 
@@ -87,9 +86,15 @@ Vector.prototype.copy=function(toCopy){
 	newVector.finished=toCopy.finished;
 	newVector.i=toCopy.i;
 	newVector.j=toCopy.j;
+	
+	newVector.col1=toCopy.col1;
+	newVector.col2=toCopy.col2;
+	newVector.col3=toCopy.col3;
+	newVector.col4=toCopy.col4;
+	
 	newVector.paused=true;
 	newVector.swapflag=toCopy.swapflag;
-	
+	newVector.speed=toCopy.speed;
 	newVector.elements=[];
 	for(var i=0;i<toCopy.elements.length;i++){
 		newVector.elements.push(new Element(toCopy.elements[i].value));
@@ -102,9 +107,15 @@ Vector.prototype.replaceThis=function(toCopy){
 	this.finished=toCopy.finished;
 	this.i=toCopy.i;
 	this.j=toCopy.j;
+	
+	this.col1=toCopy.col1;
+	this.col2=toCopy.col2;
+	this.col3=toCopy.col3;
+	this.col4=toCopy.col4;
+	
 	this.paused=true;
 	this.swapflag=toCopy.swapflag;
-	
+	this.speed=toCopy.speed;
 	this.elements=[];
 	for(var i=0;i<toCopy.elements.length;i++){
 		this.elements.push(new Element(toCopy.elements[i].value));
@@ -188,29 +199,29 @@ Vector.prototype.setRandomElements=function(){
 Vector.prototype.setColorsBubbleSort=function(){
 	if(!this.finished){
 		for(var j=0;j<=this.j;j++){
-			this.elements[j].color="#CC2EFA";
+			this.elements[j].color=this.col4;
 		}
 	
 		for(var j=this.j;j<this.size()-1;j++){
-			this.elements[j+1].color="#F7D358";
+			this.elements[j+1].color=this.col3;
 		}
 	 
 
 		if(this.i<this.size()-1){
 			if(this.elements[this.i].value>this.elements[this.i+1].value){
-				this.elements[this.i].color="red";
-				this.elements[this.i+1].color="red";
+				this.elements[this.i].color=this.col2;
+				this.elements[this.i+1].color=this.col2;
 			}
 			else{
-				this.elements[this.i].color="#00FF80";
-				this.elements[this.i+1].color="#00FF80";
+				this.elements[this.i].color=this.col1;
+				this.elements[this.i+1].color=this.col1;
 			}
 		}
 	}
 	
 	else{
 		for(var i=0;i<this.size();i++){
-			this.elements[i].color="#F7D358";
+			this.elements[i].color=this.col3;
 		}
 	}
 }
@@ -218,7 +229,7 @@ Vector.prototype.setColorsBubbleSort=function(){
 Vector.prototype.bubbleSort=function(){
 	//this.finished=false;
 	if(this.elements.length==1 || this.finished){
-		this.elements[0].color="#F7D358";
+		this.elements[0].color=this.col3;
 		this.draw();
 		this.saveInDB();
 		return;
@@ -231,7 +242,7 @@ Vector.prototype.bubbleSort=function(){
 	 	var firstDelay=0;
         setTimeout(function(){
 					 function sort(vector){
-      					 firstDelay=300;
+      					 firstDelay=100*vector.speed;
 						 setTimeout(function(){
 							 var extraState=false;
 							 if(vector.elements[vector.i].value>vector.elements[vector.i+1].value){
@@ -269,10 +280,10 @@ Vector.prototype.bubbleSort=function(){
 	          							 vector.draw();
           							 }
           							 
-      							 	},300)
+      							 	},100*vector.speed)
 							 	}
 						 	   delay(vector);
-					 	},300)
+					 	},100*vector.speed)
 				     } 
 					sort(vector);
         },firstDelay)

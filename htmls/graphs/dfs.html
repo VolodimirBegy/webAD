@@ -4,6 +4,7 @@
   <title>webAD</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
@@ -47,6 +48,38 @@
 		tf.val("");
 		tf.css("background-color","white");
 		_class('createMatrix', 'hide');
+	}
+	
+	function randInt(min, max) {
+		  return Math.floor(Math.random() * (max - min)) + min;
+	}
+	
+	function random(){
+		clearTimes();
+		var amount=randInt(3,15);
+		var _matrix=new Array(amount);
+		for(var i=0;i<amount;i++){
+			_matrix[i]=new Array(amount);
+		}
+		var startNode=undefined;
+		
+		var fill=undefined;
+
+		var fM=4;
+		for(var i=0;i<amount;i++){
+			for(var j=0;j<amount;j++){
+				fill=randInt(0,6);
+				if(i==amount-1 && j==0)fM=0;
+				else fM=4;
+				if(i!=j && fill>fM){
+					_matrix[i][j]=1;
+					_matrix[j][i]=1;
+					startNode=i;
+				}
+			}
+		}
+		var c1 = document.getElementById("container1");
+		graph=new UnweightedUndirectedGraph(_matrix,startNode,c1);
 	}
 	
 	function createOk(){
@@ -138,6 +171,7 @@
 	<div id="menu" class="open">
 		<a href="javascript:_class('menu', 'open')">Depth First Search</a>
         <input type="button" value="Create" id="create" onclick="create();return false;">
+         <input type="button" value="Random" id="random" onclick="random();return false;">
         <input type="button" value="Run DFS" id="dfs" onclick="dfs();return false;">
 	</div>
 	<div id="container1"></div>

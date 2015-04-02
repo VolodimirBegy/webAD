@@ -92,7 +92,6 @@ function WeightedDirectedGraph(_matrix,startNode,c1){
 		}
 	}
 	
-	
 	addConnected(this,startNode);
 	
 	this.gridSize=Math.ceil(Math.sqrt(this.nodes.length));

@@ -11,7 +11,6 @@ function WeightedDirectedMatrix(_number){
 WeightedDirectedMatrix.prototype.initStage=function(cont){
 	this.stage = new Kinetic.Stage({
   		container: cont,
-  		draggable: true,
 		width: 0,
 		height: 0
 	}); 
