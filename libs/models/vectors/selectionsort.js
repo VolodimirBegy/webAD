@@ -89,6 +89,8 @@ Vector.prototype.copy=function(toCopy){
 	newVector.sstmpmin=toCopy.sstmpmin;
 	newVector.paused=true;
 
+	newVector.stepDelay=toCopy.stepDelay;
+	
 	newVector.elements=[];
 	for(var i=0;i<toCopy.elements.length;i++){
 		newVector.elements.push(new Element(toCopy.elements[i].value));
@@ -103,6 +105,8 @@ Vector.prototype.replaceThis=function(toCopy){
 	this.j=toCopy.j;
 	this.sstmpmin=toCopy.sstmpmin;
 	this.paused=true;
+	
+	this.stepDelay=toCopy.stepDelay;
 	
 	this.elements=[];
 	for(var i=0;i<toCopy.elements.length;i++){
@@ -222,8 +226,13 @@ Vector.prototype.selectionSort=function(con){
 		return;
 	}
 	
+	
 	function step(vector){
 
+		setTimeout(function(){
+		
+		vector.stepDelay=0;
+			
 		function sort(vector){
 			//bad end of swap comes from here... :
 			vector.setColorsSelectionSort();
@@ -260,8 +269,8 @@ Vector.prototype.selectionSort=function(con){
 					
 					setTimeout(function(){
 						//swap
-						var delay2=1000;
-						if(vector.sstmpmin==vector.j)delay2=0;
+						vector.stepDelay=1000;
+						if(vector.sstmpmin==vector.j)vector.stepDelay=0;
 						var tmp=vector.elements[vector.j].value;
 						vector.elements[vector.j].value=vector.elements[vector.sstmpmin].value;
 						vector.elements[vector.sstmpmin].value=tmp;
@@ -279,7 +288,7 @@ Vector.prototype.selectionSort=function(con){
 						vector.i=vector.j;
 						vector.saveInDB();
 						//window.alert(delay);
-						setTimeout(function(){step(vector);},delay2)
+						step(vector);
 						
 					},delay)
 					
@@ -296,6 +305,8 @@ Vector.prototype.selectionSort=function(con){
 		}
 		
 		sort(vector);
+		
+		},vector.stepDelay)
 	}
 
 	step(this);
