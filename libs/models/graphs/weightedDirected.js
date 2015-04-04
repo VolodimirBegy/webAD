@@ -124,8 +124,8 @@ function WeightedDirectedGraph(_matrix,startNode,c1){
 	this.view.initStage(c1);
 	this.draw();
 	
-	this.db=TAFFY();
-	this.actStateID=0;
+	this.db=[];
+	this.actStateID=-1;
 }
 
 WeightedDirectedGraph.prototype.dijkstra=function(){

@@ -111,8 +111,8 @@ function UnweightedUndirectedGraph(_matrix,_startNode,c1){
 	this.view.initStage(c1);
 	this.draw();
 	
-	this.db=TAFFY();
-	this.actStateID=0;
+	this.db=[];
+	this.actStateID=-1;
 }
 
 UnweightedUndirectedGraph.prototype.dfs=function(){

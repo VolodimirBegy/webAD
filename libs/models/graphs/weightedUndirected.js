@@ -127,8 +127,8 @@ function WeightedUndirectedGraph(_matrix,c1){
 	this.view.initStage(c1);
 	this.draw();
 	
-	this.db=TAFFY();
-	this.actStateID=0;
+	this.db=[];
+	this.actStateID=-1;
 }
 
 WeightedUndirectedGraph.prototype.kruskal=function(){
