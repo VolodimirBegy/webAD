@@ -38,8 +38,8 @@ VectorView.prototype.zoomOut=function(){
 }
 
 VectorView.prototype.draw=function(){
-
-	var w=this.model.size()*30*this.scale;
+	
+	var w=this.model.size()*30*this.scale+20*this.scale;
 	var biggestNum=0;
 	for(var i=0;i<this.model.size();i++){
 		if(this.model.elements[i].value>biggestNum)
@@ -52,7 +52,7 @@ VectorView.prototype.draw=function(){
 	this.stage.removeChildren();
 
 	var layer = new Kinetic.Layer();
-
+	if(this.model.range==undefined){this.stage.removeChildren();return;}
 	var range=this.model.range.split("-");
 	
 	for(var i=this.model.size()-1;i>-1;i--){

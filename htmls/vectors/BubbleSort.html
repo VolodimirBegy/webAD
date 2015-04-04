@@ -37,12 +37,6 @@
 		sp.val(vec.speed);
 	}
 	
-	function init(){
-		vec.init();
-		resetFields();
-		var elem = $("#p");
-		elem.addClass("p1");
-	}
 	
 	function speed(){
 		var sp = $("#speed");
@@ -83,6 +77,10 @@
 	}
 	
 	function clearTimes(){
+		var elem = $("#p");
+		elem.removeClass("p1");
+		vec.paused=true;
+		
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
@@ -93,19 +91,20 @@
 	function create(){
 		clearTimes();
 		
-		init();
-		
-		vec.getElementsByPrompt();
-		vec.bubbleSort();
+		if(vec.getElementsByPrompt()){
+			var elem = $("#p");
+			elem.addClass("p1");
+			resetFields();
+		}
 	}	
 
 	function rand(){
 		clearTimes();
 		
-		init();
-		
 		vec.setRandomElements();
-		vec.bubbleSort(); 
+		var elem = $("#p");
+		elem.addClass("p1");
+		resetFields();
 	}
 	
 	function pre(){

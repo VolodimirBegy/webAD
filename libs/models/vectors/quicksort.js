@@ -208,8 +208,10 @@ Vector.prototype.setRandomElements=function(){
 		 tempVal=parseInt(Math.random()*40,10);
 		 tempElements.push(new Element(tempVal));
 	 }
-
+	 
+	 this.init();
 	 this.elements=tempElements;
+	 this.quicksort();
 }
 
 Vector.prototype.setColorsQuicksort=function(){
@@ -432,12 +434,22 @@ Vector.prototype.getElementsByPrompt=function(){
 
 	 var tempValsStr = valuesInString.split(" "); 
 
+	 var _in=false;
 	 for(var i=0;i<tempValsStr.length;i++){
-		 if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000)
+		 if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000){
 			 tempElements.push(new Element(parseInt(tempValsStr[i])));
+			 _in=true;
+		 }
 	 }
 
-	 this.elements=tempElements;
+	 if(_in){
+		 this.init();
+		 this.elements=tempElements;
+		 this.quicksort();
+		 return true;
+	 }
+	 else
+		 return false;
  }
 
 Vector.prototype.size=function(){

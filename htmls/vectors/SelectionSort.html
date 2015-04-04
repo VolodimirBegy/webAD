@@ -28,6 +28,10 @@
 	}
 
 	function clearTimes(){
+		var elem = $("#p");
+		elem.removeClass("p1");
+		vec.paused=true;
+		
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
@@ -37,18 +41,18 @@
 
 	function create(){
 		clearTimes();
-		vec.init();
-		vec.getElementsByPrompt();
-		vec.selectionSort();
-		var elem = $("#p");
-		elem.addClass("p1");
+		
+		if(vec.getElementsByPrompt()){
+			var elem = $("#p");
+			elem.addClass("p1");
+		}
 	}	
 
 	function rand(){
 		clearTimes();
-		vec.init();
+
 		vec.setRandomElements();
-		vec.selectionSort(); 
+
 		var elem = $("#p");
 		elem.addClass("p1");
 	}

@@ -181,8 +181,10 @@ Vector.prototype.setRandomElements=function(){
 		 tempElements.push(new Element(tempVal));
 	 }
 
+	 this.init();
 	 this.elements=tempElements;
 	 this.j=this.size()-1;
+	 this.bubbleSort();
  }
  
 Vector.prototype.setColorsBubbleSort=function(){
@@ -299,14 +301,26 @@ Vector.prototype.getElementsByPrompt=function(){
 	 var valuesInString=prompt("Please enter the elements (separated by space):\nValues > 999 are ignored");
 
 	 var tempValsStr = valuesInString.split(" "); 
-
+	 
+	 var _in=false;
+	 
 	 for(var i=0;i<tempValsStr.length;i++){
-		 if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000)
+		 if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000){
 			 tempElements.push(new Element(parseInt(tempValsStr[i])));
+			 _in=true;
+		 }
 	 }
 
-	 this.elements=tempElements;
-	 this.j=this.size()-1;
+	 if(_in){
+		 this.init();
+		 this.elements=tempElements;
+		 this.j=this.size()-1;
+		 this.bubbleSort();
+		 return true;
+	 }
+	 else
+		 return false;
+	 
 }
 
 Vector.prototype.size=function(){
