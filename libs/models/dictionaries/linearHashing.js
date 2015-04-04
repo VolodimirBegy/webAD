@@ -29,7 +29,7 @@ function LinearHashing(){
 	this.d=undefined;
 	this.nts=0;
 
-	this.db=TAFFY();
+	this.db=[];
 	this.actStateID=0;
 }
 
@@ -139,61 +139,57 @@ LinearHashing.prototype.replaceThis=function(ht){
 }
 
 LinearHashing.prototype.prev=function(){
-	if(this.actStateID>1){
-		var tmp_db=this.db;
+	if(this.actStateID>0){
 		var prev_id=this.actStateID-1;
 		this.actStateID=prev_id;
-		var rs=tmp_db({id:prev_id}).select("state");
-		this.replaceThis(rs[0]);
-		this.draw();
+		var rs=this.db[prev_id];
+		//make actual node to THIS:
+      	this.replaceThis(rs);
+      	this.draw();
 	}
 }
 
 LinearHashing.prototype.next=function(){
-	if(this.actStateID<this.db().count()){
-		var tmp_db=this.db;
+	if(this.actStateID<this.db.length-1){
 		var next_id=this.actStateID+1;
 		this.actStateID=next_id;
-		var rs=tmp_db({id:next_id}).select("state");
-		this.replaceThis(rs[0]);
-		this.draw();
+		var rs=this.db[next_id];
+		//make actual node to THIS:
+      	this.replaceThis(rs);
+      	this.draw();
 	}
 }
 
 LinearHashing.prototype.firstState=function(){
-	var tmp_db=this.db;
-	this.actStateID=1;
-	var rs=tmp_db({id:1}).select("state");
-	this.replaceThis(rs[0]);
-	this.draw();
+	this.actStateID=0;
+	var rs=this.db[0];
+	//make actual node to THIS:
+    this.replaceThis(rs);
+    this.draw();
 }
 
 LinearHashing.prototype.lastState=function(){
-	var tmp_db=this.db;
-	var last_id=tmp_db().count();
+	var last_id=this.db.length-1;
 	this.actStateID=last_id;
-	var rs=tmp_db({id:last_id}).select("state");
-	this.replaceThis(rs[0]);
-	this.draw();
+	var rs=this.db[last_id];
+	//make actual node to THIS:
+     this.replaceThis(rs);
+     this.draw();
 }
 
 LinearHashing.prototype.saveInDB=function(){
-	var count=this.db().count();
+	var count=this.db.length-1;
  	if(count!=this.actStateID){
        	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db({id:i}).remove();
+           	this.db.splice(i,1);
        	}
  	}
-	
-	var tmp_db=this.db;
-
-	count=tmp_db().count();
+	var count=this.db.length-1;
 	var nextID=count+1;
 	
 	var new_state = this.copy(this);
-	tmp_db.insert({id: nextID,state:new_state});
+	this.db.push(new_state);
 	
-	this.db=tmp_db;
 	this.actStateID=nextID;
 }
 

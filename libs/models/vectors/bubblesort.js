@@ -20,7 +20,7 @@ function Element(value){
 
 function Vector(){
 	this.view=new VectorView(this);
-	this.db=TAFFY();
+	this.db=[];
 	this.actStateID=0;
 }
 
@@ -42,23 +42,19 @@ Vector.prototype.init=function(){
 }
 
 Vector.prototype.saveInDB=function(){
-	var count=this.db().count();
+	var count=this.db.length-1;
  	if(count!=this.actStateID){
        	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db({id:i}).remove();
+           	this.db.splice(i,1);
        	}
  	}
- 	
-	var tmp_db=this.db;
-
-	var count=tmp_db().count();
+	var count=this.db.length-1;
 	var nextID=count+1;
 	
 	var new_state = this.copy(this);
 	//code snippet for ignoring duplicates
-	var last_id=tmp_db().count();
-	var rs=tmp_db({id:last_id}).select("state");
-	var last_state=rs[0];
+	var last_id=this.db.length-1;
+	var last_state=this.db[last_id];
 	
 	var same=true;
 	
@@ -74,9 +70,8 @@ Vector.prototype.saveInDB=function(){
 	}
 	//end code snippet for ignoring duplicates
 	if(!same){
-		tmp_db.insert({id: nextID,state:new_state});
+		this.db.push(new_state);
 		
-		this.db=tmp_db;
 		this.actStateID=nextID;
 	}
 }
@@ -125,13 +120,12 @@ Vector.prototype.replaceThis=function(toCopy){
 
 Vector.prototype.prev=function(){
 	if(this.paused){
-		if(this.actStateID>1){
-			var tmp_db=this.db;
+		if(this.actStateID>0){
 			var prev_id=this.actStateID-1;
 			this.actStateID=prev_id;
-			var rs=tmp_db({id:prev_id}).select("state");
+			var rs=this.db[prev_id];
 			//make actual node to THIS:
-	      	this.replaceThis(rs[0]);
+	      	this.replaceThis(rs);
 	      	this.draw();
 		}
 	}
@@ -141,13 +135,12 @@ Vector.prototype.prev=function(){
 
 Vector.prototype.next=function(){
 	if(this.paused){
-		if(this.actStateID<this.db().count()){
-			var tmp_db=this.db;
+		if(this.actStateID<this.db.length-1){
 			var next_id=this.actStateID+1;
 			this.actStateID=next_id;
-			var rs=tmp_db({id:next_id}).select("state");
+			var rs=this.db[next_id];
 			//make actual node to THIS:
-	      	this.replaceThis(rs[0]);
+	      	this.replaceThis(rs);
 	      	this.draw();
 		}
 	}
@@ -157,12 +150,11 @@ Vector.prototype.next=function(){
 
 Vector.prototype.firstState=function(){
 	if(this.paused){
-		var tmp_db=this.db;
-		this.actStateID=1;
-		var rs=tmp_db({id:1}).select("state");
+		this.actStateID=0;
+		var rs=this.db[0];
 		//make actual node to THIS:
-	     this.replaceThis(rs[0]);
-	     this.draw();
+	    this.replaceThis(rs);
+	    this.draw();
 	}
 	else
 		window.alert("Pause the sorting first!");
@@ -170,12 +162,11 @@ Vector.prototype.firstState=function(){
 
 Vector.prototype.lastState=function(){
 	if(this.paused){
-		var tmp_db=this.db;
-		var last_id=tmp_db().count();
+		var last_id=this.db.length-1;
 		this.actStateID=last_id;
-		var rs=tmp_db({id:last_id}).select("state");
+		var rs=this.db[last_id];
 		//make actual node to THIS:
-	     this.replaceThis(rs[0]);
+	     this.replaceThis(rs);
 	     this.draw();
 	}
 	else

@@ -25,6 +25,9 @@ HeapView.prototype.initStage=function(cont){
 		width: 0,
 		height: 0
 	}); 
+	
+	this.layer = new Kinetic.Layer();
+	this.stage.add(this.layer);
 }
 
 HeapView.prototype.zoomIn=function(){
@@ -38,6 +41,7 @@ HeapView.prototype.zoomOut=function(){
 }
 
 HeapView.prototype.draw=function(){
+	this.layer.removeChildren();
 	
 	var tmpNodes=[];
 	if(this.model.root!=undefined)
@@ -70,8 +74,6 @@ HeapView.prototype.draw=function(){
 	level--;
 	
 	var _radius=20*this.scale;
-
-	var layer = new Kinetic.Layer();
 	
 	var al=1;
 	tmpNodes=[];
@@ -154,10 +156,10 @@ HeapView.prototype.draw=function(){
 				}
 			}
 			
-			layer.add(circle);
-			layer.add(val);
+			this.layer.add(circle);
+			this.layer.add(val);
 			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined && tmpNodes[i]!=this.model.root)
-				layer.add(line);
+				this.layer.add(line);
 			
 			
 		}
@@ -211,9 +213,9 @@ HeapView.prototype.draw=function(){
 			fill: 'black',
 		});
 	
-		layer.add(rect);
-		layer.add(text);
-		layer.add(index);
+		this.layer.add(rect);
+		this.layer.add(text);
+		this.layer.add(index);
 		
 		
 		firstSortedX=rect.getX()+rect.getWidth()+2*this.scale;
@@ -250,9 +252,9 @@ HeapView.prototype.draw=function(){
 			fill: 'black',
 		});
 	
-		layer.add(rect);
-		layer.add(text);
-		layer.add(index);
+		this.layer.add(rect);
+		this.layer.add(text);
+		this.layer.add(index);
 		
 		firstSortedIndex++;
 	}
@@ -267,7 +269,5 @@ HeapView.prototype.draw=function(){
   	
 	this.stage.setWidth(w);
 	this.stage.setHeight(h);
-	this.stage.removeChildren();
-	this.stage.add(layer);	
 
 }

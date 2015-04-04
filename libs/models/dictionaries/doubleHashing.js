@@ -27,7 +27,7 @@ function DoubleHashing(){
 	this.fillFactor=0;
 	this.overflow=[];
 	this.prime=undefined;
-	this.db=TAFFY();
+	this.db=[];
 	this.actStateID=0;
 }
 
@@ -88,61 +88,57 @@ DoubleHashing.prototype.replaceThis=function(ht){
 }
 
 DoubleHashing.prototype.prev=function(){
-	if(this.actStateID>1){
-		var tmp_db=this.db;
+	if(this.actStateID>0){
 		var prev_id=this.actStateID-1;
 		this.actStateID=prev_id;
-		var rs=tmp_db({id:prev_id}).select("state");
-		this.replaceThis(rs[0]);
-		this.draw();
+		var rs=this.db[prev_id];
+		//make actual node to THIS:
+      	this.replaceThis(rs);
+      	this.draw();
 	}
 }
 
 DoubleHashing.prototype.next=function(){
-	if(this.actStateID<this.db().count()){
-		var tmp_db=this.db;
+	if(this.actStateID<this.db.length-1){
 		var next_id=this.actStateID+1;
 		this.actStateID=next_id;
-		var rs=tmp_db({id:next_id}).select("state");
-		this.replaceThis(rs[0]);
-		this.draw();
+		var rs=this.db[next_id];
+		//make actual node to THIS:
+      	this.replaceThis(rs);
+      	this.draw();
 	}
 }
 
 DoubleHashing.prototype.firstState=function(){
-	var tmp_db=this.db;
-	this.actStateID=1;
-	var rs=tmp_db({id:1}).select("state");
-	this.replaceThis(rs[0]);
-	this.draw();
+	this.actStateID=0;
+	var rs=this.db[0];
+	//make actual node to THIS:
+    this.replaceThis(rs);
+    this.draw();
 }
 
 DoubleHashing.prototype.lastState=function(){
-	var tmp_db=this.db;
-	var last_id=tmp_db().count();
+	var last_id=this.db.length-1;
 	this.actStateID=last_id;
-	var rs=tmp_db({id:last_id}).select("state");
-	this.replaceThis(rs[0]);
-	this.draw();
+	var rs=this.db[last_id];
+	//make actual node to THIS:
+     this.replaceThis(rs);
+     this.draw();
 }
 
 DoubleHashing.prototype.saveInDB=function(){
-	var count=this.db().count();
+	var count=this.db.length-1;
  	if(count!=this.actStateID){
-       	for(var j=this.actStateID+1;j<=count;++j){
-       		this.db({id:j}).remove();
+       	for(var i=this.actStateID+1;i<=count;++i){
+           	this.db.splice(i,1);
        	}
  	}
- 	
-	var tmp_db=this.db;
-
-	var count=tmp_db().count();
+	var count=this.db.length-1;
 	var nextID=count+1;
 	
 	var new_state = this.copy(this);
-	tmp_db.insert({id: nextID,state:new_state});
+	this.db.push(new_state);
 	
-	this.db=tmp_db;
 	this.actStateID=nextID;
 }
 

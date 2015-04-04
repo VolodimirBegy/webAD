@@ -11,7 +11,6 @@
   
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  <script src="../../libs/externalLibs/taffy.js"></script>
   
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
@@ -48,24 +47,28 @@
 	function col1(){
 		var col1 = $("#col1");
 		vec.col1=col1.val();
+		vec.setColorsBubbleSort();
 		vec.draw();
 	}
 	
 	function col2(){
 		var col2 = $("#col2");
 		vec.col2=col2.val();
+		vec.setColorsBubbleSort();
 		vec.draw();
 	}
 	
 	function col3(){
 		var col3 = $("#col3");
 		vec.col3=col3.val();
+		vec.setColorsBubbleSort();
 		vec.draw();
 	}
 	
 	function col4(){
 		var col4 = $("#col4");
 		vec.col4=col4.val();
+		vec.setColorsBubbleSort();
 		vec.draw();
 	}
 	
