@@ -28,7 +28,7 @@ function DoubleHashing(){
 	this.overflow=[];
 	this.prime=undefined;
 	this.db=[];
-	this.actStateID=0;
+	this.actStateID=-1;
 }
 
 DoubleHashing.prototype.init=function(){
@@ -130,11 +130,11 @@ DoubleHashing.prototype.saveInDB=function(){
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
        	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db.splice(i,1);
+           	this.db.splice(this.db.length-1,1);
        	}
  	}
-	var count=this.db.length-1;
-	var nextID=count+1;
+
+	var nextID=this.db.length;
 	
 	var new_state = this.copy(this);
 	this.db.push(new_state);

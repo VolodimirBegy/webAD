@@ -27,21 +27,27 @@
 		vec.view.initStage(c1);
 	}
 	
-	function init(){
-		vec.init();
-		
+	function resetFields(){
 		$("#col1").val(vec.col1);
 		$("#col2").val(vec.col2);
 		$("#col3").val(vec.col3);
 		$("#col4").val(vec.col4);
 		
 		var sp = $("#speed");
-		sp.val(5);
+		sp.val(vec.speed);
+	}
+	
+	function init(){
+		vec.init();
+		resetFields();
+		var elem = $("#p");
+		elem.addClass("p1");
 	}
 	
 	function speed(){
 		var sp = $("#speed");
 		vec.speed=parseInt(sp.val());
+		vec.saveInDB();
 	}
 	
 	function col1(){
@@ -49,6 +55,7 @@
 		vec.col1=col1.val();
 		vec.setColorsBubbleSort();
 		vec.draw();
+		vec.saveInDB();
 	}
 	
 	function col2(){
@@ -56,6 +63,7 @@
 		vec.col2=col2.val();
 		vec.setColorsBubbleSort();
 		vec.draw();
+		vec.saveInDB();
 	}
 	
 	function col3(){
@@ -63,6 +71,7 @@
 		vec.col3=col3.val();
 		vec.setColorsBubbleSort();
 		vec.draw();
+		vec.saveInDB();
 	}
 	
 	function col4(){
@@ -70,6 +79,7 @@
 		vec.col4=col4.val();
 		vec.setColorsBubbleSort();
 		vec.draw();
+		vec.saveInDB();
 	}
 	
 	function clearTimes(){
@@ -87,8 +97,6 @@
 		
 		vec.getElementsByPrompt();
 		vec.bubbleSort();
-		var elem = $("#p");
-		elem.addClass("p1");
 	}	
 
 	function rand(){
@@ -98,24 +106,26 @@
 		
 		vec.setRandomElements();
 		vec.bubbleSort(); 
-		var elem = $("#p");
-		elem.addClass("p1");
 	}
 	
 	function pre(){
 		vec.prev();
+		resetFields();
 	}
 	
 	function next(){
 		vec.next();
+		resetFields();
 	}
 	
 	function first(){
 		vec.firstState();
+		resetFields();
 	}
 	
 	function last(){
 		vec.lastState();
+		resetFields();
 	}
 	
 	function un_pause(){

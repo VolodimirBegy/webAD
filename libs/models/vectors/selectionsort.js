@@ -29,7 +29,7 @@ function Vector(){
 	
 	this.paused=false;
 	this.db=[];
-	this.actStateID=0;
+	this.actStateID=-1;
 	this.finished=false;
 }
 
@@ -50,11 +50,11 @@ Vector.prototype.saveInDB=function(){
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
        	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db.splice(i,1);
+           	this.db.splice(this.db.length-1,1);
        	}
  	}
-	var count=this.db.length-1;
-	var nextID=count+1;
+
+	var nextID=this.db.length;
 	
 	var new_state = this.copy(this);
 	//code snippet for ignoring duplicates

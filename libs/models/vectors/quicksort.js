@@ -20,16 +20,9 @@ function Element(value){
 
 function Vector(){
 	this.view=new VectorView(this);
-	this.elements=[];
 
-	this.pivot=undefined;
-	this.range=undefined;
-	this.sortedElements=[];
-	
-	this.paused=false;
 	this.db=[];
 	this.actStateID=0;
-	this.finished=false;
 }
 
 Vector.prototype.init=function(){
@@ -38,6 +31,15 @@ Vector.prototype.init=function(){
 	this.pivot=undefined;
 	this.range=undefined;
 	this.sortedElements=[];
+	this.r=undefined;
+	this.l=undefined;
+	
+	this.speed=10;
+	this.col1="#3366FF";
+	this.col2="#FF0000";
+	this.col3="#FF66FF";
+	this.col4="#FFFF66";
+	this.col5="#DDDDE0";
 	
 	this.paused=false;
 	this.finished=false;
@@ -49,21 +51,20 @@ Vector.prototype.saveInDB=function(){
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
        	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db.splice(i,1);
+           	this.db.splice(this.db.length-1,1);
        	}
  	}
-	var count=this.db.length-1;
-	var nextID=count+1;
+
+	var nextID=this.db.length;
 	
 	var new_state = this.copy(this);
-	//code snippet for ignoring duplicates
-	var last_id=this.db.length-1;
-	var last_state=this.db[last_id];
+	var last_state=this.db[this.db.length-1];
 	
 	var same=true;
 	
 	if(last_state==undefined || last_state.elements.length!=new_state.elements.length || new_state.r!=last_state.r
-			||new_state.pivot!=last_state.pivot||new_state.l!=last_state.l){
+			||new_state.pivot!=last_state.pivot||new_state.l!=last_state.l ||
+			last_state.speed!=new_state.speed){
 		same=false;
 	}
 	else{
@@ -90,6 +91,15 @@ Vector.prototype.copy=function(toCopy){
 	newVector.sortedElements=toCopy.sortedElements;
 	newVector.r=toCopy.r;
 	newVector.l=toCopy.l;
+	
+	newVector.col1=toCopy.col1;
+	newVector.col2=toCopy.col2;
+	newVector.col3=toCopy.col3;
+	newVector.col4=toCopy.col4;
+	newVector.col5=toCopy.col5;
+	
+	newVector.speed=toCopy.speed;
+	
 	newVector.sortedElements=[];
 	for(var i=0;i<toCopy.sortedElements.length;i++){
 		newVector.sortedElements.push(toCopy.sortedElements[i]);
@@ -113,6 +123,15 @@ Vector.prototype.replaceThis=function(toCopy){
 	}
 	this.r=toCopy.r;
 	this.l=toCopy.l;
+	
+	this.col1=toCopy.col1;
+	this.col2=toCopy.col2;
+	this.col3=toCopy.col3;
+	this.col4=toCopy.col4;
+	this.col5=toCopy.col5;
+	
+	this.speed=toCopy.speed;
+	
 	this.crossed=toCopy.crossed;
 	this.elements=[];
 	for(var i=0;i<toCopy.elements.length;i++){
@@ -200,19 +219,19 @@ Vector.prototype.setColorsQuicksort=function(){
 
 		//pivot
 		if(i==this.pivot){
-			this.elements[i].color="purple";
+			this.elements[i].color=this.col3;
 		}
 		//smaller than pivot in range
 		else if(i>=(range[0]+1) && i<=range[1] && this.elements[i].value<this.elements[this.pivot].value){
-			this.elements[i].color="blue";
+			this.elements[i].color=this.col1;
 		}
 		//bigger than pivot in range
 		else if(i>=(range[0]+1)&&i<=range[1]&&this.elements[i].value>this.elements[this.pivot].value){
-			this.elements[i].color="red";
+			this.elements[i].color=this.col2;
 		}
 		//==pivot in range
 		else if(i>=(range[0]+1)&&i<=range[1]&&this.elements[i].value==this.elements[this.pivot].value){
-			this.elements[i].color="purple";
+			this.elements[i].color=this.col3;
 		}
 		
 		if(this.sortedElements!=undefined){
@@ -226,11 +245,11 @@ Vector.prototype.setColorsQuicksort=function(){
 		}
 		//not in range: grey:
 		if(i<range[0]||i>range[1]){
-			this.elements[i].color="grey";
+			this.elements[i].color=this.col5;
 		}
 		
 		if(inSorted){
-			this.elements[i].color="yellow";
+			this.elements[i].color=this.col4;
 		}
 		
 	}
@@ -261,7 +280,7 @@ Vector.prototype.quicksort=function(){
 					
 					//can go left if r!=0 and left part has non yellow elements
 					
-				},1000)
+				},100*vector.speed)
 			}
 			
 			delayedDrawing(vector);
@@ -275,126 +294,127 @@ Vector.prototype.quicksort=function(){
 			vector.setColorsQuicksort();
 			vector.draw();
 			vector.saveInDB();
-			function step(vector){	
-				var rToLeftDelay=1000;
-				//let l go to right until a red/purple/end of range
-				function lToRight(vector){
-					
-					setTimeout(function(){
-						
-						if(vector.r==vector.l){
-							vector.crossed=true;
-						}
-						if(vector.elements[vector.l].value<vector.elements[vector.pivot].value && vector.l<vector.r){
-							vector.l=vector.l+1;
-							vector.setColorsQuicksort();
-							vector.draw();
-							vector.saveInDB();
-							lToRight(vector);
-						}
-						else{
-							rToLeftDelay=0;
-							rToLeft(vector);
-						}
-					},1000)
-				}
-				if(vector.l<vector.r)
-					lToRight(vector);
-				else
-					rToLeft(vector);
+	
+		}
+		vector.crossed=false;
+		function step(vector){	
+			var rToLeftDelay=100*vector.speed;
+			//let l go to right until a red/purple/end of range
+			function lToRight(vector){
 				
-				//let r go to left until a blue/purple/end of range
-				function rToLeft(vector){
+				setTimeout(function(){
 					
-					setTimeout(function(){
-						rToLeftDelay=1000;
+					if(vector.r==vector.l){
+						vector.crossed=true;
+					}
+					if(vector.elements[vector.l].value<vector.elements[vector.pivot].value && vector.l<vector.r){
+						vector.l=vector.l+1;
+						vector.setColorsQuicksort();
+						vector.draw();
+						vector.saveInDB();
+						lToRight(vector);
+					}
+					else{
+						rToLeftDelay=0;
+						rToLeft(vector);
+					}
+				},100*vector.speed)
+			}
+			if(vector.l<vector.r)
+				lToRight(vector);
+			else
+				rToLeft(vector);
+			
+			//let r go to left until a blue/purple/end of range
+			function rToLeft(vector){
+				
+				setTimeout(function(){
+					rToLeftDelay=100*vector.speed;
+					
+					if(vector.r<=vector.l){
+						vector.crossed=true;
+					}
+					if(vector.elements[vector.r].value>=vector.elements[vector.pivot].value && vector.r>range[0]){
+						vector.r=vector.r-1;
+						vector.setColorsQuicksort();
+						vector.draw();
+						vector.saveInDB();
+						rToLeft(vector);
+					}
+					
+					else if(!vector.crossed){
+						var tmp=vector.elements[vector.l].value;
+						vector.elements[vector.l].value=vector.elements[vector.r].value;
+						vector.elements[vector.r].value=tmp;
+						vector.setColorsQuicksort();
+						vector.draw();
+						vector.saveInDB();
+						step(vector);
+					}
+					else{
+						var tmp=vector.elements[vector.r].value;
+						vector.elements[vector.r].value=vector.elements[vector.pivot].value;
+						vector.elements[vector.pivot].value=tmp;
 						
-						if(vector.r<=vector.l){
-							vector.crossed=true;
-						}
-						if(vector.elements[vector.r].value>=vector.elements[vector.pivot].value && vector.r>range[0]){
-							vector.r=vector.r-1;
-							vector.setColorsQuicksort();
-							vector.draw();
-							vector.saveInDB();
-							rToLeft(vector);
-						}
+						//if you want more detailed animation of partition, drwa this and delay next step:
+						//vector.setColorsQuicksort();
+						//vector.draw();
+						//vector.saveInDB();
 						
-						else if(!vector.crossed){
-							var tmp=vector.elements[vector.l].value;
-							vector.elements[vector.l].value=vector.elements[vector.r].value;
-							vector.elements[vector.r].value=tmp;
-							vector.setColorsQuicksort();
-							vector.draw();
-							vector.saveInDB();
-							step(vector);
+						//sorted INDEX!!!
+						vector.sortedElements.push(vector.r);
+						vector.setColorsQuicksort();
+						//can go left if r!=0 and left part has non yellow elements
+						var canGoLeft=false;
+						var pS=0;
+						if(vector.r!=0){
+							for(var i=0;i<vector.r;i++){
+								if($.inArray(i,vector.sortedElements)==-1){
+									canGoLeft=true;pS=i;break;
+								}
+							}
+						}
+						if(canGoLeft){
+							vector.pivot=pS;
+							vector.range=""+pS+"-"+(vector.r-1);
+							partition(vector);return;
 						}
 						else{
-							var tmp=vector.elements[vector.r].value;
-							vector.elements[vector.r].value=vector.elements[vector.pivot].value;
-							vector.elements[vector.pivot].value=tmp;
-							
-							//if you want more detailed animation of partition, drwa this and delay next step:
-							//vector.setColorsQuicksort();
-							//vector.draw();
-							//vector.saveInDB();
-							
-							//sorted INDEX!!!
-							vector.sortedElements.push(vector.r);
-							vector.setColorsQuicksort();
-							//can go left if r!=0 and left part has non yellow elements
-							var canGoLeft=false;
-							var pS=0;
-							if(vector.r!=0){
-								for(var i=0;i<vector.r;i++){
-									if(vector.elements[i].color!="yellow"){
-										canGoLeft=true;pS=i;break;
+							//can go left if r!=vector.size-1 and right part has non yellow elements
+							var canGoRight=false;
+							var rangeStart=0;
+							if(vector.r!=vector.size()-1){
+								for(var i=vector.r+1;i<vector.size();i++){
+									if($.inArray(i,vector.sortedElements)==-1){
+										canGoRight=true;rangeStart=i;break;
 									}
 								}
 							}
-							if(canGoLeft){
-								vector.pivot=pS;
-								vector.range=""+pS+"-"+(vector.r-1);
+							
+							if(canGoRight){
+								var rangeEnd=111;
+								for(var i=rangeStart;i<vector.size();i++){
+									if($.inArray(i,vector.sortedElements)>-1){
+										rangeEnd=i-1;break;
+									}
+									else if(i==vector.size()-1){
+										rangeEnd=i;break;
+									}
+								}
+								vector.pivot=rangeStart;
+								vector.range=""+vector.pivot+"-"+rangeEnd;
 								partition(vector);return;
 							}
 							else{
-								//can go left if r!=vector.size-1 and right part has non yellow elements
-								var canGoRight=false;
-								var rangeStart=0;
-								if(vector.r!=vector.size()-1){
-									for(var i=vector.r+1;i<vector.size();i++){
-										if(vector.elements[i].color!="yellow"){
-											canGoRight=true;rangeStart=i;break;
-										}
-									}
-								}
-								
-								if(canGoRight){
-									var rangeEnd=111;
-									for(var i=rangeStart;i<vector.size();i++){
-										if(vector.elements[i].color=="yellow"){
-											rangeEnd=i-1;break;
-										}
-										else if(i==vector.size()-1){
-											rangeEnd=i;break;
-										}
-									}
-									vector.pivot=rangeStart;
-									vector.range=""+vector.pivot+"-"+rangeEnd;
-									partition(vector);return;
-								}
-								else{
-									vector.pivot=undefined;vector.r=undefined;
-									vector.l=undefined;vector.draw();vector.saveInDB();return;
-								}
+								vector.pivot=undefined;vector.r=undefined;
+								vector.l=undefined;vector.draw();vector.saveInDB();return;
 							}
 						}
-					},rToLeftDelay)
-				}
-				
+					}
+				},rToLeftDelay)
 			}
+			
 		}
-		vector.crossed=false;
 		step(vector);
 	}
 	

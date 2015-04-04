@@ -21,57 +21,123 @@
 <script>
 	var vec=undefined;
 	
-	function init(){
+	function _create(){
 		vec=new Vector;
 		var c1 = document.getElementById("container1");
 		vec.view.initStage(c1);
 	}
-
+	
+	function resetFields(){
+		$("#col1").val(vec.col1);
+		$("#col2").val(vec.col2);
+		$("#col3").val(vec.col3);
+		$("#col4").val(vec.col4);
+		$("#col5").val(vec.col5);
+		
+		var sp = $("#speed");
+		sp.val(vec.speed);
+	}
+	
+	function init(){
+		vec.init();
+		resetFields();
+		var elem = $("#p");
+		elem.addClass("p1");
+	}
+	
+	function speed(){
+		var sp = $("#speed");
+		vec.speed=parseInt(sp.val());
+		vec.saveInDB();
+	}
+	
+	function col1(){
+		var col1 = $("#col1");
+		vec.col1=col1.val();
+		vec.setColorsQuicksort();
+		vec.draw();
+		vec.saveInDB();
+	}
+	
+	function col2(){
+		var col2 = $("#col2");
+		vec.col2=col2.val();
+		vec.setColorsQuicksort();
+		vec.draw();
+		vec.saveInDB();
+	}
+	
+	function col3(){
+		var col3 = $("#col3");
+		vec.col3=col3.val();
+		vec.setColorsQuicksort();
+		vec.draw();
+		vec.saveInDB();
+	}
+	
+	function col4(){
+		var col4 = $("#col4");
+		vec.col4=col4.val();
+		vec.setColorsQuicksort();
+		vec.draw();
+		vec.saveInDB();
+	}
+	
+	function col5(){
+		var col5 = $("#col5");
+		vec.col5=col5.val();
+		vec.setColorsQuicksort();
+		vec.draw();
+		vec.saveInDB();
+	}
+	
 	function clearTimes(){
 		var pids = window.setTimeout(function() {}, 0);
-
+	
 		while (pids--) {
-    		window.clearTimeout(pids); 
+			window.clearTimeout(pids); 
 		}
 	}
-
+	
 	function create(){
 		clearTimes();
-		vec.init();
+		init();
+		
 		vec.getElementsByPrompt();
 		vec.quicksort();
-		var elem = $("#p");
-		elem.addClass("p1");
 	}	
-
+	
 	function rand(){
 		clearTimes();
-		vec.init();
+		init();
+		
 		vec.setRandomElements();
 		vec.quicksort(); 
-		var elem = $("#p");
-		elem.addClass("p1");
 	}
 	
 	function pre(){
 		vec.prev();
+		resetFields();
 	}
 	
 	function next(){
 		vec.next();
+		resetFields();
 	}
 	
 	function first(){
 		vec.firstState();
+		resetFields();
 	}
 	
 	function last(){
 		vec.lastState();
+		resetFields();
 	}
 	
 	function un_pause(){
 		if(vec!=undefined){
-      		var elem = $("#p");
+	  		var elem = $("#p");
 			if(elem.hasClass("p1")){
 				clearTimes();
 				vec.paused=true;
@@ -89,16 +155,16 @@
 	}
 	
 	function zoomIn(){
-     	vec.view.zoomIn();
+	 	vec.view.zoomIn();
 	}
 	
 	function zoomOut(){
-     	vec.view.zoomOut();
+	 	vec.view.zoomOut();
 	}
 
 </script>
 
-<body id="body" class="page" onload="init();return false;">
+<body id="body" class="page" onload="_create();return false;">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
@@ -138,10 +204,23 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
+	Legend: elements within the sorting range smaller than pivot are blue [1], greater are red [2], equal to and the pivot itself are purple [3]. Sorted elements are yellow [4]. Elements out of sorting range are grey [5].
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Config</h2>
+	Animation speed:
+  	<input type="number" name="speed" style="width:40px" id="speed" min="1" max="20" step="1" value="10" onchange="speed();return false;" >
+ 	<br>Color [1]:
+  	<input type="color" name="col1" id="col1" onchange="col1();return false;">
+  	<br>Color [2]:
+  	<input type="color" name="col2" id="col2" onchange="col2();return false;">
+  	<br>Color [3]:
+  	<input type="color" name="col3" id="col3" onchange="col3();return false;">
+  	<br>Color [4]:
+  	<input type="color" name="col4" id="col4" onchange="col4();return false;">
+  	<br>Color [5]:
+  	<input type="color" name="col5" id="col5" onchange="col5();return false;">
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>

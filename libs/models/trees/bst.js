@@ -29,7 +29,7 @@ function BinSearchTree(){
 	this.view=new BinTreeView(this);
 	this.db=[];
 	this.root=undefined;
-	this.actStateID=0;
+	this.actStateID=-1;
 }
 
 BinSearchTree.prototype.init=function(){
@@ -254,11 +254,11 @@ BinSearchTree.prototype.saveInDB=function(){
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
        	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db.splice(i,1);
+           	this.db.splice(this.db.length-1,1);
        	}
  	}
-	var count=this.db.length-1;
-	var nextID=count+1;
+
+	var nextID=this.db.length;
 	
 	var new_state = this.copy(this);
 	this.db.push(new_state);

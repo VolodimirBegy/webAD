@@ -21,7 +21,7 @@ function Element(value){
 function Vector(){
 	this.view=new VectorView(this);
 	this.db=[];
-	this.actStateID=0;
+	this.actStateID=-1;
 }
 
 Vector.prototype.init=function(){
@@ -45,20 +45,18 @@ Vector.prototype.saveInDB=function(){
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
        	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db.splice(i,1);
+           	this.db.splice(this.db.length-1,1);
        	}
  	}
-	var count=this.db.length-1;
-	var nextID=count+1;
+
+	var nextID=this.db.length;
 	
 	var new_state = this.copy(this);
-	//code snippet for ignoring duplicates
-	var last_id=this.db.length-1;
-	var last_state=this.db[last_id];
-	
+	var last_state=this.db[this.db.length-1];
 	var same=true;
 	
-	if(last_state==undefined || last_state.elements.length!=new_state.elements.length){
+	if(last_state==undefined || last_state.elements.length!=new_state.elements.length ||
+			last_state.speed!=new_state.speed){
 		same=false;
 	}
 	else{
