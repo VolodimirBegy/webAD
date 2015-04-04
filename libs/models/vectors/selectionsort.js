@@ -20,17 +20,8 @@ function Element(value){
 
 function Vector(){
 	this.view=new VectorView(this);
-	this.elements=[];
-	this.sorted=false;
-	this.i=0;
-	this.j=0;
-
-	this.sstmpmin=0;
-	
-	this.paused=false;
 	this.db=[];
 	this.actStateID=-1;
-	this.finished=false;
 }
 
 Vector.prototype.init=function(){
@@ -40,6 +31,7 @@ Vector.prototype.init=function(){
 	this.j=0;
 
 	this.sstmpmin=0;
+	this.stepDelay=0;
 	
 	this.paused=false;
 	this.finished=false;
