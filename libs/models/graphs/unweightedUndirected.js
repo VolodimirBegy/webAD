@@ -86,8 +86,8 @@ function UnweightedUndirectedGraph(_matrix,_startNode,c1){
 	for(var i=0;i<this.gridSize;i++){
 		for(var j=0;j<this.gridSize;j++){
 			if(this.nodes[index]!=undefined){
-				this.nodes[index].xPosition=100+75*j;
-				this.nodes[index].yPosition=50+75*i;
+				this.nodes[index].xPosition=100+150*j;
+				this.nodes[index].yPosition=50+150*i;
 				index++;
 			}
 			else break;
