@@ -22,6 +22,7 @@ function Vector(){
 	this.view=new VectorView(this);
 	this.db=[];
 	this.actStateID=-1;
+	this.elements=[];
 }
 
 Vector.prototype.init=function(){

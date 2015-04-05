@@ -4,7 +4,7 @@
   <title>webAD</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width, target-densitydpi=high-dpi">
   
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
@@ -21,10 +21,107 @@
 <script>
 	var vec=undefined;
 	
-	function init(){
+	function _create(){
 		vec=new Vector;
 		var c1 = document.getElementById("container1");
 		vec.view.initStage(c1);
+	}
+	
+	function resetFields(){
+		$("#col1").val(vec.col1);
+		$("#col2").val(vec.col2);
+		$("#col3").val(vec.col3);
+		$("#col4").val(vec.col4);
+		$("#col5").val(vec.col5);
+		
+		var sp = $("#speed");
+		sp.val(vec.speed);
+	}
+	
+	function speed(){
+		
+		if(vec!=undefined && vec.size()>0){
+			var sp = $("#speed");
+			vec.speed=parseInt(sp.val());
+			if(vec.stepDelay!=0)
+				vec.stepDelay=vec.speed*100;
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+		
+	
+	function col1(){
+		if(vec!=undefined && vec.size()>0){
+			var col1 = $("#col1");
+			vec.col1=col1.val();
+			vec.setColorsSelectionSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+	
+	function col2(){
+		if(vec!=undefined && vec.size()>0){
+			var col2 = $("#col2");
+			vec.col2=col2.val();
+			vec.setColorsSelectionSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+	
+	function col3(){
+		if(vec!=undefined && vec.size()>0){
+			var col3 = $("#col3");
+			vec.col3=col3.val();
+			vec.setColorsSelectionSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+	
+	function col4(){
+		if(vec!=undefined && vec.size()>0){
+			var col4 = $("#col4");
+			vec.col4=col4.val();
+			vec.setColorsSelectionSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+	
+	function col5(){
+		if(vec!=undefined && vec.size()>0){
+			var col5 = $("#col5");
+			vec.col5=col5.val();
+			vec.setColorsSelectionSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
 	}
 
 	function clearTimes(){
@@ -45,6 +142,7 @@
 		if(vec.getElementsByPrompt()){
 			var elem = $("#p");
 			elem.addClass("p1");
+			resetFields();
 		}
 	}	
 
@@ -55,22 +153,27 @@
 
 		var elem = $("#p");
 		elem.addClass("p1");
+		resetFields();
 	}
 	
 	function pre(){
 		vec.prev();
+		resetFields();
 	}
 	
 	function next(){
 		vec.next();
+		resetFields();
 	}
 	
 	function first(){
 		vec.firstState();
+		resetFields();
 	}
 	
 	function last(){
 		vec.lastState();
+		resetFields();
 	}
 	
 	function un_pause(){
@@ -102,7 +205,7 @@
 
 </script>
 
-<body id="body" class="page" onload="init();return false;">
+<body id="body" class="page" onload="_create();return false;">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
@@ -142,14 +245,44 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
+	Legend: the actual element is green (1). The minimum of the run is blue (2). The element, which will be swapped at the run is red (3). The sorted elements are gold (4). 
+	All other elements are purple (5).
+	<br><br>
+	In computer science, selection sort is a sorting algorithm, specifically an in-place comparison sort. It has O(n^2) time complexity, 
+	making it inefficient on large lists, and generally performs worse than the similar insertion sort. Selection sort is noted for its 
+	simplicity, and it has performance advantages over more complicated algorithms in certain situations, particularly where auxiliary memory is limited.
+	<br>
+	The algorithm divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of 
+	the list, and the sublist of items remaining to be sorted that occupy the rest of the list. Initially, the sorted sublist is empty and the unsorted sublist 
+	is the entire input list. The algorithm proceeds by finding the smallest (or largest, depending on sorting order) element in the unsorted sublist, exchanging
+ 	it with the leftmost unsorted element (putting it in sorted order), and moving the sublist boundaries one element to the right.[1]
+	<div>[1]:<a href="http://en.wikipedia.org/wiki/Selection_sort" target="_blank">http://en.wikipedia.org/wiki/Selection_sort</a></div>
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Config</h2>
+	Animation speed:
+  	<input type="number" name="speed" style="width:40px" id="speed" min="1" max="20" step="1" value="10" onchange="speed();return false;" >
+ 	<br>Color (1):
+  	<input type="color" name="col1" id="col1" onchange="col1();return false;">
+  	<br>Color (2):
+  	<input type="color" name="col2" id="col2" onchange="col2();return false;">
+  	<br>Color (3):
+  	<input type="color" name="col3" id="col3" onchange="col3();return false;">
+  	<br>Color (4):
+  	<input type="color" name="col4" id="col4" onchange="col4();return false;">
+  	<br>Color (5):
+  	<input type="color" name="col5" id="col5" onchange="col5();return false;">
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
 	<div class="pole"><h2>About</h2>
+		<a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
+			<img src="../../images/uni.png" width="250px" alt="bsimage">
+		</a>
+		<a href="https://github.com/VolodimirBegy/webAD" target="_blank">
+			<img src="../../images/octocat.png" width="100px" alt="bsimage">
+		</a>
 	</div>
 </div>
 <div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>

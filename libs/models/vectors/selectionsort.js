@@ -22,6 +22,7 @@ function Vector(){
 	this.view=new VectorView(this);
 	this.db=[];
 	this.actStateID=-1;
+	this.elements=[];
 }
 
 Vector.prototype.init=function(){
@@ -30,6 +31,14 @@ Vector.prototype.init=function(){
 	this.i=0;
 	this.j=0;
 
+	this.col1="#00FF80";
+	this.col2="#00FFFF";
+	this.col3="#FF0000";
+	this.col4="#F7D358";
+	this.col5="#CC2EFA";
+	
+	this.speed=10;
+	
 	this.sstmpmin=0;
 	this.stepDelay=0;
 	
@@ -55,7 +64,8 @@ Vector.prototype.saveInDB=function(){
 	
 	var same=true;
 	
-	if(last_state==undefined || last_state.elements.length!=new_state.elements.length){
+	if(last_state==undefined || last_state.elements.length!=new_state.elements.length ||
+			last_state.speed!=new_state.speed){
 		same=false;
 	}
 	else{
@@ -81,6 +91,14 @@ Vector.prototype.copy=function(toCopy){
 	newVector.sstmpmin=toCopy.sstmpmin;
 	newVector.paused=true;
 
+	newVector.col1=toCopy.col1;
+	newVector.col2=toCopy.col2;
+	newVector.col3=toCopy.col3;
+	newVector.col4=toCopy.col4;
+	newVector.col5=toCopy.col5;
+	
+	newVector.speed=toCopy.speed;
+	
 	newVector.stepDelay=toCopy.stepDelay;
 	
 	newVector.elements=[];
@@ -97,6 +115,14 @@ Vector.prototype.replaceThis=function(toCopy){
 	this.j=toCopy.j;
 	this.sstmpmin=toCopy.sstmpmin;
 	this.paused=true;
+	
+	this.col1=toCopy.col1;
+	this.col2=toCopy.col2;
+	this.col3=toCopy.col3;
+	this.col4=toCopy.col4;
+	this.col5=toCopy.col5;
+	
+	this.speed=toCopy.speed;
 	
 	this.stepDelay=toCopy.stepDelay;
 	
@@ -184,27 +210,27 @@ Vector.prototype.setRandomElements=function(){
 Vector.prototype.setColorsSelectionSort=function(){
 	if(!this.sorted){
 		for(var j=0;j<this.j;j++){
-			this.elements[j].color="#F7D358";
+			this.elements[j].color=this.col4; //sorted gold
 		}
-		
+
 		if(this.j==this.sstmpmin)
-			this.elements[this.sstmpmin].color="#00FFFF";
+			this.elements[this.sstmpmin].color=this.col2; //min blue
 		else
-			this.elements[this.j].color="red";
+			this.elements[this.j].color=this.col3; //red min swap
 		
 		for(var j=this.j+1;j<this.size();j++){
-			this.elements[j].color="#CC2EFA";
+			this.elements[j].color=this.col5; //others purple
 
-			this.elements[this.i].color="#00FF80";
+			this.elements[this.i].color=this.col1; //act green
 			if(j==this.sstmpmin)
-				this.elements[this.sstmpmin].color="#00FFFF";
+				this.elements[this.sstmpmin].color=this.col2; //min blue
 		}	 
 		
 	}
 	
 	else{
 		for(var i=0;i<this.size();i++){
-			this.elements[i].color="#F7D358";
+			this.elements[i].color=this.col4; //sorted gold
 		}
 	}
 }
@@ -257,18 +283,18 @@ Vector.prototype.selectionSort=function(con){
 						vector.elements[vector.i].color="#00FFFF";
 						vector.draw(con);
 						vector.saveInDB();
-						delay=1000;
+						delay=vector.speed*100;
 					}
 					
 					
 					setTimeout(function(){
 						//swap
-						vector.stepDelay=1000;
+						vector.stepDelay=vector.speed*100;
 						if(vector.sstmpmin==vector.j)vector.stepDelay=0;
 						var tmp=vector.elements[vector.j].value;
 						vector.elements[vector.j].value=vector.elements[vector.sstmpmin].value;
 						vector.elements[vector.sstmpmin].value=tmp;
-						if(delay!=1000)
+						if(delay!=vector.speed*100)
 							vector.setColorsSelectionSort();
 						//inverse just for drawing
 						var tmp_color=vector.elements[vector.j].color;
@@ -295,7 +321,7 @@ Vector.prototype.selectionSort=function(con){
 					vector.draw(con);
 					return;
 				}
-			},1000)
+			},vector.speed*100)
 		}
 		
 		sort(vector);

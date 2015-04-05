@@ -23,6 +23,7 @@ function Vector(){
 
 	this.db=[];
 	this.actStateID=0;
+	this.elements=[];
 }
 
 Vector.prototype.init=function(){

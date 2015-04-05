@@ -38,51 +38,88 @@
 		sp.val(vec.speed);
 	}
 	
-	
 	function speed(){
-		var sp = $("#speed");
-		vec.speed=parseInt(sp.val());
-		vec.saveInDB();
+		
+		if(vec!=undefined && vec.size()>0){
+			var sp = $("#speed");
+			vec.speed=parseInt(sp.val());
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
 	}
+		
 	
 	function col1(){
-		var col1 = $("#col1");
-		vec.col1=col1.val();
-		vec.setColorsQuicksort();
-		vec.draw();
-		vec.saveInDB();
+		if(vec!=undefined && vec.size()>0){
+			var col1 = $("#col1");
+			vec.col1=col1.val();
+			vec.setColorsQuicksort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
 	}
 	
 	function col2(){
-		var col2 = $("#col2");
-		vec.col2=col2.val();
-		vec.setColorsQuicksort();
-		vec.draw();
-		vec.saveInDB();
+		if(vec!=undefined && vec.size()>0){
+			var col2 = $("#col2");
+			vec.col2=col2.val();
+			vec.setColorsQuicksort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
 	}
 	
 	function col3(){
-		var col3 = $("#col3");
-		vec.col3=col3.val();
-		vec.setColorsQuicksort();
-		vec.draw();
-		vec.saveInDB();
+		if(vec!=undefined && vec.size()>0){
+			var col3 = $("#col3");
+			vec.col3=col3.val();
+			vec.setColorsQuicksort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
 	}
 	
 	function col4(){
-		var col4 = $("#col4");
-		vec.col4=col4.val();
-		vec.setColorsQuicksort();
-		vec.draw();
-		vec.saveInDB();
+		if(vec!=undefined && vec.size()>0){
+			var col4 = $("#col4");
+			vec.col4=col4.val();
+			vec.setColorsQuicksort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
 	}
 	
 	function col5(){
-		var col5 = $("#col5");
-		vec.col5=col5.val();
-		vec.setColorsQuicksort();
-		vec.draw();
-		vec.saveInDB();
+		if(vec!=undefined && vec.size()>0){
+			var col5 = $("#col5");
+			vec.col5=col5.val();
+			vec.setColorsQuicksort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
 	}
 	
 	function clearTimes(){
@@ -201,31 +238,48 @@
 		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
 		<a href="#" class="z1" onclick="zoomIn();return false;"></a>
 	</div>
-	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. 
+	For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
-	Legend: elements within the sorting range smaller than pivot are blue [1], greater are red [2], equal to and the pivot itself are purple [3]. Sorted elements are yellow [4]. Elements out of sorting range are grey [5].
+	Legend: elements within the sorting range smaller than pivot are blue (1), greater are red (2), 
+	equal to and the pivot itself are purple (3). Sorted elements are yellow (4). Elements out of sorting 
+	range are grey (5).
+	<br><br>
+	Quicksort is a comparison sort, meaning that it can sort items of any type for which a "less-than" 
+	relation (formally, a total order) is defined. In efficient implementations it is not a stable sort, 
+	meaning that the relative order of equal sort items is not preserved. Quicksort can operate in-place 
+	on an array, requiring small additional amounts of memory to perform the sorting.
+	Mathematical analysis of quicksort shows that, on average, the algorithm takes O(n log n) comparisons 
+	to sort n items. In the worst case, it makes O(n^2) comparisons, though this behavior is rare. [1]
+	<div>[1]:<a href="http://en.wikipedia.org/wiki/Quicksort" target="_blank">http://en.wikipedia.org/wiki/Quicksort</a></div>
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Config</h2>
 	Animation speed:
   	<input type="number" name="speed" style="width:40px" id="speed" min="1" max="20" step="1" value="10" onchange="speed();return false;" >
- 	<br>Color [1]:
+ 	<br>Color (1):
   	<input type="color" name="col1" id="col1" onchange="col1();return false;">
-  	<br>Color [2]:
+  	<br>Color (2):
   	<input type="color" name="col2" id="col2" onchange="col2();return false;">
-  	<br>Color [3]:
+  	<br>Color (3):
   	<input type="color" name="col3" id="col3" onchange="col3();return false;">
-  	<br>Color [4]:
+  	<br>Color (4):
   	<input type="color" name="col4" id="col4" onchange="col4();return false;">
-  	<br>Color [5]:
+  	<br>Color (5):
   	<input type="color" name="col5" id="col5" onchange="col5();return false;">
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
 	<div class="pole"><h2>About</h2>
+		<a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
+			<img src="../../images/uni.png" width="250px" alt="bsimage">
+		</a>
+		<a href="https://github.com/VolodimirBegy/webAD" target="_blank">
+			<img src="../../images/octocat.png" width="100px" alt="bsimage">
+		</a>
 	</div>
 </div>
 <div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
