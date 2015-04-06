@@ -39,7 +39,7 @@ Vector.prototype.init=function(){
 	
 	this.speed=10;
 	
-	this.sstmpmin=0;
+	this.tmpmin=0;
 	this.stepDelay=0;
 	
 	this.paused=false;
@@ -88,7 +88,7 @@ Vector.prototype.copy=function(toCopy){
 	newVector.sorted=toCopy.sorted;
 	newVector.i=toCopy.i;
 	newVector.j=toCopy.j;
-	newVector.sstmpmin=toCopy.sstmpmin;
+	newVector.tmpmin=toCopy.tmpmin;
 	newVector.paused=true;
 
 	newVector.col1=toCopy.col1;
@@ -113,7 +113,7 @@ Vector.prototype.replaceThis=function(toCopy){
 	this.sorted=toCopy.sorted;
 	this.i=toCopy.i;
 	this.j=toCopy.j;
-	this.sstmpmin=toCopy.sstmpmin;
+	this.tmpmin=toCopy.tmpmin;
 	this.paused=true;
 	
 	this.col1=toCopy.col1;
@@ -213,8 +213,8 @@ Vector.prototype.setColorsSelectionSort=function(){
 			this.elements[j].color=this.col4; //sorted gold
 		}
 
-		if(this.j==this.sstmpmin)
-			this.elements[this.sstmpmin].color=this.col2; //min blue
+		if(this.j==this.tmpmin)
+			this.elements[this.tmpmin].color=this.col2; //min blue
 		else
 			this.elements[this.j].color=this.col3; //red min swap
 		
@@ -222,8 +222,8 @@ Vector.prototype.setColorsSelectionSort=function(){
 			this.elements[j].color=this.col5; //others purple
 
 			this.elements[this.i].color=this.col1; //act green
-			if(j==this.sstmpmin)
-				this.elements[this.sstmpmin].color=this.col2; //min blue
+			if(j==this.tmpmin)
+				this.elements[this.tmpmin].color=this.col2; //min blue
 		}	 
 		
 	}
@@ -235,17 +235,18 @@ Vector.prototype.setColorsSelectionSort=function(){
 	}
 }
 
-Vector.prototype.selectionSort=function(con){
+Vector.prototype.selectionSort=function(){
 	if(this.elements.length==0){
-		this.draw(con);
+		this.draw();
 		return;
 	}
 	else if(this.elements.length==1){
-		this.elements[0].color="#F7D358";
-		this.draw(con);
+		this.sorted=true;
+		this.setColorsSelectionSort();
+		this.draw();
+		this.saveInDB();
 		return;
 	}
-	
 	
 	function step(vector){
 
@@ -254,22 +255,21 @@ Vector.prototype.selectionSort=function(con){
 		vector.stepDelay=0;
 			
 		function sort(vector){
-			//bad end of swap comes from here... :
 			vector.setColorsSelectionSort();
-			vector.draw(con);
+			vector.draw();
 			vector.saveInDB();
 			
 			setTimeout(function(){
 
-				if(vector.elements[vector.sstmpmin].value>vector.elements[vector.i].value){
-					vector.sstmpmin=vector.i;
+				if(vector.elements[vector.tmpmin].value>vector.elements[vector.i].value){
+					vector.tmpmin=vector.i;
 				}
 				
 				//sorting, end not reached
 				if(vector.i!=vector.size()-1){
 					vector.i=vector.i+1;
 					vector.setColorsSelectionSort();
-					vector.draw(con);
+					vector.draw();
 					//vector.saveInDB();
 					sort(vector);
 				}
@@ -278,33 +278,31 @@ Vector.prototype.selectionSort=function(con){
 				else if(vector.j!=vector.size()-1){
 					var delay=0;
 					//if min is last
-					if(vector.sstmpmin==vector.i && vector.elements[vector.i].color!="#00FFFF"){
+					if(vector.tmpmin==vector.i){
 						vector.setColorsSelectionSort();
-						vector.elements[vector.i].color="#00FFFF";
-						vector.draw(con);
+						vector.draw();
 						vector.saveInDB();
 						delay=vector.speed*100;
 					}
 					
-					
 					setTimeout(function(){
 						//swap
 						vector.stepDelay=vector.speed*100;
-						if(vector.sstmpmin==vector.j)vector.stepDelay=0;
+						if(vector.tmpmin==vector.j)vector.stepDelay=0;
 						var tmp=vector.elements[vector.j].value;
-						vector.elements[vector.j].value=vector.elements[vector.sstmpmin].value;
-						vector.elements[vector.sstmpmin].value=tmp;
+						vector.elements[vector.j].value=vector.elements[vector.tmpmin].value;
+						vector.elements[vector.tmpmin].value=tmp;
 						if(delay!=vector.speed*100)
 							vector.setColorsSelectionSort();
 						//inverse just for drawing
 						var tmp_color=vector.elements[vector.j].color;
-						vector.elements[vector.j].color=vector.elements[vector.sstmpmin].color;
-						vector.elements[vector.sstmpmin].color=tmp_color;
-						vector.draw(con);
+						vector.elements[vector.j].color=vector.elements[vector.tmpmin].color;
+						vector.elements[vector.tmpmin].color=tmp_color;
+						vector.draw();
 						
 						//reset indexes
 						vector.j=vector.j+1;
-						vector.sstmpmin=vector.j;
+						vector.tmpmin=vector.j;
 						vector.i=vector.j;
 						vector.saveInDB();
 						//window.alert(delay);
@@ -318,7 +316,7 @@ Vector.prototype.selectionSort=function(con){
 					vector.sorted=true;
 					vector.setColorsSelectionSort();
 					vector.saveInDB();
-					vector.draw(con);
+					vector.draw();
 					return;
 				}
 			},vector.speed*100)
@@ -361,6 +359,6 @@ Vector.prototype.size=function(){
 	 return this.elements.length;
  }
 
-Vector.prototype.draw=function(con){
-	 this.view.draw(con);
+Vector.prototype.draw=function(){
+	 this.view.draw();
  }
