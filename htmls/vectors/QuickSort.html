@@ -22,11 +22,12 @@
 	var vec=undefined;
 	
 	function _create(){
-		vec=new Vector;
+		vec=new Vector();
 		var c1 = document.getElementById("container1");
 		vec.view.initStage(c1);
 	}
-	
+
+
 	function resetFields(){
 		$("#col1").val(vec.col1);
 		$("#col2").val(vec.col2);
@@ -202,7 +203,7 @@
 
 </script>
 
-<body id="body" class="page" onload="_create();return false;">
+<body id="body" class="page" onload="_create();">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
