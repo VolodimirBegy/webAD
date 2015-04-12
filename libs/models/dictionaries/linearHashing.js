@@ -341,26 +341,20 @@ LinearHashing.prototype.add=function(){
 								actRow=actRow.overflow;
 							}
 							
-							if(actRow.values.length<ht.b){
-								if(a_dec==ht.rows.length-1){
-									var found=false;
-									for(var k=0;k<ht.newBlockVals.length;k++){
-										if(ht.newBlockVals[k]==vals[i]){
-											found=true;break;
-										}
-									}
-									if(!found){
-										ht.newBlockVals.push(vals[i]);
-										ht.newBlockBins.push(parseInt(vals[i], 10).toString(2));
-									}
-								}
-								
+							if(actRow.values.length<ht.b){								
 								actRow.values.push(vals[i]);
 							}
 							else{
 								var newOverflow=new Row();
 								newOverflow.values.push(vals[i]);
 								actRow.overflow=newOverflow;
+							}
+							
+							if(a_dec==ht.rows.length-1){
+								if($.inArray(vals[i],ht.newBlockVals)==-1){
+									ht.newBlockVals.push(vals[i]);
+									ht.newBlockBins.push(parseInt(vals[i], 10).toString(2));
+								}
 							}
 						}
 						
