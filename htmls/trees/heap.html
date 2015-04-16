@@ -65,14 +65,33 @@
 	function add(){
 		if(!heap.working){
 			heap.add();
+			var elem = $("#p");
+			elem.addClass("p1");
 		}
 	}
 	
 	function rem(){
 		if(!heap.working){
 			heap.removeMinimum();
+			var elem = $("#p");
+			elem.addClass("p1");
 		}
 		
+	}
+	
+	function un_pause(){
+		if(heap!=undefined && heap.timer!=undefined && heap.working){
+	     	var elem = $("#p");
+			if(elem.hasClass("p1")){
+				heap.timer.pause();
+				elem.removeClass("p1");
+			}
+			else{
+				heap.timer.resume();
+				elem.addClass("p1");
+			}
+				
+		}
 	}
 	
 	function random(){
@@ -144,7 +163,7 @@
 	<div class="rul">
 		<a href="#" class="l2" id="first" onclick="first();return false;"></a>
 		<a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
-		<a href="#" id="p"></a>
+		<a href="#" id="p" onclick="un_pause();return false;"></a>
 		<a href="#" class="r1" id="next" onclick="next();return false;"></a>
 		<a href="#" class="r2" id="last" onclick="last();return false;"></a>
 		<a href="#" class="z2" onclick="zoomOut();return false;"></a>

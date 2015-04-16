@@ -44,7 +44,7 @@
 
 			do{
 				for(var i=0;i<tmpNodes.length;i++){
-					if(tmpNodes[i]!=undefined)tmpNodes[i].color="#ADFF2F";
+					if(tmpNodes[i]!=undefined)tmpNodes[i].color="#51DBED";
 				}
 				finished=true;
 				var oldNodes=tmpNodes; tmpNodes=[];
@@ -63,14 +63,35 @@
 			}while(!finished);
 		}
 	
+	function un_pause(){
+		if(heap!=undefined && heap.timer!=undefined && 
+				heap.nodes.length>0){
+	     	var elem = $("#p");
+			if(elem.hasClass("p1")){
+				heap.timer.pause();
+				elem.removeClass("p1");
+			}
+			else{
+				heap.timer.resume();
+				elem.addClass("p1");
+			}
+				
+		}
+	
+	}
+		
 	function heapsort(){
 		clearTimes();
 		heap.getElementsByPrompt();
+		var elem = $("#p");
+		elem.addClass("p1");
 	}
 	
 	function randomHeapsort(){
 		clearTimes();
 		heap.randomHeapsort();
+		var elem = $("#p");
+		elem.addClass("p1");
 	}
 	
 	function pre(){
@@ -135,7 +156,7 @@
 	<div class="rul">
 		<a href="#" class="l2" id="first" onclick="first();return false;"></a>
 		<a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
-		<a href="#" id="p"></a>
+		<a href="#" id="p" onclick="un_pause();return false;"></a>
 		<a href="#" class="r1" id="next" onclick="next();return false;"></a>
 		<a href="#" class="r2" id="last" onclick="last();return false;"></a>
 		<a href="#" class="z2" onclick="zoomOut();return false;"></a>

@@ -23,6 +23,23 @@ function Node(){
 	this.yPosition=0;
 }
 
+function Timer(callback, delay) {
+    var timerId, start, remaining = delay;
+
+    this.pause = function() {
+        window.clearTimeout(timerId);
+        remaining -= new Date() - start;
+    };
+
+    this.resume = function() {
+        start = new Date();
+        window.clearTimeout(timerId);
+        timerId = window.setTimeout(callback, remaining);
+    };
+
+    this.resume();
+}
+
 function Heap(){
 	this.view=new HeapView(this);
 	this.db=[];
@@ -67,7 +84,6 @@ Heap.prototype.copy=function(toCopy){
 			
 	}
 	newHeap.nodes=nodes;
-	
 	for(var i=0;i<this.sorted.length;i++)
 		newHeap.sorted.push(this.sorted[i]);
 	
@@ -105,7 +121,7 @@ Heap.prototype.replaceThis=function(toCopy){
 		}
 			
 	}
-	
+
 	this.nodes=nodes;
 	
 	for(var i=0;i<toCopy.sorted.length;i++)
@@ -199,7 +215,7 @@ Heap.prototype.add=function() {
 		var finished=false;
 		
 		function swapping(heap){
-			setTimeout(function (){
+			heap.timer=new Timer(function() {
 				
 				if(heap.nodes[actIndex].value<heap.nodes[parIndex].value){
 					//window.alert("in1");
@@ -213,7 +229,7 @@ Heap.prototype.add=function() {
 					
 					function delayedDrawing1(heap){
 						
-						setTimeout(function (){
+						heap.timer=new Timer(function() {
 							
 							heap.nodes[actIndex].color="#51DBED";
 							heap.nodes[parIndex].color="#51DBED";
@@ -229,7 +245,7 @@ Heap.prototype.add=function() {
 							}
 							
 							swapping(heap);
-						},1000)
+						},1000);
 					}
 					
 					delayedDrawing1(heap);
@@ -242,21 +258,21 @@ Heap.prototype.add=function() {
 					heap.draw();
 					
 					function delayedDrawing(heap){
-						setTimeout(function (){
+						heap.timer=new Timer(function() {
 							heap.nodes[actIndex].color="#51DBED";
 							heap.nodes[parIndex].color="#51DBED";
 							heap.draw();
 							heap.working=false;
 							heap.saveInDB();
 							return;
-						},1000)
+						},1000);
 					}
 					
 					delayedDrawing(heap);
 
 				}
 
-			},1000)
+			},1000);
 		}
 		
 		swapping(this);
@@ -383,19 +399,19 @@ Heap.prototype.removeMinimum=function() {
 			
 			function delayedDrawing1(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					
 					heap.nodes[0].color="#51DBED";
 					heap.nodes[heap.nodes.length-1].color="#51DBED";
 					heap.draw();
 					
 					delayedDrawing2(heap);
-				},1000)
+				},1000);
 			}
 			
 			function delayedDrawing2(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					heap.nodes[heap.nodes.length-1].color="red";
 					heap.draw();
 					
@@ -415,12 +431,12 @@ Heap.prototype.removeMinimum=function() {
 					heap.nodes.splice(heap.nodes.length-1,1);
 					
 					delayedDrawing3(heap);
-				},1000)
+				},1000);
 			}
 			
 			function delayedDrawing3(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					heap.draw();
 					if(heap.nodes.length==1){
 						heap.saveInDB();
@@ -431,11 +447,11 @@ Heap.prototype.removeMinimum=function() {
 						actIndex=0;
 						sink(heap);
 					}
-				},1000)
+				},1000);
 			}
 			var minKidIndex=undefined;
 			function sink(heap){
-				setTimeout(function(){
+				heap.timer=new Timer(function() {
 					//#44FF00 green
 					//#FF00E1 red
 					//#51DBED default
@@ -470,24 +486,24 @@ Heap.prototype.removeMinimum=function() {
 						delayedDrawing5(heap);
 					}
 
-				},1000)
+				},1000);
 			}
 			
 			function delayedDrawing4(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					heap.draw();
 					
 					heap.saveInDB();
 					heap.working=false;
 					return;
 					
-				},1000)
+				},1000);
 			}
 			
 			function delayedDrawing5(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					heap.nodes[actIndex].color="#51DBED";
 					heap.nodes[minKidIndex].color="#51DBED";
 					heap.draw();
@@ -502,7 +518,7 @@ Heap.prototype.removeMinimum=function() {
 					else
 						sink(heap);
 					
-				},1000)
+				},1000);
 			}
 
 			delayedDrawing1(this);
@@ -538,19 +554,18 @@ Heap.prototype.sort=function() {
 			
 			function delayedDrawing1(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					
 					heap.nodes[0].color="#51DBED";
 					heap.nodes[heap.nodes.length-1].color="#51DBED";
 					heap.draw();
 					
 					delayedDrawing2(heap);
-				},1000)
+				},1000);
 			}
 			
 			function delayedDrawing2(heap){
-				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					heap.nodes[heap.nodes.length-1].color="red";
 					heap.draw();
 					
@@ -574,20 +589,20 @@ Heap.prototype.sort=function() {
 					heap.nodes.splice(heap.nodes.length-1,1);
 					
 					delayedDrawing3(heap);
-				},1000)
+				},1000);
 			}
 			
 			function delayedDrawing3(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					heap.draw();
 					if(heap.nodes.length==1){
 						heap.saveInDB();
 						
 						function removeNext(heap){
-							setTimeout(function(){
+							heap.timer=new Timer(function() {
 								heap.sort();
-							},1000)
+							},1000);
 						}
 						
 						removeNext(heap);
@@ -597,11 +612,11 @@ Heap.prototype.sort=function() {
 						actIndex=0;
 						sink(heap);
 					}
-				},1000)
+				},1000);
 			}
 			var minKidIndex=undefined;
 			function sink(heap){
-				setTimeout(function(){
+				heap.timer=new Timer(function() {
 					//#44FF00 green
 					//#FF00E1 red
 					//#51DBED default
@@ -636,33 +651,33 @@ Heap.prototype.sort=function() {
 						delayedDrawing5(heap);
 					}
 
-				},1000)
+				},1000);
 			}
 			
 			function delayedDrawing4(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					heap.draw();
 					
 					heap.saveInDB();
 					heap.working=false;
 					
 					function removeNext(heap){
-						setTimeout(function(){
+						heap.timer=new Timer(function() {
 							heap.sort();
-						},1000)
+						},1000);
 					}
 					
 					removeNext(heap);
 					
 					return;
 					
-				},1000)
+				},1000);
 			}
 			
 			function delayedDrawing5(heap){
 				
-				setTimeout(function (){
+				heap.timer=new Timer(function() {
 					heap.nodes[actIndex].color="#51DBED";
 					heap.nodes[minKidIndex].color="#51DBED";
 					heap.draw();
@@ -672,9 +687,9 @@ Heap.prototype.sort=function() {
 						heap.saveInDB();
 						
 						function removeNext(heap){
-							setTimeout(function(){
+							heap.timer=new Timer(function() {
 								heap.sort();
-							},1000)
+							},1000);
 						}
 						
 						removeNext(heap);
@@ -685,7 +700,7 @@ Heap.prototype.sort=function() {
 					else
 						sink(heap);
 					
-				},1000)
+				},1000);
 			}
 
 			delayedDrawing1(this);
@@ -710,7 +725,7 @@ Heap.prototype.buildMaxHeap=function(){
 	//lift:
 	var maxKidIndex=undefined;
 	function sink(heap){
-		setTimeout(function(){
+		heap.timer=new Timer(function() {
 			//#44FF00 green
 			//#FF00E1 red
 			//#51DBED default
@@ -733,16 +748,16 @@ Heap.prototype.buildMaxHeap=function(){
 				heap.nodes[maxKidIndex].color="#51DBED";
 				
 				function delayedDrawing(heap){
-					setTimeout(function (){
+					heap.timer=new Timer(function() {
 						heap.draw();
 						if(lastHeapified==0){
 							heap.saveInDB();
 					
 							function pSort(heap){
-								setTimeout(function(){
+								heap.timer=new Timer(function() {
 									window.alert("Max Heap built. Starting to sort...");
 									heap.sort();
-								},1000)
+								},1000);
 							}
 							pSort(heap);
 							
@@ -754,7 +769,7 @@ Heap.prototype.buildMaxHeap=function(){
 							sink(heap);
 							return;
 						}
-					},1000)
+					},1000);
 				}
 				
 				delayedDrawing(heap);
@@ -771,7 +786,7 @@ Heap.prototype.buildMaxHeap=function(){
 				
 				function endSink(heap){
 					
-					setTimeout(function (){
+					heap.timer=new Timer(function() {
 						heap.nodes[actIndex].color="#51DBED";
 						heap.nodes[maxKidIndex].color="#51DBED";
 						heap.draw();
@@ -782,10 +797,10 @@ Heap.prototype.buildMaxHeap=function(){
 								heap.saveInDB();
 								
 								function pSort(heap){
-									setTimeout(function(){
+									heap.timer=new Timer(function() {
 										window.alert("Max Heap built. Starting to sort...");
 										heap.sort();
-									},1000)
+									},1000);
 								}
 								pSort(heap);
 								
@@ -802,13 +817,13 @@ Heap.prototype.buildMaxHeap=function(){
 						else
 							sink(heap);
 						
-					},1000)
+					},1000);
 				}
 				
 				endSink(heap);
 			}
 
-		},1000)
+		},1000);
 	}
 	sink(this);
 }
@@ -845,13 +860,11 @@ Heap.prototype.randomHeapsort=function(){
 	//this.saveInDB();
 	this.draw();
 	
-	function bmh(heap){
-		setTimeout(function (){
-			window.alert("Starting to build max heap...");
-			heap.buildMaxHeap();
-		},1000)
-	}
-	bmh(this);
+	this.timer = new Timer(function() {
+		window.alert("Starting to build max heap...");
+		heap.buildMaxHeap();
+	}, 1000);
+
 	return;
 }
 
@@ -876,10 +889,10 @@ Heap.prototype.getElementsByPrompt=function(){
 	if(_in){
 		this.draw(); 
 		function bmh(heap){
-			setTimeout(function (){
+			heap.timer=new Timer(function() {
 				window.alert("Starting to build max heap...");
 				heap.buildMaxHeap();
-			},1000)
+			},1000);
 		}
 		bmh(this);
 	}
