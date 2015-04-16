@@ -35,31 +35,6 @@
 	    		window.clearTimeout(pids); 
 			}
 			
-			var tmpNodes=[];
-			if(heap.root!=undefined)
-				tmpNodes.push(heap.root);
-			var finished=new Boolean();
-			finished=false;
-
-			do{
-				for(var i=0;i<tmpNodes.length;i++){
-					if(tmpNodes[i]!=undefined)tmpNodes[i].color="#ADFF2F";
-				}
-				finished=true;
-				var oldNodes=tmpNodes; tmpNodes=[];
-				do{
-					if(oldNodes[0]!=undefined){
-						tmpNodes.push(oldNodes[0].leftChild);
-						tmpNodes.push(oldNodes[0].rightChild);
-					}
-					oldNodes.shift();
-				}while(oldNodes.length!=0);
-				
-				for(var k=0;k<tmpNodes.length;k++){
-					if(tmpNodes[k]!=undefined)
-						finished=false;
-				}
-			}while(!finished);
 		}
 	
 	function add(){
@@ -103,24 +78,32 @@
 	function pre(){
 		if(!heap.working){
 			heap.prev();
+			var elem = $("#p");
+			elem.removeClass("p1");
 		}
 	}
 	
 	function next(){
 		if(!heap.working){
 			heap.next();
+			var elem = $("#p");
+			elem.removeClass("p1");
 		}
 	}
 	
 	function first(){
 		if(!heap.working){
 			heap.firstState();
+			var elem = $("#p");
+			elem.removeClass("p1");
 		}
 	}
 	
 	function last(){
 		if(!heap.working){
 			heap.lastState();
+			var elem = $("#p");
+			elem.removeClass("p1");
 		}
 	}
 	

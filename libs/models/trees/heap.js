@@ -24,17 +24,18 @@ function Node(){
 }
 
 function Timer(callback, delay) {
-    var timerId, start, remaining = delay;
-
+    this.timerId, this.start, this.remaining = delay;
+    this._callback=callback;
+    
     this.pause = function() {
-        window.clearTimeout(timerId);
-        remaining -= new Date() - start;
+        window.clearTimeout( this.timerId);
+        this.remaining -= new Date() - start;
     };
 
     this.resume = function() {
         start = new Date();
-        window.clearTimeout(timerId);
-        timerId = window.setTimeout(callback, remaining);
+        window.clearTimeout(this.timerId);
+        this.timerId = window.setTimeout( this._callback,  this.remaining);
     };
 
     this.resume();
@@ -50,7 +51,7 @@ function Heap(){
 }
 
 Heap.prototype.init=function(){
-	this.saveInDB();
+	//this.saveInDB();
 }
 
 Heap.prototype.copy=function(toCopy){
@@ -83,6 +84,10 @@ Heap.prototype.copy=function(toCopy){
 		}
 			
 	}
+	if(toCopy.timer!=undefined){
+		newHeap.timer=new Timer(toCopy.timer._callback,toCopy.timer.remaining);
+		newHeap.timer.pause();
+	}
 	newHeap.nodes=nodes;
 	for(var i=0;i<this.sorted.length;i++)
 		newHeap.sorted.push(this.sorted[i]);
@@ -94,7 +99,10 @@ Heap.prototype.replaceThis=function(toCopy){
 	var nodes=[];
 	this.root=undefined;
 	this.sorted=[];
-	
+	if(toCopy.timer!=undefined){
+		this.timer=new Timer(toCopy.timer._callback,toCopy.timer.remaining);
+		this.timer.pause();
+	}
 	for(var i=0;i<toCopy.nodes.length;i++){
 		var newNode=new Node();
 		
@@ -139,6 +147,8 @@ Heap.prototype.prev=function(){
       	this.replaceThis(rs);
       	this.draw();
 	}
+	else
+		this.firstState();
 }
 
 Heap.prototype.next=function(){
@@ -364,9 +374,29 @@ Heap.prototype.saveInDB=function(){
 	var nextID=this.db.length;
 	
 	var new_state = this.copy(this);
-	this.db.push(new_state);
+	//ignoring duplicates 
+	var last_state = this.db[this.db.length-1];
 	
-	this.actStateID=nextID;
+	var same=true;
+	if(last_state!=undefined && (new_state.nodes.length!=last_state.nodes.length || 
+			new_state.sorted.length!=last_state.sorted.length)) 
+		same=false;
+	else{
+		if(last_state!=undefined)
+			for(var i=0;i<new_state.nodes.length;i++){
+				if(new_state.nodes[i].color!=last_state.nodes[i].color ||
+						new_state.nodes[i].value!=last_state.nodes[i].value){
+					same=false;break;
+				}
+			}
+		else
+			same=false;
+	}
+	
+	if(!same){
+		this.db.push(new_state);
+		this.actStateID=nextID;
+	}
 }
 
 
@@ -530,15 +560,20 @@ Heap.prototype.sort=function() {
 
 		this.working=true;
 		if(this.nodes.length==1){
-			this.sorted.splice(0,0,this.root.value);
-			this.sorted.join();
-
-			this.nodes=[];
-			this.root=undefined
-			
-			this.draw();
-			this.saveInDB();
-			this.working=false;
+			function endSort(heap){
+				heap.timer=new Timer(function(){
+					heap.sorted.splice(0,0,heap.root.value);
+					heap.sorted.join();
+	
+					heap.nodes=[];
+					heap.root=undefined
+				
+					heap.draw();
+					heap.saveInDB();
+					heap.working=false;
+				},0);
+			}
+			endSort(this);
 			return;
 		}
 		else{
@@ -709,9 +744,15 @@ Heap.prototype.sort=function() {
 
 Heap.prototype.buildMaxHeap=function(){
 	if(this.nodes.length==1){
-		heap.saveInDB();
-		window.alert("Max Heap built. Starting to sort...");
-		this.sort();
+		function endBMH(heap){
+			heap.timer=new Timer(function(){
+				heap.saveInDB();
+				window.alert("Max Heap built. Starting to sort...");
+				heap.sort();
+			},1000);
+		}
+		endBMH(this);
+		
 		return;
 	}
 		
@@ -887,14 +928,12 @@ Heap.prototype.getElementsByPrompt=function(){
 	}
 	
 	if(_in){
-		this.draw(); 
-		function bmh(heap){
-			heap.timer=new Timer(function() {
-				window.alert("Starting to build max heap...");
-				heap.buildMaxHeap();
-			},1000);
-		}
-		bmh(this);
+		this.draw();
+		
+		this.timer = new Timer(function() {
+			window.alert("Starting to build max heap...");
+			heap.buildMaxHeap();
+		}, 1000);
 	}
 	else{
 		this.working=false;

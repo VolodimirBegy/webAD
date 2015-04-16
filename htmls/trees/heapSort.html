@@ -35,32 +35,6 @@
 			while (pids--) {
 	    		window.clearTimeout(pids); 
 			}
-			
-			var tmpNodes=[];
-			if(heap.root!=undefined)
-				tmpNodes.push(heap.root);
-			var finished=new Boolean();
-			finished=false;
-
-			do{
-				for(var i=0;i<tmpNodes.length;i++){
-					if(tmpNodes[i]!=undefined)tmpNodes[i].color="#51DBED";
-				}
-				finished=true;
-				var oldNodes=tmpNodes; tmpNodes=[];
-				do{
-					if(oldNodes[0]!=undefined){
-						tmpNodes.push(oldNodes[0].leftChild);
-						tmpNodes.push(oldNodes[0].rightChild);
-					}
-					oldNodes.shift();
-				}while(oldNodes.length!=0);
-				
-				for(var k=0;k<tmpNodes.length;k++){
-					if(tmpNodes[k]!=undefined)
-						finished=false;
-				}
-			}while(!finished);
 		}
 	
 	function un_pause(){
@@ -95,25 +69,41 @@
 	}
 	
 	function pre(){
-		if(!heap.working){
+		if(heap.db.length>0){
+			if(heap.timer!=undefined)
+				heap.timer.pause();
+			var elem = $("#p");
+			elem.removeClass("p1");
 			heap.prev();
 		}
 	}
 	
 	function next(){
-		if(!heap.working){
+		if(heap.db.length>0){
+			if(heap.timer!=undefined)
+				heap.timer.pause();
+			var elem = $("#p");
+			elem.removeClass("p1");
 			heap.next();
 		}
 	}
 	
 	function first(){
-		if(!heap.working){
+		if(heap.db.length>0){
+			if(heap.timer!=undefined)
+				heap.timer.pause();
+			var elem = $("#p");
+			elem.removeClass("p1");
 			heap.firstState();
 		}
 	}
 	
 	function last(){
-		if(!heap.working){
+		if(heap.db.length>0){
+			if(heap.timer!=undefined)
+				heap.timer.pause();
+			var elem = $("#p");
+			elem.removeClass("p1");
 			heap.lastState();
 		}
 	}
