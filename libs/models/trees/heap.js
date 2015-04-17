@@ -703,7 +703,6 @@ Heap.prototype.sort=function() {
 					heap.draw();
 					
 					heap.saveInDB();
-					heap.working=false;
 					
 					function removeNext(heap){
 						heap.timer=new Timer(function() {
