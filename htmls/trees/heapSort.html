@@ -70,18 +70,23 @@
 	
 	function pre(){
 		if(heap.db.length>0){
-			if(heap.timer!=undefined)
+			if(heap.timer!=undefined){
 				heap.timer.pause();
+				
+			}
 			var elem = $("#p");
 			elem.removeClass("p1");
 			heap.prev();
+			heap.working=false;
 		}
 	}
 	
 	function next(){
-		if(heap.db.length>0){
-			if(heap.timer!=undefined)
+		if(heap.db.length>0 && heap.actStateID!=heap.db.length-1){
+			if(heap.timer!=undefined){
 				heap.timer.pause();
+				heap.working=false;
+			}
 			var elem = $("#p");
 			elem.removeClass("p1");
 			heap.next();
@@ -90,8 +95,10 @@
 	
 	function first(){
 		if(heap.db.length>0){
-			if(heap.timer!=undefined)
+			if(heap.timer!=undefined){
 				heap.timer.pause();
+				heap.working=false;
+			}
 			var elem = $("#p");
 			elem.removeClass("p1");
 			heap.firstState();
@@ -99,9 +106,11 @@
 	}
 	
 	function last(){
-		if(heap.db.length>0){
-			if(heap.timer!=undefined)
+		if(heap.db.length>0 && heap.actStateID!=heap.db.length-1){
+			if(heap.timer!=undefined){
 				heap.timer.pause();
+				heap.working=false;
+			}
 			var elem = $("#p");
 			elem.removeClass("p1");
 			heap.lastState();

@@ -140,12 +140,20 @@ Heap.prototype.replaceThis=function(toCopy){
 Heap.prototype.prev=function(){
 	
 	if(this.actStateID>0){
-		var prev_id=this.actStateID-1;
-		this.actStateID=prev_id;
-		var rs=this.db[prev_id];
-		//make actual node to THIS:
-      	this.replaceThis(rs);
-      	this.draw();
+		if(heap.working){
+			var rs=this.db[this.actStateID];
+			//make actual node to THIS:
+	      	this.replaceThis(rs);
+	      	this.draw();
+		}
+		else{
+			var prev_id=this.actStateID-1;
+			this.actStateID=prev_id;
+			var rs=this.db[prev_id];
+			//make actual node to THIS:
+	      	this.replaceThis(rs);
+	      	this.draw();
+		}
 	}
 	else
 		this.firstState();
