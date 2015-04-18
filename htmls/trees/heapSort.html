@@ -55,10 +55,11 @@
 	}
 		
 	function heapsort(){
-		clearTimes();
-		heap.getElementsByPrompt();
-		var elem = $("#p");
-		elem.addClass("p1");
+		if(heap.getElementsByPrompt()){
+			clearTimes();
+			var elem = $("#p");
+			elem.addClass("p1");
+		}
 	}
 	
 	function randomHeapsort(){

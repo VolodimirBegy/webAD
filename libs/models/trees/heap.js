@@ -26,7 +26,6 @@ function Node(){
 function Timer(callback, delay) {
     this.timerId, this.start, this.remaining = delay;
     this._callback=callback;
-    
     this.pause = function() {
         window.clearTimeout( this.timerId);
         this.remaining -= new Date() - start;
@@ -918,35 +917,42 @@ Heap.prototype.randomHeapsort=function(){
 
 Heap.prototype.getElementsByPrompt=function(){
 	this.working=true;
-	this.nodes=[];
-	this.root=undefined;
-	this.sorted=[];
-	var tempElements=[];
-
+	
 	var valuesInString=prompt("Please enter the elements (separated by space):\nValues > 999 are ignored");
 
 	var tempValsStr = valuesInString.split(" "); 
 	var _in=false;
 	for(var i=0;i<tempValsStr.length;i++){
 		if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000){
-			this.addFixedNotHeapified(parseInt(tempValsStr[i]));
 			_in=true;
 		}
 	}
 	
 	if(_in){
+		this.nodes=[];
+		this.root=undefined;
+		this.sorted=[];
+		var tempElements=[];
+		
+		for(var i=0;i<tempValsStr.length;i++){
+			if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000){
+				this.addFixedNotHeapified(parseInt(tempValsStr[i]));
+			}
+		}
+		
 		this.draw();
 		
 		this.timer = new Timer(function() {
 			window.alert("Starting to build max heap...");
 			heap.buildMaxHeap();
 		}, 1000);
+		return true;
 	}
 	else{
 		this.working=false;
-		this.randomHeapsort();
+		return false;
 	}
-	return;
+	
 }
 
 Heap.prototype.draw=function(){
