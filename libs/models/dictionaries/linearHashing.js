@@ -44,6 +44,8 @@ LinearHashing.prototype.init=function(){
 	
 	this.rows=[];
 	this.nts=0;
+	this.newBlockVals=[];
+	this.manipulatedIndex=undefined;	
 	
 	for(var i=0;i<Math.pow(2,this.d);i++){
 		var newRow=new Row();
