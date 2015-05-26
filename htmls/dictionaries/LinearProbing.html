@@ -24,7 +24,12 @@
 	function init(){
 		ht=new HashTable();
 		var c1 = document.getElementById("container1");
-		ht.view.initStage(c1);	
+		ht.view.initStage(c1);ht.draw();
+	}
+	
+	function _static(){
+		init();
+		ht._static=document.getElementById('_static').checked;
 	}
  
 	function clearTimes(){
@@ -164,6 +169,7 @@
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Config</h2>
+		Static: <input type="checkbox" name="_static" id="_static" checked="true" onchange="_static();return false;">
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>

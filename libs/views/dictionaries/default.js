@@ -49,7 +49,7 @@ HashTableView.prototype.draw=function(){
 		fontFamily: 'Calibri',
 		fill: 'red',
 	});
-
+	
 	var calcTxt=m.calc;
 	var calcY=0;
 	if(m.actCalc!=undefined){
@@ -66,9 +66,11 @@ HashTableView.prototype.draw=function(){
 	});
 
 	var fillTxt="Fill Factor: "+Math.floor(m.fillFactor * 100)+"%";
-	if(m.fillFactor>0.7){
+	if(m.fillFactor>0.7 && !m._static){
 		fillTxt+=" -> Extend!";
 	}
+	else if(m.fillFactor==1)
+		fillTxt+="-> Table full!";
 		
 	var fillFactor = new Kinetic.Text({
 		x: calc.getX(),
@@ -98,6 +100,7 @@ HashTableView.prototype.draw=function(){
 	});
 	
 	for(var i=0;i<m.rows.length;i++){
+		
 		var color="#9AFE2E";
 		if(m.rows[i].extraCheck==true){
 			color="#FF33CC";
@@ -139,9 +142,11 @@ HashTableView.prototype.draw=function(){
 		layer.add(text);
 		layer.add(textVal);
 	}
-	layer.add(hash);
+	if(m.fillFactor!=undefined)
+		layer.add(hash);
 	layer.add(calc);
-	layer.add(fillFactor);
+	if(m.fillFactor!=undefined)
+		layer.add(fillFactor);
 	layer.add(toAdd);
 
 	

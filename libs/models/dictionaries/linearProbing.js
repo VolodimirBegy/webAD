@@ -23,8 +23,7 @@ function Row (){
 function HashTable(){
 	this.view=new HashTableView(this);
 	this.rows=[];
-
-	this.fillFactor=0;
+	this._static=true;
 	this.overflow=[];
 
 	this.db=[];
@@ -64,6 +63,7 @@ HashTable.prototype.copy=function(){
 
 	newHT.fillFactor=this.fillFactor;
 	newHT.calc=undefined;
+	newHT._static=this._static;
 	return newHT;
 }
 
@@ -79,7 +79,7 @@ HashTable.prototype.replaceThis=function(ht){
 		
 		this.rows.push(newRow);
 	}
-
+	this._static=ht._static;
 	this.fillFactor=ht.fillFactor;
 	this.calc=undefined;
 }
@@ -168,7 +168,7 @@ HashTable.prototype.add=function(toAdd,addIndex){
 	var counter=0;
 	var prevI;
 	//if(count==this.actStateID){
-		if(this.rows.length>0){
+		if(this.rows.length>0 && this.fillFactor<1){
 			
 			var newVal=undefined;
 
@@ -223,7 +223,7 @@ HashTable.prototype.add=function(toAdd,addIndex){
 							
 							function modify(ht){
 								setTimeout(function(){
-									if(ht.fillFactor>0.7 && toAdd==undefined){
+									if(ht.fillFactor>0.7 && toAdd==undefined && !ht._static){
 										ht.extend();
 										return;
 									}
@@ -236,7 +236,7 @@ HashTable.prototype.add=function(toAdd,addIndex){
 								},1000)
 							}
 							
-							if((ht.fillFactor>0.7 && toAdd==undefined) || (addIndex!=undefined && addIndex<toAdd.length-1)){
+							if((ht.fillFactor>0.7 && toAdd==undefined && !ht._static) || (addIndex!=undefined && addIndex<toAdd.length-1)){
 								modify(ht);
 								return;
 							}
@@ -293,7 +293,7 @@ HashTable.prototype.add=function(toAdd,addIndex){
 							
 							function modify(ht){
 								setTimeout(function(){
-									if(ht.fillFactor>0.7 && toAdd==undefined){
+									if(ht.fillFactor>0.7 && toAdd==undefined && !ht._static){
 										ht.extend();
 										return;
 									}
@@ -305,7 +305,7 @@ HashTable.prototype.add=function(toAdd,addIndex){
 	
 								},1000)
 							}
-							if((ht.fillFactor>0.7 && toAdd==undefined) || (addIndex!=undefined && addIndex<toAdd.length-1)){
+							if((ht.fillFactor>0.7 && toAdd==undefined && !ht._static) || (addIndex!=undefined && addIndex<toAdd.length-1)){
 								modify(ht);
 								return;
 							}
@@ -343,6 +343,11 @@ HashTable.prototype.add=function(toAdd,addIndex){
 		else if(this.rows.length==0){
 			window.alert("No table created");
 			this.working=false;
+		}
+		else if(this.fillFactor==1){
+			window.alert("Table full and static!");
+			this.working=false;
+			return;
 		}
 		
 }
@@ -508,6 +513,16 @@ HashTable.prototype.remove=function(){
 									tmpRow.value=undefined;
 									tmpRow.extraCheck=true;
 									tmpRow.occupied=false;
+									
+									var filled=0;
+									
+									for(var i=0;i<ht.rows.length;i++){
+										if(ht.rows[i].occupied)
+											filled++;
+									}
+									
+									ht.fillFactor=filled/ht.rows.length;
+									
 									ht.draw();
 									ht.calc=undefined;
 									
@@ -565,6 +580,15 @@ HashTable.prototype.remove=function(){
 										ht.rows[i].color="black";
 									}
 							
+									var filled=0;
+									
+									for(var i=0;i<ht.rows.length;i++){
+										if(ht.rows[i].occupied)
+											filled++;
+									}
+									
+									ht.fillFactor=filled/ht.rows.length;
+									
 									ht.draw();	
 									ht.calc=undefined;
 									

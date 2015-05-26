@@ -23,8 +23,7 @@ function Row (){
 function DoubleHashing(){
 	this.view=new HashTableView(this);
 	this.rows=[];
-
-	this.fillFactor=0;
+	this._static=true;
 	this.overflow=[];
 	this.prime=undefined;
 	this.db=[];
@@ -35,17 +34,31 @@ DoubleHashing.prototype.init=function(){
 	this.rows=[];
 	this.fillFactor=0;
 	this.calc=undefined;
-	var prime=1;
-	this.overflow=[];
-	
-	while(!isPrime(prime))
-		--prime;
-	this.prime=prime;
-	
-	for(var i=0;i<2;i++){
-		this.rows.push(new Row());	
+	if(this._static){
+		var size=parseInt(prompt("Size:"));
+		
+		if(isNaN(size))return;
+		for(var i=0;i<size;i++){
+			this.rows.push(new Row());	
+		}
+		
+		var prime=this.rows.length-1;
+		while(!isPrime(prime))
+			--prime;
+		this.prime=prime;
 	}
-	
+	else{
+		var prime=1;
+		this.overflow=[];
+		
+		while(!isPrime(prime))
+			--prime;
+		this.prime=prime;
+		
+		for(var i=0;i<2;i++){
+			this.rows.push(new Row());	
+		}
+	}	
 	this.saveInDB();
 	this.draw();
 }
@@ -66,6 +79,7 @@ DoubleHashing.prototype.copy=function(){
 	newHT.fillFactor=this.fillFactor;
 	newHT.calc=undefined;
 	newHT.prime=this.prime;
+	newHT._static=this._static;
 	return newHT;
 }
 
@@ -83,6 +97,7 @@ DoubleHashing.prototype.replaceThis=function(ht){
 	}
 
 	this.fillFactor=ht.fillFactor;
+	this._static=ht._static;
 	this.calc=undefined;
 	this.prime=this.prime;
 }
@@ -176,11 +191,11 @@ DoubleHashing.prototype.extend=function(){
 
 DoubleHashing.prototype.add=function(toAdd,addIndex){
 	this.cal=undefined;
-	
+
 	var counter=0;
 	var prevI;
 	//if(count==this.actStateID){
-		if(this.rows.length>0){
+		if(this.rows.length>0 && this.fillFactor<1){
 			
 			var newVal=undefined;
 
@@ -208,6 +223,7 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 				setTimeout(function(){
 			
 					if(!searchingNextFree){
+						
 						if(tmpRow.occupied==false){
 							if(counter==0){
 								ht.calc="a"+counter+" = "+newVal+" mod "+ht.rows.length+" = "+index;
@@ -228,12 +244,12 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 							}
 							
 							ht.fillFactor=filled/ht.rows.length;
-
+							//window.alert(ht.fillFactor);
 							ht.draw();
 							
 							function modify(ht){
 								setTimeout(function(){
-									if(ht.fillFactor>0.7 && toAdd==undefined){
+									if(ht.fillFactor>0.7 && toAdd==undefined && !ht._static){
 										ht.extend();
 										return;
 									}
@@ -246,7 +262,7 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 								},1000)
 							}
 							
-							if((ht.fillFactor>0.7 && toAdd==undefined) || (addIndex!=undefined && addIndex<toAdd.length-1)){
+							if((ht.fillFactor>0.7 && toAdd==undefined && !ht._static) || (addIndex!=undefined && addIndex<toAdd.length-1)){
 								modify(ht);
 								return;
 							}
@@ -269,6 +285,9 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 								ht.actCalc=index;
 							}
 							tmpRow.color="red";
+							ht.visitedIndexes=[];
+							ht.visitedIndexes.push(index);
+							
 							tmpRow.extraCheck=true;
 							searchingNextFree=true;
 							ht.draw();
@@ -298,7 +317,7 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 							
 							function modify2(ht){
 								setTimeout(function(){
-									if(ht.fillFactor>0.7 && toAdd==undefined){
+									if(ht.fillFactor>0.7 && toAdd==undefined && !ht._static){
 										ht.extend();
 										return;
 									}
@@ -310,7 +329,7 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 	
 								},1000)
 							}
-							if((ht.fillFactor>0.7 && toAdd==undefined) || (addIndex!=undefined && addIndex<toAdd.length-1)){
+							if((ht.fillFactor>0.7 && toAdd==undefined && !ht._static) || (addIndex!=undefined && addIndex<toAdd.length-1)){
 								modify2(ht);
 								return;
 							}
@@ -325,16 +344,32 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 						else{
 							ht.calc="a"+counter+" = ("+prevI+" + "+" ( "+ht.prime+" - ( "+newVal+" mod "+ht.prime+" ) ) ) mod "+ht.rows.length+" = "+index;
 							ht.actCalc=index;
+							var found=false;
+							for(var i=0;i<ht.visitedIndexes.length;i++){
+								if(ht.visitedIndexes[i]==index){
+									found=true;
+									break;
+								}
+							}
+							if(found){
+								ht.actCalc=undefined;
+								window.alert("Loop");
+								ht.visitedIndexes=[];
+								ht.working=false;
+								return;
+							}
+							ht.visitedIndexes.push(index);
 							tmpRow.color="red";
 							tmpRow.extraCheck=true;
 							ht.draw();
 						}
 					}
 					prevI=index;
+					
 					var actInd=(prevI+(ht.prime-(newVal%ht.prime)))%ht.rows.length;
 					var _i=0;
 					tmpRow=ht.rows[actInd];
-
+					
 					index=actInd;
 					counter++;
 					addInner(ht);
@@ -348,11 +383,15 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 			this.working=false;
 			return;
 		}
-		
+		else if(this.fillFactor==1){
+			window.alert("Table full and static!");
+			this.working=false;
+			return;
+		}
 }
 
 DoubleHashing.prototype.search=function(){
-	
+	this.visitedIndexes=[];
 	//var count=this.db().count();
 	var counter=0;
 	var prevI;
@@ -405,6 +444,7 @@ DoubleHashing.prototype.search=function(){
 							}
 							tmpRow.color="red";
 							searchingNextFree=true;
+							ht.visitedIndexes=[];
 							ht.draw();
 						}
 					}
@@ -433,9 +473,18 @@ DoubleHashing.prototype.search=function(){
 							ht.draw();
 						}
 					}
-					if(counter==ht.rows.length-1){
-						ht.draw();
+					
+					var found=false;
+					for(var i=0;i<ht.visitedIndexes.length;i++){
+						if(ht.visitedIndexes[i]==index){
+							found=true;
+							break;
+						}
+					}
+					
+					if(counter==ht.rows.length-1 || found){
 						ht.calc=undefined;
+						ht.draw();
 						if(tmpRow.value==newVal){
 							window.alert("Found");
 						}
@@ -444,6 +493,9 @@ DoubleHashing.prototype.search=function(){
 						ht.working=false;
 						return;
 					}	
+					
+					ht.visitedIndexes.push(index);
+					
 					prevI=index;
 					index=(prevI+(ht.prime-(newVal%ht.prime)))%ht.rows.length;
 					
@@ -476,6 +528,7 @@ function isPrime(n){
 
 DoubleHashing.prototype.remove=function(){
 	//var count=this.db().count();
+	this.visitedIndexes=[];
 	var counter=0;
 	var prevI;
 	//if(count==this.actStateID){
@@ -504,11 +557,22 @@ DoubleHashing.prototype.remove=function(){
 									tmpRow.value=undefined;
 									tmpRow.extraCheck=true;
 									tmpRow.occupied=false;
+									
+									var filled=0;
+									
+									for(var i=0;i<ht.rows.length;i++){
+										if(ht.rows[i].occupied)
+											filled++;
+									}
+									
+									ht.fillFactor=filled/ht.rows.length;
+									
 									ht.draw();
 									ht.calc=undefined;
 									
 									ht.saveInDB();
 									ht.working=false;
+									
 									return;
 								}
 								else if((tmpRow.occupied==true && tmpRow.value!=remVal)||(tmpRow.occupied==false && tmpRow.extraCheck)){
@@ -523,6 +587,7 @@ DoubleHashing.prototype.remove=function(){
 									tmpRow.color="red";
 									searchingNextFree=true;
 									ht.draw();
+									ht.visitedIndexes=[];
 								}
 								else if(tmpRow.occupied==false && tmpRow.extraCheck==false){
 									if(counter==0){
@@ -537,7 +602,7 @@ DoubleHashing.prototype.remove=function(){
 									//tmpRow.calc=undefined;
 									ht.draw();
 									ht.calc=undefined;
-									window.alert("Value not found!");
+									window.alert("Not Found");
 									ht.working=false;
 									return;
 								}
@@ -555,11 +620,21 @@ DoubleHashing.prototype.remove=function(){
 										ht.rows[i].color="black";
 									}
 							
+									var filled=0;
+									
+									for(var i=0;i<ht.rows.length;i++){
+										if(ht.rows[i].occupied)
+											filled++;
+									}
+									
+									ht.fillFactor=filled/ht.rows.length;
+									
 									ht.draw();	
 									ht.calc=undefined;
 									
 									ht.saveInDB();
 									ht.working=false;
+								
 									return;
 				
 								}
@@ -567,6 +642,7 @@ DoubleHashing.prototype.remove=function(){
 									ht.calc="a"+counter+" = ("+prevI+" + "+" ( "+ht.prime+" - ( "+remVal+" mod "+ht.prime+" ) ) ) mod "+ht.rows.length+" = "+index;
 									ht.actCalc=index;
 									tmpRow.color="red";
+									
 									ht.draw();
 								}
 								else if((tmpRow.occupied==false && tmpRow.extraCheck==false)||(tmpRow.occupied==true&&tmpRow.extraCheck==false&&tmpRow.value!=remVal)){
@@ -577,19 +653,31 @@ DoubleHashing.prototype.remove=function(){
 									tmpRow.calc=undefined;
 									ht.draw();
 									ht.calc=undefined;
-									window.alert("Value not found!");
+									window.alert("Not Found");
 									ht.working=false;
 									return;
 								}
 							}
-							if(counter==ht.rows.length-1){
-								window.alert("Value not found!");
+							
+							var found=false;
+							for(var i=0;i<ht.visitedIndexes.length;i++){
+								if(ht.visitedIndexes[i]==index){
+									found=true;
+									break;
+								}
+							}
+							
+							if(counter==ht.rows.length-1 || found){
+								window.alert("Not Found");
 								//ht.calc=undefined;
-								ht.draw();
 								ht.calc=undefined;
+								ht.draw();
 								ht.working=false;
 								return;
 							}	
+							
+							ht.visitedIndexes.push(index);
+							
 							prevI=index;
 							index=(prevI+(ht.prime-(remVal%ht.prime)))%ht.rows.length;
 							tmpRow=ht.rows[index];
@@ -605,6 +693,7 @@ DoubleHashing.prototype.remove=function(){
 			window.alert("Table not created!");
 			this.working=false;
 		}
+		
 	//}
 }
 
