@@ -150,11 +150,26 @@ DoubleHashing.prototype.saveInDB=function(){
  	}
 
 	var nextID=this.db.length;
-	
+	var last_state=this.db[this.db.length-1];
+	var same=true;
 	var new_state = this.copy(this);
-	this.db.push(new_state);
 	
-	this.actStateID=nextID;
+	if(last_state==undefined || new_state.rows.length!=last_state.rows.length || 
+			new_state.fillFactor!=last_state.fillFactor || new_state.calc!=last_state.calc){
+		same=false;
+	}
+	else{
+		for(var i=0;i<new_state.rows.length;i++){
+			if(new_state.rows[i].value!=last_state.rows[i].value ||
+					new_state.rows[i].extraCheck!=last_state.rows[i].extraCheck)
+				same=false;
+		}
+	}
+	
+	if(!same){
+		this.db.push(new_state);
+		this.actStateID=nextID;
+	}
 }
 
 DoubleHashing.prototype.extend=function(){
@@ -352,7 +367,9 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 								}
 							}
 							if(found){
-								ht.actCalc=undefined;
+								ht.calc=undefined;
+								ht.saveInDB();
+								ht.draw();
 								window.alert("Loop");
 								ht.visitedIndexes=[];
 								ht.working=false;
