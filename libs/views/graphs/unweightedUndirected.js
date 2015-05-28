@@ -42,6 +42,7 @@ UnweightedUndirectedGraphView.prototype.draw=function(){
 	var _radius=25*this.scale;
 	
 	var layer = new Kinetic.Layer();
+	this.layer=layer;
 	var lines=[];
 	var circles=[];
 	var vals=[];
@@ -199,17 +200,10 @@ UnweightedUndirectedGraphView.prototype.draw=function(){
 			strokeWidth: 2*this.scale
 		});
 		
-		var sl3 = new Kinetic.Line({
-			points:[queue.getX()+queue.getWidth()/2-scRadius-5*this.scale,(queue.getY()+queue.getFontSize()*2)+(35*this.scale*this.model.queue.length-1)-15*this.scale,queue.getX()+queue.getWidth()/2+scRadius+5*this.scale,(queue.getY()+queue.getFontSize()*2)+(35*this.scale*this.model.queue.length-1)-15*this.scale],
-			stroke: 'black',
-			strokeWidth: 2*this.scale
-		});
-		
 		H=(queue.getY()+queue.getFontSize()*2)+(35*this.scale*this.model.queue.length-1)-15*this.scale+15*this.scale;
 		
 		layer.add(sl1);
 		layer.add(sl2);
-		layer.add(sl3);
 	}
 	
 	for(var i=0;i<this.model.nodes.length;i++){

@@ -14,29 +14,49 @@
   
   <script type="text/javascript" src="../../libs/menu.js"></script>
   <script src="./unweightedUndirectedMatrix.js"></script>
+  <script src="./unweightedDirectedMatrix.js"></script>
 
   <script src="../../libs/views/graphs/unweightedUndirected.js"></script>
   <script src="../../libs/models/graphs/unweightedUndirected.js"></script>
+  <script src="../../libs/views/graphs/unweightedDirected.js"></script>
+  <script src="../../libs/models/graphs/unweightedDirected.js"></script>
 </head>
 
 <script>
 	
 	var _matrix=undefined;
 	var graph=undefined;
+	var directed=false;
 	
 	function clearTimes(){
 		var pids = window.setTimeout(function() {}, 0);
-
+	
 		while (pids--) {
-    		window.clearTimeout(pids); 
+			window.clearTimeout(pids); 
 		}
+	}
+	
+	function _directed(){
+		if(graph!=undefined){
+			clearTimes();
+			graph.nodes=[];
+			graph.edges=[];
+			graph.view.layer.remove();
+		}
+		directed=document.getElementById('directed').checked;
 	}
 	
 	function create(){
 		var amount=parseInt(prompt("Amount of nodes:"));
 		if(isNaN(amount)||amount<1)return;
 		
-		var matrix=new UnweightedUndirectedMatrix(amount);
+		var matrix=undefined;
+		
+		if(!directed)
+			matrix=new UnweightedUndirectedMatrix(amount);
+		else
+			matrix=new UnweightedDirectedMatrix(amount);
+		
 		var cm = document.getElementById("containerMatrix");
 		matrix.initStage(cm);
 		_matrix=matrix;
@@ -55,7 +75,12 @@
 	
 	function random(){
 		clearTimes();
-		var amount=randInt(3,15);
+		var amount=0;
+		if(!directed)
+			amount=randInt(3,15);
+		else
+			amount=randInt(4,8);
+		
 		var _matrix=new Array(amount);
 		for(var i=0;i<amount;i++){
 			_matrix[i]=new Array(amount);
@@ -68,7 +93,10 @@
 		for(var i=0;i<amount;i++){
 			for(var j=0;j<amount;j++){
 				fill=randInt(0,6);
-				if(i==amount-1 && j==0)fM=0;
+				if(i==amount-1 && j==0){
+					fM=0;
+					if(directed)fM=3;
+				}
 				else fM=4;
 				if(i!=j && fill>fM){
 					_matrix[i][j]=1;
@@ -78,7 +106,10 @@
 			}
 		}
 		var c1 = document.getElementById("container1");
-		graph=new UnweightedUndirectedGraph(_matrix,startNode,c1);
+		if(!directed)
+			graph=new UnweightedUndirectedGraph(_matrix,startNode,c1);
+		else
+			graph=new UnweightedDirectedGraph(_matrix,startNode,c1);
 	}
 	
 	function createOk(){
@@ -98,7 +129,10 @@
 		}
 		_class('createMatrix', 'hide');
 		var c1 = document.getElementById("container1");
-		graph=new UnweightedUndirectedGraph(_matrix.matrix,startNode,c1);
+		if(!directed)
+			graph=new UnweightedUndirectedGraph(_matrix.matrix,startNode,c1);
+		else
+			graph=new UnweightedDirectedGraph(_matrix.matrix,startNode,c1);
 	}
 	
 	function zoomIn(){
@@ -195,6 +229,7 @@
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Config</h2>
+		Directed: <input type="checkbox" name="directed" id="directed" onchange="_directed();false;">
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
