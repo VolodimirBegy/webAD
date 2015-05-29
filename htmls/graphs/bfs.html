@@ -182,21 +182,41 @@
 	}
 	
 	function pre(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			clearTimes();
+			elem.removeClass("p1");
+		}
 		clearTimes();
 		graph.prev();
 	}
 	
 	function next(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			clearTimes();
+			elem.removeClass("p1");
+		}
 		clearTimes();
 		graph.next();
 	}
 	
 	function first(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			clearTimes();
+			elem.removeClass("p1");
+		}
 		clearTimes();
 		graph.firstState();
 	}
 	
 	function last(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			clearTimes();
+			elem.removeClass("p1");
+		}
 		clearTimes();
 		graph.lastState();
 	}
