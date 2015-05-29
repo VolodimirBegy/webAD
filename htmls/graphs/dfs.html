@@ -107,9 +107,11 @@
 		}
 		var c1 = document.getElementById("container1");
 		if(!directed)
-			graph=new UnweightedUndirectedGraph(_matrix,startNode,c1);
+			graph=new UnweightedUndirectedGraph(_matrix,startNode);
 		else
-			graph=new UnweightedDirectedGraph(_matrix,startNode,c1);
+			graph=new UnweightedDirectedGraph(_matrix,startNode);
+		
+		graph.init(c1);
 	}
 	
 	function createOk(){
@@ -130,9 +132,11 @@
 		_class('createMatrix', 'hide');
 		var c1 = document.getElementById("container1");
 		if(!directed)
-			graph=new UnweightedUndirectedGraph(_matrix.matrix,startNode,c1);
+			graph=new UnweightedUndirectedGraph(_matrix,startNode);
 		else
-			graph=new UnweightedDirectedGraph(_matrix.matrix,startNode,c1);
+			graph=new UnweightedDirectedGraph(_matrix,startNode);
+		
+		graph.init(c1);
 	}
 	
 	function zoomIn(){
@@ -178,6 +182,26 @@
 		}
 		else
 			alert("No graph created!");
+	}
+	
+	function pre(){
+		clearTimes();
+		graph.prev();
+	}
+	
+	function next(){
+		clearTimes();
+		graph.next();
+	}
+	
+	function first(){
+		clearTimes();
+		graph.firstState();
+	}
+	
+	function last(){
+		clearTimes();
+		graph.lastState();
 	}
 	
 </script>
