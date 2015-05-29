@@ -829,6 +829,80 @@ UnweightedDirectedGraphView.prototype.draw=function(){
 			this.val.setY(this.getY()-_radius/4);
 	    });
 	}
+	
+	if(this.model.nodes.length==1){
+		var v=this;
+		
+		var circleFrom = new Kinetic.Circle({
+			x: this.model.nodes[0].xPosition,
+			y: this.model.nodes[0].yPosition,
+			radius:_radius,
+			fill: this.model.nodes[0].color,
+			stroke: 'black',
+			draggable:true,
+			strokeWidth: 2*this.scale
+		});
+		
+		var valFrom = new Kinetic.Text({
+			x: circleFrom.getX()-_radius,
+			y: circleFrom.getY()-_radius/4,
+			text: this.model.nodes[0].index,
+			fontSize: 15*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black',
+			width:_radius*2,
+			draggable:true,
+			align:'center'
+		});
+		
+		circleFrom.val=valFrom;
+		valFrom.circle=circleFrom;
+		
+		
+		valFrom.on('dragmove', function() {
+			this.circle.setX(parseInt(this.getX())+_radius);
+			this.circle.setY(parseInt(this.getY())+_radius/4);
+	    });
+		
+		valFrom.on('mouseover', function() {
+			this.circle.setFill("orange");
+			var ai=parseInt(this.getText());
+			v.model.nodes[v.model.matrixLink[ai]].color="orange";
+			layer.draw();
+	    });
+		
+		valFrom.on('mouseout', function() {
+			var ai=parseInt(this.getText());
+			this.circle.setFill(v.model.nodes[v.model.matrixLink[ai]].oColor);
+			v.model.nodes[v.model.matrixLink[ai]].color=v.model.nodes[v.model.matrixLink[ai]].oColor;
+			layer.draw();
+	    });
+		
+		circleFrom.on('dragmove', function() {
+			v.model.nodes[0].xPosition=parseInt(this.getX());
+			v.model.nodes[0].yPosition=parseInt(this.getY());
+			
+			this.val.setX(parseInt(this.getX())-_radius);
+			this.val.setY(this.getY()-_radius/4);
+	    });
+		
+		circleFrom.on('mouseover', function() {
+			this.setFill("orange");
+			var ai=parseInt(this.val.getText());
+			v.model.nodes[v.model.matrixLink[ai]].color="orange";
+			layer.draw();
+	    });
+		
+		circleFrom.on('mouseout', function() {
+			var ai=parseInt(this.val.getText());
+			this.setFill(v.model.nodes[v.model.matrixLink[ai]].oColor);
+			v.model.nodes[v.model.matrixLink[ai]].color=v.model.nodes[v.model.matrixLink[ai]].oColor;
+			layer.draw();			
+	    });
+		
+		circles.push(circleFrom);
+		vals.push(valFrom);
+	}
 
 	for(var i=0;i<lines.length;i++){
 		layer.add(lines[i]);

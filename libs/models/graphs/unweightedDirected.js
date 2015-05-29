@@ -29,6 +29,7 @@ function UnweightedDirectedGraph(){
 }
 
 UnweightedDirectedGraph.prototype.fill=function(_matrix,startNode){
+	
 	this.startNode=startNode;
 	this.nodes=[];
 	this.edges=[];
@@ -97,7 +98,9 @@ UnweightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 	}
 	
 	addConnected(this,startNode);
-	
+	if(this.nodes.length==1){
+		this.nodes[0].color="#00FFFF";this.nodes[0].oColor="#00FFFF";
+	}
 	this.gridSize=Math.ceil(Math.sqrt(this.nodes.length));
 	var index=0;
 	for(var i=0;i<this.gridSize;i++){

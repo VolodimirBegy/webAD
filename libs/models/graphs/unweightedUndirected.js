@@ -85,7 +85,9 @@ UnweightedUndirectedGraph.prototype.fill=function(_matrix,_startNode){
 	}
 	
 	addConnected(this,_startNode);
-	
+	if(this.nodes.length==1){
+		this.nodes[0].color="#00FFFF";this.nodes[0].oColor="#00FFFF";
+	}
 	this.gridSize=Math.ceil(Math.sqrt(this.nodes.length));
 	var index=0;
 	for(var i=0;i<this.gridSize;i++){
