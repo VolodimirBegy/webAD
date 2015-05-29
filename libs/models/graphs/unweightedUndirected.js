@@ -20,15 +20,20 @@ function Node(){
 	this.connectedTo=[];
 	this.connectedWeights=[];
 }
-
-function UnweightedUndirectedGraph(_matrix,_startNode){
+function UnweightedUndirectedGraph(){
 	this.view=new UnweightedUndirectedGraphView(this);
-	
+	this.db=[];
+	this.actStateID=-1;
+	this.nodes=[];
+}
+
+UnweightedUndirectedGraph.prototype.fill=function(_matrix,_startNode){
 	this.nodes=[];
 	this.startNode=_startNode;
 	this.costMatrix=_matrix;
 	this.visited=[];
-	
+	this.queue=undefined;
+	this.stack=undefined;
 	this.matrixLink=new Array(_matrix.length);
 	
 	function addConnected(graph,index){
@@ -108,9 +113,6 @@ function UnweightedUndirectedGraph(_matrix,_startNode){
 			this.nodes[i].connectedTo[j].yPosition=tmpN.yPosition;
 		}
 	}
-
-	this.db=[];
-	this.actStateID=-1;
 }
 
 UnweightedUndirectedGraph.prototype.init=function(c1){
@@ -121,11 +123,14 @@ UnweightedUndirectedGraph.prototype.init=function(c1){
 
 
 UnweightedUndirectedGraph.prototype.copy=function(){
-	var newG = new UnweightedDirectedGraph(this.costMatrix,this.startNode);
+	var newG = new UnweightedDirectedGraph();
+	newG.fill(this.costMatrix,this.startNode);
 	for(var i=0;i<this.nodes.length;i++){
 		newG.nodes[i].index=this.nodes[i].index;
 		newG.nodes[i].color=this.nodes[i].color;
 		newG.nodes[i].oColor=this.nodes[i].oColor;
+		newG.nodes[i].xPosition=this.nodes[i].xPosition;
+		newG.nodes[i].yPosition=this.nodes[i].yPosition;
 	}
 	
 	if(this.stack!=undefined){
@@ -154,14 +159,15 @@ UnweightedUndirectedGraph.prototype.copy=function(){
 }
 
 UnweightedUndirectedGraph.prototype.replaceThis=function(og){
-	var newG = new UnweightedDirectedGraph(og.costMatrix,og.startNode);
-	var oldX=[];
+	var newG = new UnweightedDirectedGraph();
+	newG.fill(og.costMatrix,og.startNode);
+	/*var oldX=[];
 	var oldY=[];
 	
 	for(var i=0;i<this.nodes.length;i++){
 		oldX.push(this.nodes[i].xPosition);
 		oldY.push(this.nodes[i].yPosition);
-	}
+	}*/
 	
 	this.startNode=newG.startNode;
 	this.costMatrix=newG.costMatrix;
@@ -172,8 +178,8 @@ UnweightedUndirectedGraph.prototype.replaceThis=function(og){
 		this.nodes[i].index=og.nodes[i].index;
 		this.nodes[i].color=og.nodes[i].color;
 		this.nodes[i].oColor=og.nodes[i].oColor;
-		this.nodes[i].xPosition=oldX[i];
-		this.nodes[i].yPosition=oldY[i];
+		this.nodes[i].xPosition=og.nodes[i].xPosition;
+		this.nodes[i].yPosition=og.nodes[i].yPosition;
 	}
 	
 	if(og.stack!=undefined){
@@ -260,7 +266,10 @@ UnweightedUndirectedGraph.prototype.saveInDB=function(){
 	}
 	else{
 		for(var i=0;i<new_state.nodes.length;i++){
-			if(new_state.nodes[i].color!=last_state.nodes[i].color)
+			if(new_state.nodes[i].color!=last_state.nodes[i].color ||
+					new_state.nodes[i].index!=last_state.nodes[i].index||
+					new_state.nodes[i].oColor!=last_state.nodes[i].oColor||
+					new_state.nodes[i].connectedTo.length!=last_state.nodes[i].connectedTo.length)
 				same=false;
 		}
 	}

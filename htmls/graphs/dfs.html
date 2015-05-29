@@ -28,6 +28,23 @@
 	var graph=undefined;
 	var directed=false;
 	
+	function _create(){
+		if(graph!=undefined){
+			clearTimes();
+			graph.nodes=[];
+			graph.edges=[];
+			if(graph.view.layer!=undefined)
+				graph.view.layer.remove();
+		}
+		
+		directed=document.getElementById('directed').checked;
+
+		if(!directed)
+			graph=new UnweightedUndirectedGraph();
+		else
+			graph=new UnweightedDirectedGraph();
+	}
+	
 	function clearTimes(){
 		var pids = window.setTimeout(function() {}, 0);
 	
@@ -41,9 +58,11 @@
 			clearTimes();
 			graph.nodes=[];
 			graph.edges=[];
-			graph.view.layer.remove();
+			if(graph.view.layer!=undefined)
+				graph.view.layer.remove();
 		}
 		directed=document.getElementById('directed').checked;
+		_create();
 	}
 	
 	function create(){
@@ -106,11 +125,7 @@
 			}
 		}
 		var c1 = document.getElementById("container1");
-		if(!directed)
-			graph=new UnweightedUndirectedGraph(_matrix,startNode);
-		else
-			graph=new UnweightedDirectedGraph(_matrix,startNode);
-		
+		graph.fill(_matrix,startNode);
 		graph.init(c1);
 	}
 	
@@ -131,11 +146,7 @@
 		}
 		_class('createMatrix', 'hide');
 		var c1 = document.getElementById("container1");
-		if(!directed)
-			graph=new UnweightedUndirectedGraph(_matrix,startNode);
-		else
-			graph=new UnweightedDirectedGraph(_matrix,startNode);
-		
+		graph.fill(_matrix.matrix,startNode);
 		graph.init(c1);
 	}
 	
@@ -206,7 +217,7 @@
 	
 </script>
 
-<body id="body" class="page">
+<body id="body" class="page" onload="_create();">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
@@ -253,7 +264,7 @@
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Config</h2>
-		Directed: <input type="checkbox" name="directed" id="directed" onchange="_directed();false;">
+		Directed: <input type="checkbox" name="directed" id="directed" onchange="_create();">
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
