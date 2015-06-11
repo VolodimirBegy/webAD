@@ -24,6 +24,18 @@
 	var _matrix=undefined;
 	var graph=undefined;
 	
+	function _create(){
+		if(graph!=undefined){
+			clearTimes();
+			graph.nodes=[];
+			graph.edges=[];
+			if(graph.view.layer!=undefined)
+				graph.view.layer.remove();
+		}
+		
+		graph=new WeightedDirectedGraph();
+	}
+	
 	function clearTimes(){
 		var pids = window.setTimeout(function() {}, 0);
 
@@ -75,7 +87,8 @@
 			}
 		}
 		var c1 = document.getElementById("container1");
-		graph=new WeightedDirectedGraph(_matrix,startNode,c1);
+		graph.fill(_matrix,startNode);
+		graph.init(c1);
 	}
 	
 	function createOk(){
@@ -128,7 +141,8 @@
 			}
 			_class('createMatrix', 'hide');
 			var c1 = document.getElementById("container1");
-			graph=new WeightedDirectedGraph(_matrix.matrix,startNode,c1);
+			graph.fill(_matrix,startNode);
+			graph.init(c1);
 		}
 	}
 	
@@ -177,9 +191,49 @@
 			alert("No graph created!");
 	}
 	
+	function pre(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			clearTimes();
+			elem.removeClass("p1");
+		}
+		clearTimes();
+		graph.prevtr();
+	}
+	
+	function next(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			clearTimes();
+			elem.removeClass("p1");
+		}
+		clearTimes();
+		graph.next();
+	}
+	
+	function first(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			clearTimes();
+			elem.removeClass("p1");
+		}
+		clearTimes();
+		graph.firstState();
+	}
+	
+	function last(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			clearTimes();
+			elem.removeClass("p1");
+		}
+		clearTimes();
+		graph.lastState();
+	}
+	
 </script>
 
-<body id="body" class="page">
+<body id="body" class="page" onload="_create();">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

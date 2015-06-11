@@ -24,8 +24,14 @@ function Edge(u,v,w){
 	this.color="black";
 }
 
-function WeightedDirectedGraph(_matrix,startNode,c1){
+function WeightedDirectedGraph(){
 	this.view=new WeightedDirectedGraphView(this);
+	this.db=[];
+	this.actStateID=-1;
+}
+
+WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
+	this.startNode=startNode;
 	
 	this.nodes=[];
 	this.edges=[];
@@ -79,8 +85,10 @@ function WeightedDirectedGraph(_matrix,startNode,c1){
 						eExists=true;break
 					}
 				}
-				if(!eExists)
+				if(!eExists){
 					graph.edges.push(new Edge(cNode,newNode,_matrix[index][i]));
+					graph.edges[graph.edges.length-1].index=graph.edges.length-1;
+				}
 				
 				if(!alreadyConnected){
 					cNode.connectedTo.push(newNode);
@@ -121,16 +129,261 @@ function WeightedDirectedGraph(_matrix,startNode,c1){
 			this.nodes[i].connectedTo[j].yPosition=tmpN.yPosition;
 		}
 	}
+}
+
+WeightedDirectedGraph.prototype.init=function(c1){
 	this.view.initStage(c1);
+	this.Q=undefined; this.uSet=undefined; 
+	this.i=undefined; this.dist=undefined; 
+	this.prev=undefined; this.S=undefined;
 	this.draw();
+	this.saveInDB();
+}
+
+
+WeightedDirectedGraph.prototype.copy=function(){
+	var newG = new WeightedDirectedGraph();
+	newG.fill(this.costMatrix,this.startNode);
 	
-	this.db=[];
-	this.actStateID=-1;
+	for(var i=0;i<this.nodes.length;i++){
+		newG.nodes[i].index=this.nodes[i].index;
+		newG.nodes[i].color=this.nodes[i].color;
+		newG.nodes[i].oColor=this.nodes[i].oColor;
+		newG.nodes[i].xPosition=this.nodes[i].xPosition;
+		newG.nodes[i].yPosition=this.nodes[i].yPosition;
+	}
+	//Q, uSet, i, dist, prev, S
+	newG.i=this.i;
+	newG.uSet=this.uSet;
+	
+	if(this.Q!=undefined){
+		newG.Q=new Array(this.Q.length);
+		for(var i=0;i<this.Q.length;i++){
+			if(this.Q[i]!=undefined){
+				newG.Q[i]=newG.nodes[newG.matrixLink[this.Q[i].index]];
+			}
+			else
+				newG.Q[i]=undefined;
+		}
+	}
+	else
+		newG.Q=undefined;
+	
+	if(this.S!=undefined){
+		newG.S=new Array(this.S.length);
+		for(var i=0;i<this.S.length;i++){
+			if(this.S[i]!=undefined){
+				newG.S[i]=newG.nodes[newG.matrixLink[this.S[i].index]];
+			}
+			else
+				newG.S[i]=undefined;
+		}
+	}
+	else
+		newG.S=undefined;
+	
+	if(this.dist!=undefined){
+		newG.dist=new Array(this.dist.length);
+		for(var i=0;i<this.dist.length;i++){
+			newG.dist[i]=this.dist[i];
+		}
+	}
+	else
+		newG.dist=undefined;
+	
+	if(this.prev!=undefined){
+		newG.prev=new Array(this.prev.length);
+		for(var i=0;i<this.prev.length;i++){
+			newG.prev[i]=this.prev[i];
+		}
+	}
+	else
+		newG.prev=undefined;
+	
+	for(var i=0;i<this.edges.length;i++){
+		for(var j=0;j<newG.edges.length;j++){
+			if(this.edges[i].index==newG.edges[j].index){
+				
+				newG.edges[j].color=this.edges[i].color;
+				break;
+			}
+		}
+	}
+	
+
+	return newG;
+}
+
+WeightedDirectedGraph.prototype.replaceThis=function(og){
+	var newG = new WeightedDirectedGraph();
+	newG.fill(og.costMatrix,og.startNode);
+
+	this.startNode=newG.startNode;
+	this.costMatrix=newG.costMatrix;
+	
+	this.nodes=newG.nodes;
+	this.edges=newG.edges;
+	
+	this.matrixLink=newG.matrixLink;
+	
+	for(var i=0;i<og.nodes.length;i++){
+		this.nodes[i].index=og.nodes[i].index;
+		this.nodes[i].color=og.nodes[i].color;
+		this.nodes[i].oColor=og.nodes[i].oColor;
+		this.nodes[i].xPosition=og.nodes[i].xPosition;
+		this.nodes[i].yPosition=og.nodes[i].yPosition;
+	}
+
+	this.i=og.i;
+	this.uSet=og.uSet;
+	
+	if(og.Q!=undefined){
+		this.Q=new Array(og.Q.length);
+		for(var i=0;i<og.Q.length;i++){
+			if(og.Q[i]!=undefined){
+				this.Q[i]=this.nodes[this.matrixLink[og.Q[i].index]];
+			}
+			else
+				this.Q[i]=undefined;
+		}
+	}
+	else
+		this.Q=undefined;
+	
+	if(og.S!=undefined){
+		this.S=new Array(og.S.length);
+		for(var i=0;i<og.S.length;i++){
+			if(og.S[i]!=undefined){
+				this.S[i]=this.nodes[this.matrixLink[og.S[i].index]];
+			}
+			else
+				this.S[i]=undefined;
+		}
+	}
+	else
+		this.S=undefined;
+	
+	if(og.dist!=undefined){
+		this.dist=new Array(og.dist.length);
+		for(var i=0;i<og.dist.length;i++){
+			this.dist[i]=og.dist[i];
+		}
+	}
+	else
+		this.dist=undefined;
+	
+	if(og.prev!=undefined){
+		this.prev=new Array(og.prev.length);
+		for(var i=0;i<og.prev.length;i++){
+			this.prev[i]=og.prev[i];
+		}
+	}
+	else
+		this.prev=undefined;
+
+	for(var i=0;i<og.edges.length;i++){
+		for(var j=0;j<this.edges.length;j++){
+			if(og.edges[i].index==this.edges[j].index){
+				this.edges[j].color=og.edges[i].color;
+				break;
+			}
+		}
+	}
+}
+
+
+WeightedDirectedGraph.prototype.prevtr=function(){
+	if(this.actStateID>0){
+		var prev_id=this.actStateID-1;
+		this.actStateID=prev_id;
+		var rs=this.db[prev_id];
+		//make actual node to THIS:
+      	this.replaceThis(rs);
+      	this.draw();
+	}
+}
+
+WeightedDirectedGraph.prototype.next=function(){
+	if(this.actStateID<this.db.length-1){
+		var next_id=this.actStateID+1;
+		this.actStateID=next_id;
+		var rs=this.db[next_id];
+		//make actual node to THIS:
+      	this.replaceThis(rs);
+      	this.draw();
+	}
+}
+
+WeightedDirectedGraph.prototype.firstState=function(){
+	this.actStateID=0;
+	var rs=this.db[0];
+	//make actual node to THIS:
+    this.replaceThis(rs);
+    this.draw();
+}
+
+WeightedDirectedGraph.prototype.lastState=function(){
+	var last_id=this.db.length-1;
+	this.actStateID=last_id;
+	var rs=this.db[last_id];
+	//make actual node to THIS:
+     this.replaceThis(rs);
+     this.draw();
+}
+
+WeightedDirectedGraph.prototype.saveInDB=function(){
+	
+	var count=this.db.length-1;
+ 	if(count!=this.actStateID){
+       	for(var i=this.actStateID+1;i<=count;++i){
+           	this.db.splice(this.db.length-1,1);
+       	}
+ 	}
+
+	var nextID=this.db.length;
+	var new_state = this.copy(this);
+	
+	var last_state=this.db[this.db.length-1];
+	var same=true;
+	
+	if(last_state==undefined || new_state.nodes.length!=last_state.nodes.length ||
+			new_state.edges.length!=last_state.edges.length || (last_state.Q==undefined && new_state.Q!=undefined)
+			||(last_state.Q!=undefined && new_state.Q.length!=last_state.Q.length)
+			||(last_state.S==undefined && new_state.S==undefined)
+			||(last_state.S!=undefined && new_state.S.length!=last_state.S.length)){
+		same=false;
+	}
+	else{
+		for(var i=0;i<new_state.nodes.length;i++){
+			if(new_state.nodes[i].color!=last_state.nodes[i].color ||
+					new_state.nodes[i].index!=last_state.nodes[i].index||
+					new_state.nodes[i].oColor!=last_state.nodes[i].oColor||
+					new_state.nodes[i].connectedTo.length!=last_state.nodes[i].connectedTo.length){
+				same=false;break;
+			}
+		}
+		for(var i=0;i<new_state.edges.length;i++){
+			
+			if(new_state.edges[i].w!=last_state.edges[i].w||
+					new_state.edges[i].u.index!=last_state.edges[i].u.index||
+					new_state.edges[i].v.index!=last_state.edges[i].v.index||
+					new_state.edges[i].color!=last_state.edges[i].color){
+				same=false;
+				//window.alert("not same");
+			}
+		}
+	}
+	
+	if(!same){
+		this.db.push(new_state);
+		this.actStateID=nextID;
+		//window.alert(this.actStateID);
+	}
 }
 
 WeightedDirectedGraph.prototype.dijkstra=function(){
 	var delay=2000;
-	
+	//Q, uSet, i, dist, prev, S
 	if(this.Q==undefined || this.Q.length==0){
 		this.uSet=true;
 		delay=0;
@@ -151,7 +404,6 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 		this.dist[source.index]=0;
 		this.prev[source.index]=undefined;
 		
-		this.draw();
 		this.Q=[];
 		
 		for(var i=0;i<this.nodes.length;i++){
@@ -166,6 +418,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 	}
 	
 	this.draw();
+	this.saveInDB();
 	
 	if(this.uSet)delay=0;
 	
@@ -187,6 +440,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 			
 			u.color="#00FFFF";
 			graph.draw();
+			graph.saveInDB();
 
 			
 			//i<u.connectedTo.length
@@ -226,12 +480,13 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 						}
 					}
 					
-					graph.draw();
-			
 					
 					graph.i++;
+					graph.draw();
+					
 				
 					if(graph.i<u.connectedTo.length){
+						graph.saveInDB();
 						processU(graph);
 						return;
 					}
@@ -242,9 +497,12 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 						delay=2000;
 						graph.delay=2000;
 						if(graph.Q.length>0){
+							graph.saveInDB();
 							step(graph);
 							return;
 						}
+						else
+							graph.saveInDB();
 					}
 				},2000)
 			}

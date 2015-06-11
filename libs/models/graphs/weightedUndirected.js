@@ -182,7 +182,6 @@ WeightedUndirectedGraph.prototype.copy=function(){
 				}
 			}
 		}
-
 	}
 	else
 		newG.A=undefined;
