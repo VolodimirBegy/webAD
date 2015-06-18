@@ -37,6 +37,25 @@
 		
 	}
 	
+	function add(){
+		if(_matrix!=undefined){
+			if(graph.A==undefined){
+				var amount=parseInt(prompt("Amount of new nodes:"));
+				if(isNaN(amount)||amount<0)return;
+				
+				_matrix.extendBy(amount,graph.costMatrix);
+				_matrix.draw();
+				
+				var tf = $("#startNode");
+				tf.val(""+graph.startNode+"");
+				tf.css("background-color","white");
+				_class('createMatrix', 'hide');
+			}
+			else
+				window.alert("Algorithm already in progress");
+		}
+	}
+	
 	function clearTimes(){
 		var pids = window.setTimeout(function() {}, 0);
 
@@ -52,9 +71,9 @@
 	function random(){
 		clearTimes();
 		var amount=randInt(3,10);
-		var _matrix=new Array(amount);
+		var matrix=new Array(amount);
 		for(var i=0;i<amount;i++){
-			_matrix[i]=new Array(amount);
+			matrix[i]=new Array(amount);
 		}
 		var startNode=undefined;
 		
@@ -68,21 +87,60 @@
 				else fM=4;
 				if(i!=j && fill>fM){
 					weight=randInt(1,50)
-					_matrix[i][j]=weight;
-					_matrix[j][i]=weight;
+					matrix[i][j]=weight;
+					matrix[j][i]=weight;
 					startNode=i;
 				}
 			}
 		}
-		var c1 = document.getElementById("container1");
-		//window.alert(graph);
-		graph.fill(_matrix);
-		graph.init(c1);
 		
-		var elem = $("#p");
-		if(elem.hasClass("p1")){
-			clearTimes();
-			elem.removeClass("p1");
+		var nodes=[];
+		
+		function addConnected(index){
+			var cNode=new Node();
+			cNode.index=index;
+			for(var i=0;i<matrix.length;i++){
+				if(matrix[index][i]!=undefined){
+					var newNode=new Node();
+					newNode.index=i;
+					cNode.connectedTo.push(newNode);
+				}
+			}
+			
+			nodes.push(cNode);
+
+			for(i=0;i<cNode.connectedTo.length;i++){
+				var exists=false;
+				for(var j=0;j<nodes.length;j++){
+					if(nodes[j].index==cNode.connectedTo[i].index)
+						exists=true;
+				}
+				if(!exists)
+					addConnected(cNode.connectedTo[i].index);
+			}
+		}
+		
+		addConnected(startNode);
+		
+		if(nodes.length!=matrix.length){
+			random();
+		}
+		else{
+			var c1 = document.getElementById("container1");
+			graph.fill(matrix);
+			graph.init(c1);
+			
+			_matrix=new WeightedUndirectedMatrix(amount);
+			var cm = document.getElementById("containerMatrix");
+			_matrix.initStage(cm);
+			
+			_matrix.matrix=matrix;
+			
+			var elem = $("#p");
+			if(elem.hasClass("p1")){
+				clearTimes();
+				elem.removeClass("p1");
+			}
 		}
 	}
 	
@@ -90,12 +148,11 @@
 		var amount=parseInt(prompt("Amount of nodes:\nmin 2"));
 		if(isNaN(amount)||amount<2)return;
 		
-		var matrix=new WeightedUndirectedMatrix(amount);
+		_matrix=new WeightedUndirectedMatrix(amount);
 		var cm = document.getElementById("containerMatrix");
-		matrix.initStage(cm);
-		_matrix=matrix;
+		_matrix.initStage(cm);
 		
-		matrix.draw();
+		_matrix.draw();
 		
 		_class('createMatrix', 'hide');
 	}
@@ -262,6 +319,7 @@
 	<div id="menu" class="open">
 		<a href="javascript:_class('menu', 'open')">Kruskal</a>
         <input type="button" value="Create" id="create" onclick="create();return false;">
+        <input type="button" value="Modify nodes" id="add" onclick="add();return false;">
         <input type="button" value="Random" id="random" onclick="random();return false;">
         <input type="button" value="Run Kruskal" id="kruskal" onclick="kruskal();return false;">
 	</div>

@@ -81,7 +81,7 @@ UnweightedUndirectedGraph.prototype.fill=function(_matrix,_startNode){
 				
 			}
 		}
-		
+
 	}
 	
 	addConnected(this,_startNode);
@@ -248,6 +248,7 @@ UnweightedUndirectedGraph.prototype.lastState=function(){
 }
 
 UnweightedUndirectedGraph.prototype.saveInDB=function(){
+	
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
        	for(var i=this.actStateID+1;i<=count;++i){

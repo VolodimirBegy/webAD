@@ -66,26 +66,44 @@
 	}
 	
 	function create(){
-		var amount=parseInt(prompt("Amount of nodes:"));
-		if(isNaN(amount)||amount<1)return;
+		var amount=parseInt(prompt("Amount of new nodes:"));
+		if(isNaN(amount)||amount<0)return;
 		
-		var matrix=undefined;
+		_matrix=undefined;
 		
 		if(!directed)
-			matrix=new UnweightedUndirectedMatrix(amount);
+			_matrix=new UnweightedUndirectedMatrix(amount);
 		else
-			matrix=new UnweightedDirectedMatrix(amount);
+			_matrix=new UnweightedDirectedMatrix(amount);
 		
 		var cm = document.getElementById("containerMatrix");
-		matrix.initStage(cm);
-		_matrix=matrix;
+		_matrix.initStage(cm);
 		
-		matrix.draw();
+		_matrix.draw();
 		
 		var tf = $("#startNode");
 		tf.val("");
 		tf.css("background-color","white");
 		_class('createMatrix', 'hide');
+	}
+	
+	function add(){
+		if(_matrix!=undefined){
+			if(graph.stack==undefined){
+				var amount=parseInt(prompt("Amount of new nodes:"));
+				if(isNaN(amount)||amount<0)return;
+				
+				_matrix.extendBy(amount,graph.costMatrix);
+				_matrix.draw();
+				
+				var tf = $("#startNode");
+				tf.val(""+graph.startNode+"");
+				tf.css("background-color","white");
+				_class('createMatrix', 'hide');
+			}
+			else
+				window.alert("Algorithm already in progress");
+		}
 	}
 	
 	function randInt(min, max) {
@@ -100,9 +118,9 @@
 		else
 			amount=randInt(4,8);
 		
-		var _matrix=new Array(amount);
+		var matrix=new Array(amount);
 		for(var i=0;i<amount;i++){
-			_matrix[i]=new Array(amount);
+			matrix[i]=new Array(amount);
 		}
 		var startNode=undefined;
 		
@@ -114,23 +132,67 @@
 				fill=randInt(0,6);
 				if(i==amount-1 && j==0){
 					fM=0;
-					if(directed)fM=3;
 				}
 				else fM=4;
 				if(i!=j && fill>fM){
-					_matrix[i][j]=1;
-					_matrix[j][i]=1;
+					matrix[i][j]=1;
+					if(!directed)
+						matrix[j][i]=1;
 					startNode=i;
 				}
 			}
 		}
-		var c1 = document.getElementById("container1");
-		graph.fill(_matrix,startNode);
-		graph.init(c1);
+		
+		var nodes=[];
+		
+		function addConnected(index){
+			var cNode=new Node();
+			cNode.index=index;
+			for(var i=0;i<matrix.length;i++){
+				if(matrix[index][i]!=undefined){
+					var newNode=new Node();
+					newNode.index=i;
+					cNode.connectedTo.push(newNode);
+				}
+			}
+			
+			nodes.push(cNode);
+
+			for(i=0;i<cNode.connectedTo.length;i++){
+				var exists=false;
+				for(var j=0;j<nodes.length;j++){
+					if(nodes[j].index==cNode.connectedTo[i].index)
+						exists=true;
+				}
+				if(!exists)
+					addConnected(cNode.connectedTo[i].index);
+			}
+		}
+		
+		addConnected(startNode);
+		
+		if(nodes.length!=matrix.length){
+			random();
+		}
+		else{	
+			var c1 = document.getElementById("container1");
+			graph.fill(matrix,startNode);
+			graph.init(c1);
+			
+			_matrix=undefined;
+			
+			if(!directed)
+				_matrix=new UnweightedUndirectedMatrix(amount);
+			else
+				_matrix=new UnweightedDirectedMatrix(amount);
+			
+			_matrix.matrix=matrix;
+			var cm = document.getElementById("containerMatrix");
+			_matrix.initStage(cm);
+		}
 	}
 	
 	function createOk(){
-		
 		var tf = $("#startNode");
 		var startNode=parseInt(tf.val());
 
@@ -147,6 +209,7 @@
 		_class('createMatrix', 'hide');
 		var c1 = document.getElementById("container1");
 		graph.fill(_matrix.matrix,startNode);
+		
 		graph.init(c1);
 	}
 	
@@ -259,7 +322,8 @@
 	<div id="menu" class="open">
 		<a href="javascript:_class('menu', 'open')">Depth First Search</a>
         <input type="button" value="Create" id="create" onclick="create();return false;">
-         <input type="button" value="Random" id="random" onclick="random();return false;">
+        <input type="button" value="Modify nodes" id="add" onclick="add();return false;">
+        <input type="button" value="Random" id="random" onclick="random();return false;">
         <input type="button" value="Run DFS" id="dfs" onclick="dfs();return false;">
 	</div>
 	<div id="container1"></div>

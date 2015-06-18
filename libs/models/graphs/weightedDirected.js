@@ -364,7 +364,7 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
 		}
 		for(var i=0;i<new_state.edges.length;i++){
 			
-			if(new_state.edges[i].w!=last_state.edges[i].w||
+			if(new_state.edges[i].weight!=last_state.edges[i].weight||
 					new_state.edges[i].u.index!=last_state.edges[i].u.index||
 					new_state.edges[i].v.index!=last_state.edges[i].v.index||
 					new_state.edges[i].color!=last_state.edges[i].color){

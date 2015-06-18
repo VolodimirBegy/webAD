@@ -23,6 +23,26 @@ function UnweightedUndirectedMatrix(_number){
 	this.scale=1;
 }
 
+UnweightedUndirectedMatrix.prototype.extendBy=function(amount,gm){
+	var oldM=gm.slice();
+	var oldN=gm.length
+	this.matrix=[];
+	
+	this.number=oldN+amount;
+	
+	for(var i=0;i<this.number;i++){
+		this.matrix.push(new Array(this.number));
+	}
+	
+	for(var i=0;i<oldN;i++){
+		for(var j=0;j<oldN;j++){
+			if(oldM[i][j]==1){
+				this.matrix[i][j]=1;
+			}
+		}
+	}
+}
+
 UnweightedUndirectedMatrix.prototype.initStage=function(cont){
 	this.stage = new Kinetic.Stage({
   		container: cont,
