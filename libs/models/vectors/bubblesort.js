@@ -324,6 +324,19 @@ Vector.prototype.getElementsByPrompt=function(){
 	 
 }
 
+Vector.prototype.example=function(){
+	this.init();
+	var vals=[10,2,11,5,8,3,13,14,15,9,4,7,6,3];
+	 for(var i=0;i<vals.length;i++){
+		this.elements.push(new Element(vals[i]));
+	 }
+	this.j=this.size()-1;
+	this.setColorsBubbleSort();
+	this.paused=true;
+	this.saveInDB();
+	this.draw();
+}
+
 Vector.prototype.size=function(){
 	 return this.elements.length;
  }

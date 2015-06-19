@@ -451,7 +451,24 @@ Vector.prototype.getElementsByPrompt=function(){
 	 }
 	 else
 		 return false;
- }
+}
+
+Vector.prototype.example=function(){
+	this.init();
+	var vals=[7,2,3,6,1,0,21,4,18,8];
+	 for(var i=0;i<vals.length;i++){
+		this.elements.push(new Element(vals[i]));
+	 }
+	 
+	 this.range="0-"+(this.size()-1);
+	 this.pivot=0;
+	 var _range=this.range.split("-");
+	 this.l=this.pivot+1;
+	 this.r=_range[1];
+	 
+	 this.setColorsQuicksort();
+	 this.draw();
+}
 
 Vector.prototype.size=function(){
 	 return this.elements.length;
