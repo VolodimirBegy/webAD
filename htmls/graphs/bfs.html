@@ -364,8 +364,19 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
-	BFS on undirected graphs<br>
-	All nodes not connected to the initial node will be removed
+	Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. It starts at the tree root (or some arbitrary node of a graph, 
+	sometimes referred to as a 'search key') and explores the neighbor nodes first, before moving to the next level neighbors. Compare BFS with the equivalent, but more
+	memory-efficient Iterative deepening depth-first search and contrast with depth-first search.
+	<br>
+	<img src="../../images/animbfs.gif" width="200px" alt="bsimage"><br>
+	BFS was invented in the late 1950s by E. F. Moore, who used it to find the shortest path out of a maze, and discovered independently by C. Y. Lee as a wire routing algorithm (published 1961).
+	<h4>Pseudocode</h4>
+	Input: A graph <b>G</b> and a vertex <b>v</b> of <b>G</b><br>
+	Output: All vertices reachable from <b>v</b> labeled as discovered<br>
+	A non-recursive implementation of BFS:<br>
+	<img src="../../images/pseudobfs.png" width="500px" alt="bsimage">[1]
+	<br><br>
+	<div>[1]: <a href="https://en.wikipedia.org/wiki/Breadth-first_search" target="_blank">https://en.wikipedia.org/wiki/Breadth-first_search</a></div>
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>

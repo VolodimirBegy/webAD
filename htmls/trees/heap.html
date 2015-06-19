@@ -156,6 +156,20 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
+	A binary heap is a heap data structure created using a binary tree. It can be seen as a binary tree with two additional constraints:
+	<br><br><li>Shape property</li>
+	A binary heap is a complete binary tree; that is, all levels of the tree, except possibly the last one (deepest) are fully filled, and, if the last level of 
+	the tree is not complete, the nodes of that level are filled from left to right.
+	<br><br><li>Heap property</li>
+	All nodes are either greater than or equal to or less than or equal to each of its children, according to a comparison predicate defined for the heap.
+	Heaps with a mathematical "greater than or equal to" (≥) comparison predicate are called max-heaps; those with a mathematical "less than or equal to" (≤) 
+	comparison predicate are called min-heaps. Min-heaps are often used to implement priority queues.
+	<br>Since the ordering of siblings in a heap is not specified by the heap property, a single node's two children can be freely interchanged unless doing so 
+	violates the shape property (compare with treap). Note, however, that in the common array-based heap, simply swapping the children might also necessitate moving 
+	the children's sub-tree nodes to retain the heap property.
+	<br>The binary heap is a special case of the d-ary heap in which d = 2.
+	<img src="../../images/minheap.png" alt="bstimage">[1]
+	<div>[1]: <a href="http://en.wikipedia.org/wiki/Binary_heap" target="_blank">http://en.wikipedia.org/wiki/Binary_heap</a></div>
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>

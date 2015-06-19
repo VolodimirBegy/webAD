@@ -339,8 +339,24 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
-	Dijkstra on directed weighted graphs<br>
-	All nodes not connected to the initial node will be removed
+	Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks. It was conceived by 
+	computer scientist Edsger W. Dijkstra in 1956 and published three years later. The algorithm exists in many variants; Dijkstra's original variant found the 
+	shortest path between two nodes, but a more common variant fixes a single node as the "source" node and finds shortest paths from the source to all other nodes in 
+	the graph, producing a shortest path tree.<br>
+	For a given source node in the graph, the algorithm finds the shortest path between that node and every other. It can also be used for finding the shortest paths 
+	from a single node to a single destination node by stopping the algorithm once the shortest path to the destination node has been determined. For example, if the 
+	nodes of the graph represent cities and edge path costs represent driving distances between pairs of cities connected by a direct road, Dijkstra's algorithm can be 
+	used to find the shortest route between one city and all other cities. As a result, the shortest path algorithm is widely used in network routing protocols, most 
+	notably IS-IS and Open Shortest Path First (OSPF). It is also employed as a subroutine in other algorithms such as Johnson's.
+	<br><img src="../../images/dijkstra.gif" width="300px" alt="bsimage"><br>
+	<h3>Pseudocode</h3>
+	In the following algorithm, the code u ← vertex in Q with min dist[u], searches for the vertex u in the vertex set Q that has the least dist[u] value. length(u, v) 
+	returns the length of the edge joining (i.e. the distance between) the two neighbor-nodes u and v. The variable alt on line 19 is the length of the path from the root 
+	node to the neighbor node v if it were to go through u. If this path is shorter than the current shortest path recorded for v, that current path is replaced with this alt path. 
+	The prev array is populated with a pointer to the "next-hop" node on the source graph to get the shortest route to the source.
+	<img src="../../images/pseudodijkstra.png" width="800px" alt="bsimage">[1]
+	<br><br>
+	<div>[1]: <a href="https://en.wikipedia.org/wiki/Dijkstra's_algorithm" target="_blank">https://en.wikipedia.org/wiki/Dijkstra's_algorithm</a></div>
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>

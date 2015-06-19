@@ -342,8 +342,22 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
-	DFS on undirected graphs<br>
-	All nodes not connected to the initial node will be removed
+	Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. One starts at the root (selecting some arbitrary node as the
+	root in the case of a graph) and explores as far as possible along each branch before backtracking.
+	<br>A version of depth-first search was investigated in the 19th century by French mathematician Charles Pierre Trémaux as a strategy for solving mazes.
+	<br>Order, in which the graph is processed:<br>
+	<img src="../../images/dfs.png" width="300px" alt="bsimage"><br>
+	<h3>Properties</h3>
+	The time and space analysis of DFS differs according to its application area. In theoretical computer science, DFS is typically used to traverse an entire graph, 
+	and takes time Θ(|V| + |E|), linear in the size of the graph. In these applications it also uses space O(|V|) in the worst case to store the stack of vertices 
+	on the current search path as well as the set of already-visited vertices. Thus, in this setting, the time and space bounds are the same as for breadth-first search 
+	and the choice of which of these two algorithms to use depends less on their complexity and more on the different properties of the vertex orderings the two algorithms 
+	produce.
+	<h3>Pseudocode</h3>
+	A non-recursive implementation of DFS:<br>
+	<img src="../../images/pseudodfs.png" width="500px" alt="bsimage">[1]
+	<br><br>
+	<div>[1]: <a href="https://en.wikipedia.org/wiki/Depth-first_search" target="_blank">https://en.wikipedia.org/wiki/Depth-first_search</a></div>
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>

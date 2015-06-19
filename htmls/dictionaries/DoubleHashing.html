@@ -29,9 +29,9 @@
 		ht.draw();
 	}
 	
-	function _static(){
+	function _extendible(){
 		init();
-		ht._static=document.getElementById('_static').checked;
+		ht._static=!document.getElementById('_extendible').checked;
 	}
 	
 	function clearTimes(){
@@ -159,11 +159,19 @@
 	g(k)= R- (k mod R)
 	<br>
 	Collided and deleted buckets are marked purple, they need to be included in the collision path
+	<br><br>
+	Double hashing is a computer programming technique used in hash tables to resolve hash collisions, cases when two different values to be searched for produce the same hash key. 
+	It is a popular collision-resolution technique in open-addressed hash tables. Double hashing is implemented in many popular libraries.
+    <br>Like linear probing, it uses one hash value as a starting point and then repeatedly steps forward an interval until the desired value is located, an empty location is reached, 
+ 	or the entire table has been searched; but this interval is decided using a second, independent hash function (hence the name double hashing). Unlike linear probing and quadratic probing, 
+ 	the interval depends on the data, so that even values mapping to the same location have different bucket sequences; this minimizes repeated collisions and the effects of clustering.[1]
+	<br><br>
+	<div>[1]: <a href="https://en.wikipedia.org/wiki/Double_hashing" target="_blank">https://en.wikipedia.org/wiki/Double_hashing</a></div>
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Config</h2>
-		Static: <input type="checkbox" name="_static" id="_static" checked="true" onchange="_static();return false;">
+		Extendible: <input type="checkbox" name="_extendible" id="_extendible" onchange="_extendible();return false;">
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
