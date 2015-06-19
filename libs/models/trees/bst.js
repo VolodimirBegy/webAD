@@ -661,6 +661,18 @@ BinSearchTree.prototype.random=function(){
 	//}
 }
 
+BinSearchTree.prototype.example=function(){
+	this.root=undefined;
+	var numbers=[5,3,10,12,1,6];
+
+	for(var i=0;i<numbers.length;i++){
+		this.addFixed(numbers[i]);
+	}
+		
+	this.saveInDB();
+	this.draw();
+}
+
 BinSearchTree.prototype.draw=function(){
 	this.view.draw();
 }

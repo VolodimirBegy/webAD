@@ -27,6 +27,10 @@
 		ht.view.initStage(c1);ht.draw();
 	}
 	
+	function example(){
+		ht.example();
+	}
+	
 	function _extendible(){
 		init();
 		ht._static=!document.getElementById('_extendible').checked;
@@ -108,7 +112,7 @@
 	}
 </script>
 
-<body id="body" class="page" onload="init();return false;">
+<body id="body" class="page" onload="init();example();return false;">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

@@ -27,6 +27,10 @@
 		tree.view.initStage(c1);
 	}
 	
+	function example(){
+		tree.example();
+	}
+	
 	function clearTimes(){
 		var pids = window.setTimeout(function() {}, 0);
 
@@ -117,7 +121,7 @@
 	}
 </script>
 
-<body id="body" class="page" onload="init();return false;">
+<body id="body" class="page" onload="init();example();return false;">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

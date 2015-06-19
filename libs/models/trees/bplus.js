@@ -1117,6 +1117,19 @@ BPlusTree.prototype.random=function(){
 	this.saveInDB();
 }
 
+BPlusTree.prototype.example=function(){
+	this.root=undefined;
+	this.history="";
+	var numbers=[1,5,10,15,20,25];
+	this.order=1;
+	
+	for(var i=0;i<numbers.length;i++){
+		this.addFixed(numbers[i]);
+	}
+	
+	this.draw();
+	this.saveInDB();
+}
 
 BPlusTree.prototype.remove=function(){
 	

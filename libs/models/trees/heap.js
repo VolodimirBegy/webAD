@@ -876,22 +876,55 @@ Heap.prototype.buildMaxHeap=function(){
 }
 
 Heap.prototype.random=function(){
-	//var count=this.db().count();
-
-	//if(count==this.actStateID){
-		this.sorted=[];
-		this.root=undefined;
-		this.nodes=[];
-		var number=Math.floor(Math.random() * (20 - 1 + 1)) + 1;
+	this.sorted=[];
+	this.root=undefined;
+	this.nodes=[];
+	var number=Math.floor(Math.random() * (20 - 1 + 1)) + 1;
 	
-		for(var i=0;i<number;i++){
-			this.addFixed(parseInt(Math.random()*1000,10));
-		}
+	for(var i=0;i<number;i++){
+		this.addFixed(parseInt(Math.random()*1000,10));
+	}
 		
-		this.saveInDB();
-		this.draw();
-	//}
+	this.saveInDB();
+	this.draw();
 }
+
+Heap.prototype.example=function(){
+	this.sorted=[];
+	this.root=undefined;
+	this.nodes=[];
+	var numbers=[25,20,15,10,5,1];
+	
+	for(var i=0;i<numbers.length;i++){
+		this.addFixed(numbers[i]);
+	}
+	
+	this.saveInDB();
+	this.draw();
+}
+
+Heap.prototype.exampleSort=function(){
+	this.sorted=[];
+	this.root=undefined;
+	this.nodes=[];
+	var numbers=[1,5,2,13,34,3,100];
+	
+	for(var i=0;i<numbers.length;i++){
+		this.addFixedNotHeapified(numbers[i]);
+	}
+	
+	this.draw();
+
+	this.timer = new Timer(function() {
+		window.alert("Starting to build max heap...");
+		heap.buildMaxHeap();
+	}, 1000);
+	this.timer.pause();
+	
+	this.draw();
+}
+
+
 
 Heap.prototype.randomHeapsort=function(){
 	this.working=true;

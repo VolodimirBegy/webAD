@@ -48,6 +48,18 @@ HashTable.prototype.init=function(){
 	this.draw();
 }
 
+HashTable.prototype.example=function(){
+	this.rows=[];
+	this.fillFactor=0;
+	this.calc=undefined;
+
+	for(var i=0;i<9;i++){
+		this.rows.push(new Row());	
+	}
+	this.saveInDB();
+	this.draw();
+}
+
 HashTable.prototype.copy=function(){
 	var newHT=new HashTable();
 

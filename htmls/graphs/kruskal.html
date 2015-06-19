@@ -144,6 +144,34 @@
 		}
 	}
 	
+	function example(){
+		var matrix=new Array(5);
+		for(var i=0;i<5;i++){
+			matrix[i]=new Array(5);
+		}
+		var startNode=0;
+		
+		matrix[0][1]=12;
+		matrix[1][2]=3;
+		matrix[1][0]=12;
+		matrix[1][3]=3;
+		matrix[2][1]=3;
+		matrix[2][3]=1;
+		matrix[3][1]=3;
+		matrix[3][2]=1;
+		matrix[3][4]=56;
+		matrix[4][3]=56;
+
+		var c1 = document.getElementById("container1");
+		graph.fill(matrix,startNode);
+		graph.init(c1);
+		_matrix=new WeightedUndirectedMatrix(6);
+		
+		_matrix.matrix=matrix;
+		var cm = document.getElementById("containerMatrix");
+		_matrix.initStage(cm);
+	}
+	
 	function create(){
 		var amount=parseInt(prompt("Amount of nodes:\nmin 2"));
 		if(isNaN(amount)||amount<2)return;
@@ -297,7 +325,7 @@
 	
 </script>
 
-<body id="body" class="page" onload="_create();">
+<body id="body" class="page" onload="_create();example();">
 <header id="header">
 	<ul>
 		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

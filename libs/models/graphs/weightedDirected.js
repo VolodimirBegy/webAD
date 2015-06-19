@@ -194,7 +194,10 @@ WeightedDirectedGraph.prototype.copy=function(){
 	if(this.prev!=undefined){
 		newG.prev=new Array(this.prev.length);
 		for(var i=0;i<this.prev.length;i++){
-			newG.prev[i]=this.prev[i];
+			if(this.prev[i]!=undefined)
+				newG.prev[i]=newG.nodes[newG.matrixLink[this.prev[i].index]];
+			else
+				newG.prev[i]=undefined;
 		}
 	}
 	else
@@ -275,7 +278,10 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 	if(og.prev!=undefined){
 		this.prev=new Array(og.prev.length);
 		for(var i=0;i<og.prev.length;i++){
-			this.prev[i]=og.prev[i];
+			if(og.prev[i]!=undefined)
+				this.prev[i]=this.nodes[this.matrixLink[og.prev[i].index]];
+			else
+				this.prev[i]=undefined;
 		}
 	}
 	else
@@ -456,20 +462,25 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 						var oldU=graph.prev[v.index];
 						
 						graph.prev[v.index]=u;
-						
+						/*if(oldU!=undefined)
+						window.alert(oldU.index);
+						else window.alert("undef");*/
 						//prev for v is u
 						
 						for(var j=0;j<graph.edges.length;j++){
 							if(graph.edges[j].u==u && graph.edges[j].v==v){
 								graph.edges[j].color="lime";break;
+								
 							}
 						}
-						for(var j=0;j<graph.edges.length;j++){
-							if(graph.edges[j].u==oldU && graph.edges[j].v==v){
-								graph.edges[j].color="#6699FF";break;
+						if(oldU!=undefined){
+							for(var j=0;j<graph.edges.length;j++){
+								if(graph.edges[j].u==oldU && graph.edges[j].v==v){
+									graph.edges[j].color="#6699FF";break;
+								}
 							}
 						}
-
+						
 					}
 					else{
 						

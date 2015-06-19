@@ -53,10 +53,29 @@ LinearHashing.prototype.init=function(){
 		this.rows.push(newRow);
 	}
 	
-	this.saveInDB();
-	
+	this.saveInDB();	
 	this.draw();
 }
+
+LinearHashing.prototype.example=function(){
+	this.d=2;
+	this.b=2;
+	
+	this.rows=[];
+	this.nts=0;
+	this.newBlockVals=[];
+	this.manipulatedIndex=undefined;	
+	
+	for(var i=0;i<Math.pow(2,this.d);i++){
+		var newRow=new Row();
+		newRow.index=decbin(i,this.d);
+		this.rows.push(newRow);
+	}
+	
+	this.saveInDB();	
+	this.draw();
+}
+
 
 LinearHashing.prototype.copy=function(){
 	var newT = new LinearHashing();
