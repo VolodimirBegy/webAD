@@ -11,6 +11,7 @@
   
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
+  <script src="../../libs/externalLibs/annyang.min.js"></script>
   
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
@@ -19,6 +20,72 @@
 </head>
 
 <script>
+
+	if (annyang) {
+	  annyang.debug(true);
+	  
+	  var commands = {
+	    'sort': vsort,
+	    'stop': vstop,
+	    'fast': vfast,
+	    'slow':vslow
+	  };
+
+	  annyang.addCommands(commands);
+
+	  annyang.start();
+	}
+	
+	function vsort(){
+		var elem = $("#p");
+		if(!elem.hasClass("p1")){
+			un_pause();
+		}
+		else{
+			 var msg = new SpeechSynthesisUtterance('Already sorting');
+			 msg.onstart = function(e) {
+			       annyang.pause();
+			 };
+			 msg.onend = function(e) {
+			     annyang.resume();
+			 };
+			 window.speechSynthesis.speak(msg);
+		}
+	}
+	
+	function vstop(){
+		var elem = $("#p");
+		if(elem.hasClass("p1")){
+			un_pause();
+		}
+		else{
+			var msg = new SpeechSynthesisUtterance('Already stopped');
+			 msg.onstart = function(e) {
+			       annyang.pause();
+			 };
+			 msg.onend = function(e) {
+			     annyang.resume();
+			 };
+			 window.speechSynthesis.speak(msg);
+		}
+	}
+	
+	function vslow(){
+		if(vec!=undefined && vec.size()>0){
+			$('#speed').val("10");
+			vec.speed=parseInt(10);
+			vec.saveInDB();
+		}
+	}
+	
+	function vfast(){
+		if(vec!=undefined && vec.size()>0){
+			$('#speed').val("1");
+			vec.speed=parseInt(1);
+			vec.saveInDB();
+		}
+	}
+
 	var vec=undefined;
 
 	function _create(){
@@ -26,6 +93,7 @@
 		var c1 = document.getElementById("container1");
 		vec.view.initStage(c1);
 		vec.example();
+		resetFields();
 	}
 	
 	function resetFields(){
@@ -39,8 +107,7 @@
 	}
 	
 	
-function speed(){
-		
+	function speed(){
 		if(vec!=undefined && vec.size()>0){
 			var sp = $("#speed");
 			vec.speed=parseInt(sp.val());
