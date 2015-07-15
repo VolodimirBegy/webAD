@@ -261,9 +261,7 @@ UnweightedDirectedGraph.prototype.lastState=function(){
 UnweightedDirectedGraph.prototype.saveInDB=function(){
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
-       	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db.splice(this.db.length-1,1);
-       	}
+ 		this.db.splice(this.actStateID+1,count-this.actStateID);
  	}
 
 	var nextID=this.db.length;

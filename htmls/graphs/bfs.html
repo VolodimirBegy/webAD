@@ -37,7 +37,7 @@
 				graph.view.layer.remove();
 		}
 		
-		directed=document.getElementById('directed').checked;
+		directed=$('#directed')[0].checked;
 
 		if(!directed)
 			graph=new UnweightedUndirectedGraph();
@@ -141,7 +141,7 @@
 			random();
 		}
 		else{	
-			var c1 = document.getElementById("container1");
+			var c1 = $('#container1')[0];
 			graph.fill(matrix,startNode);
 			graph.init(c1);
 			
@@ -153,7 +153,7 @@
 				_matrix=new UnweightedDirectedMatrix(amount);
 			
 			_matrix.matrix=matrix;
-			var cm = document.getElementById("containerMatrix");
+			var cm = $('#containerMatrix')[0];
 			_matrix.initStage(cm);
 		}
 	}
@@ -176,13 +176,13 @@
 		matrix[3][4]=1;
 		matrix[4][3]=1;
 
-		var c1 = document.getElementById("container1");
+		var c1 = $('#container1')[0];
 		graph.fill(matrix,startNode);
 		graph.init(c1);
 		_matrix=new UnweightedUndirectedMatrix(6);
 		
 		_matrix.matrix=matrix;
-		var cm = document.getElementById("containerMatrix");
+		var cm = $('#containerMatrix')[0];
 		_matrix.initStage(cm);
 	}
 	
@@ -197,7 +197,7 @@
 		else
 			_matrix=new UnweightedDirectedMatrix(amount);
 		
-		var cm = document.getElementById("containerMatrix");
+		var cm = $('#containerMatrix')[0];
 		_matrix.initStage(cm)
 		
 		_matrix.draw();
@@ -257,7 +257,7 @@
 				elem.removeClass("p1");
 			}
 			_class('createMatrix', 'hide');
-			var c1 = document.getElementById("container1");
+			var c1 = $('#container1')[0];
 			graph.fill(_matrix.matrix,startNode);
 			graph.init(c1);
 		}

@@ -50,9 +50,7 @@ Vector.prototype.init=function(){
 Vector.prototype.saveInDB=function(){
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
-       	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db.splice(this.db.length-1,1);
-       	}
+ 		this.db.splice(this.actStateID+1,count-this.actStateID);
  	}
 
 	var nextID=this.db.length;
@@ -186,10 +184,6 @@ Vector.prototype.lastState=function(){
 	}
 	else
 		window.alert("Pause the sorting first!");
-}
-
-Vector.prototype.getElementValue=function(index){
-	 return this.elements[index].value;
 }
  
 Vector.prototype.setRandomElements=function(){

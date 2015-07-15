@@ -29,12 +29,12 @@ BinTreeView.prototype.initStage=function(cont){
 
 BinTreeView.prototype.zoomIn=function(){
   if(this.scale<2.5)this.scale=this.scale+0.1;
-  this.draw();
+  	this.draw();
 }
 
 BinTreeView.prototype.zoomOut=function(){
   if(this.scale>0.5)this.scale=this.scale-0.1;
-  this.draw();
+  	this.draw();
 }
 
 BinTreeView.prototype.draw=function(){

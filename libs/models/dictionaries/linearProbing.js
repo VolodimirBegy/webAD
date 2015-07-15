@@ -138,9 +138,7 @@ HashTable.prototype.lastState=function(){
 HashTable.prototype.saveInDB=function(){
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
-       	for(var i=this.actStateID+1;i<=count;++i){
-           	this.db.splice(this.db.length-1,1);
-       	}
+ 		this.db.splice(this.actStateID+1,count-this.actStateID);
  	}
 
 	var nextID=this.db.length;
@@ -480,17 +478,6 @@ HashTable.prototype.search=function(){
 			this.working=false;
 		}
 		
-}
-
-function isPrime(n){
-	
-    if (n%2==0) return false;
-    //if not, then just check the odds
-    for(var i=3;i*i<=n;i+=2) {
-        if(n%i==0)
-            return false;
-    }
-    return true;
 }
 
 HashTable.prototype.remove=function(){
