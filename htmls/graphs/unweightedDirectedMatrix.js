@@ -17,6 +17,10 @@ function UnweightedDirectedMatrix(_number){
 	//number=of nodes
 	this.number=_number;
 	this.matrix=new Array(_number);
+	
+	this.miniMatrix;
+	this.minNum;
+	
 	for(var i=0;i<_number;i++){
 		this.matrix[i]=new Array(_number);
 	}
@@ -43,12 +47,74 @@ UnweightedDirectedMatrix.prototype.extendBy=function(amount,gm){
 	}
 }
 
-UnweightedDirectedMatrix.prototype.initStage=function(cont){
+UnweightedDirectedMatrix.prototype.initStage=function(cont,contMin){
 	this.stage = new Kinetic.Stage({
   		container: cont,
 		width: 0,
 		height: 0
 	}); 
+	
+	this.stageMin = new Kinetic.Stage({
+  		container: contMin,
+		width: 150,
+		height: 150
+	}); 
+}
+
+UnweightedDirectedMatrix.prototype.drawMin=function(){
+	this.stageMin.removeChildren();
+  	var layer = new Kinetic.Layer();
+  	
+	var rects=new Array(this.minNum);
+	for(var i=0;i<this.minNum;i++){
+		rects[i]=new Array(this.minNum);
+	}
+
+  	for(var i=0;i<this.minNum;i++){
+  		
+  		var lineV = new Kinetic.Line({
+			points: [5+150/this.minNum*i,0,5+150/this.minNum*i,150],
+			stroke: 'black',
+			strokeWidth: 2*this.scale,
+		});
+  		
+  		var lineH = new Kinetic.Line({
+			points: [0,5+150/this.minNum*i,150,5+150/this.minNum*i],
+			stroke: 'black',
+			strokeWidth: 2*this.scale,
+		});
+  		
+
+  		for(var j=0;j<this.minNum;j++){
+  			var strokeCol="black";
+  			var fill="white";
+  			if(j==i)fill="red";
+  			else if(this.miniMatrix[i][j]==1){
+  				fill="lime";
+  			}
+  			var rect = new Kinetic.Rect({
+  				x: 5+150/this.minNum*i,
+  				y: 5+150/this.minNum*j,
+  				width: 150/this.minNum,
+  				height: 150/this.minNum,
+  				fill: fill,
+  				stroke: strokeCol,
+  				strokeWidth: 2*this.scale
+  			});
+  			
+  			rect.ij=""+(i)+":"+(j);
+  			var um=this;
+  			
+  			rects[i][j]=rect;
+  			layer.add(rect);
+  		}
+  		
+  		
+	  	layer.add(lineH);
+		layer.add(lineV);
+  	}
+
+	this.stageMin.add(layer);	  
 }
 
 UnweightedDirectedMatrix.prototype.zoomIn=function(){

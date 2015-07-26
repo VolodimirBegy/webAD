@@ -30,7 +30,21 @@ function UnweightedUndirectedGraph(){
 UnweightedUndirectedGraph.prototype.fill=function(_matrix,_startNode){
 	this.nodes=[];
 	this.startNode=_startNode;
-	this.costMatrix=_matrix;
+	//matrix deep copy
+	this.costMatrix=[];
+
+	for(var i=0;i<_matrix.length;i++){
+		this.costMatrix.push(new Array(_matrix.length));
+	}
+	
+	for(var i=0;i<_matrix.length;i++){
+		for(var j=0;j<_matrix.length;j++){
+			if(_matrix[i][j]==1){
+				this.costMatrix[i][j]=1;
+			}
+		}
+	}
+	//matrix deep copy
 	this.visited=[];
 	this.queue=undefined;
 	this.stack=undefined;
@@ -85,6 +99,7 @@ UnweightedUndirectedGraph.prototype.fill=function(_matrix,_startNode){
 	}
 	
 	addConnected(this,_startNode);
+
 	if(this.nodes.length==1){
 		this.nodes[0].color="#00FFFF";this.nodes[0].oColor="#00FFFF";
 	}
@@ -125,7 +140,8 @@ UnweightedUndirectedGraph.prototype.init=function(c1){
 
 
 UnweightedUndirectedGraph.prototype.copy=function(){
-	var newG = new UnweightedDirectedGraph();
+	var newG = new UnweightedUndirectedGraph();
+
 	newG.fill(this.costMatrix,this.startNode);
 	for(var i=0;i<this.nodes.length;i++){
 		newG.nodes[i].index=this.nodes[i].index;
@@ -161,8 +177,11 @@ UnweightedUndirectedGraph.prototype.copy=function(){
 }
 
 UnweightedUndirectedGraph.prototype.replaceThis=function(og){
-	var newG = new UnweightedDirectedGraph();
+
+	var newG = new UnweightedUndirectedGraph();
+
 	newG.fill(og.costMatrix,og.startNode);
+
 	/*var oldX=[];
 	var oldY=[];
 	
@@ -174,7 +193,7 @@ UnweightedUndirectedGraph.prototype.replaceThis=function(og){
 	this.startNode=newG.startNode;
 	this.costMatrix=newG.costMatrix;
 	this.nodes=newG.nodes;
-	this.edges=newG.edges;
+
 	this.matrixLink=newG.matrixLink;
 	for(var i=0;i<og.nodes.length;i++){
 		this.nodes[i].index=og.nodes[i].index;
@@ -248,7 +267,7 @@ UnweightedUndirectedGraph.prototype.lastState=function(){
 }
 
 UnweightedUndirectedGraph.prototype.saveInDB=function(){
-	
+
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
  		this.db.splice(this.actStateID+1,count-this.actStateID);
@@ -260,8 +279,8 @@ UnweightedUndirectedGraph.prototype.saveInDB=function(){
 	var last_state=this.db[this.db.length-1];
 	var same=true;
 	
-	if(last_state==undefined || new_state.nodes.length!=last_state.nodes.length ||
-			new_state.edges.length!=last_state.edges.length ||
+	if(last_state==undefined || new_state.costMatrix.length!=last_state.costMatrix.length ||
+			new_state.nodes.length!=last_state.nodes.length ||
 			new_state.visited.length!=last_state.visited.length){
 		same=false;
 	}
@@ -274,7 +293,7 @@ UnweightedUndirectedGraph.prototype.saveInDB=function(){
 				same=false;
 		}
 	}
-	
+
 	if(!same){
 		this.db.push(new_state);
 		this.actStateID=nextID;

@@ -268,14 +268,8 @@ BinSearchTree.prototype.search=function() {
 
 	var value=parseInt(prompt("Search for:"));
 	if(isNaN(value))return;
-	var count=this.db().count();
-
+	
 	var tree=this;
-
-	if(count!=this.actStateID){
-		var rs=this.db({id:this.actStateID}).select("state");
-		tree=rs[0];
-	}
 	
 	if(tree.root==undefined){
 		return;

@@ -34,16 +34,43 @@
 		}
 		
 		graph=new WeightedDirectedGraph();
+		
+		if(_matrix!=undefined && _matrix.stageMin!=undefined){
+			_matrix.stageMin.removeChildren();
+			_matrix=undefined;
+		}
 	}
 	
 	function add(){
-		if(_matrix!=undefined){
+		if(graph!=undefined){
 			if(graph.Q==undefined){
-				var amount=parseInt(prompt("Amount of new nodes:"));
-				if(isNaN(amount)||amount<0)return;
+				var amount=graph.costMatrix.length;
+				var newamount=0;
 				
-				_matrix.extendBy(amount,graph.costMatrix);
+				var check=confirm("Insert new nodes? (Matrix contains "+amount+" nodes now)");
+				
+				if(check){
+					newamount=parseInt(prompt("Amount of new nodes:"));
+					if(isNaN(newamount)||newamount<0)return;
+				}
+				//for mini
+				var oldM=_matrix.miniMatrix.slice();
+				
+				_matrix=new WeightedDirectedMatrix(amount);
+				
+				_matrix.matrix=graph.costMatrix;
+				_matrix.extendBy(newamount,graph.costMatrix);
+				
+				var cm = $('#containerMatrix')[0];
+				var cmMin = $('#containerMatrixMini')[0];
+				_matrix.initStage(cm,cmMin);
+				
 				_matrix.draw();
+				
+				//mini
+				_matrix.miniMatrix=oldM;
+				_matrix.minNum=oldM.length;
+				_matrix.drawMin();
 				
 				var tf = $("#startNode");
 				tf.val(""+graph.startNode+"");
@@ -82,19 +109,36 @@
 		graph.init(c1);
 		_matrix=new WeightedDirectedMatrix(6);
 		
-		_matrix.matrix=matrix;
-		var cm = document.getElementById("containerMatrix");
-		_matrix.initStage(cm);
+		var cm = $('#containerMatrix')[0];
+		var cmMin = $('#containerMatrixMini')[0];
+		_matrix.initStage(cm,cmMin);
+		//mini display
+		_matrix.miniMatrix=matrix;
+		_matrix.minNum=6;
+		_matrix.drawMin();
 	}
 	
 	function create(){
 		var amount=parseInt(prompt("Amount of nodes:\nmin 2"));
 		if(isNaN(amount)||amount<2)return;
 		
+		//prevent deletion of mini matrix due to object overwrite
+		var oldM=undefined;
+		if(_matrix!=undefined)
+			oldM=_matrix.miniMatrix.slice();
+		
 		_matrix=new WeightedDirectedMatrix(amount);
-		var cm = document.getElementById("containerMatrix");
-		_matrix.initStage(cm);
+		var cm = $('#containerMatrix')[0];
+		var cmMin = $('#containerMatrixMini')[0];
+		_matrix.initStage(cm,cmMin)
+		
 		_matrix.draw();
+		//mini display
+		if(oldM!=undefined){
+			_matrix.miniMatrix=oldM;
+			_matrix.minNum=oldM.length;
+			_matrix.drawMin();
+		}
 		
 		var tf = $("#startNode");
 		tf.val("");
@@ -166,11 +210,14 @@
 			graph.init(c1);
 			
 			_matrix=new WeightedDirectedMatrix(amount);
-			var cm = document.getElementById("containerMatrix");
-			_matrix.initStage(cm);
-			
-			_matrix.matrix=matrix;
-			
+			var cm = $('#containerMatrix')[0];
+			var cmMin = $('#containerMatrixMini')[0];
+			_matrix.initStage(cm,cmMin);
+			//mini display
+			_matrix.miniMatrix=matrix;
+			_matrix.minNum=amount;
+			_matrix.drawMin();
+			//dijkstra specific
 			var elem = $("#p");
 			if(elem.hasClass("p1")){
 				clearTimes();
@@ -217,8 +264,10 @@
 		
 		addConnected(startNode);
 		
-		if(nodes.length!=_matrix.matrix.length){
-			window.alert("not all nodes are reachable from the initial node");
+		//if(nodes.length!=_matrix.matrix.length){
+			//window.alert("not all nodes are reachable from the initial node");
+		if(nodes.length<2){
+			window.alert("Connect at least 2 nodes!");
 			return;
 		}
 		else{
@@ -231,6 +280,16 @@
 			var c1 = document.getElementById("container1");
 			graph.fill(_matrix.matrix,startNode);
 			graph.init(c1);
+			//mini display
+			_matrix.miniMatrix=graph.costMatrix;
+			_matrix.minNum=graph.costMatrix.length;
+			_matrix.drawMin();
+			//pause spec
+			var elem = $("#p");
+			if(elem.hasClass("p1")){
+				clearTimes();
+				elem.removeClass("p1");
+			}
 		}
 	}
 	
@@ -287,6 +346,10 @@
 		}
 		clearTimes();
 		graph.prevtr();
+		//mini display
+		_matrix.minNum=graph.costMatrix.length;
+		_matrix.miniMatrix=graph.costMatrix;
+		_matrix.drawMin();
 	}
 	
 	function next(){
@@ -297,6 +360,10 @@
 		}
 		clearTimes();
 		graph.next();
+		//mini display
+		_matrix.minNum=graph.costMatrix.length;
+		_matrix.miniMatrix=graph.costMatrix;
+		_matrix.drawMin();
 	}
 	
 	function first(){
@@ -307,6 +374,10 @@
 		}
 		clearTimes();
 		graph.firstState();
+		//mini display
+		_matrix.minNum=graph.costMatrix.length;
+		_matrix.miniMatrix=graph.costMatrix;
+		_matrix.drawMin();
 	}
 	
 	function last(){
@@ -317,6 +388,10 @@
 		}
 		clearTimes();
 		graph.lastState();
+		//mini display
+		_matrix.minNum=graph.costMatrix.length;
+		_matrix.miniMatrix=graph.costMatrix;
+		_matrix.drawMin();
 	}
 	
 </script>
@@ -346,6 +421,7 @@
         <input type="button" value="Modify nodes" id="add" onclick="add();return false;">
         <input type="button" value="Random" id="random" onclick="random();return false;">
         <input type="button" value="Run Dijkstra" id="dijkstra" onclick="dijkstra();return false;">
+        <div id="containerMatrixMini"></div>
 	</div>
 	<div id="container1"></div>
 </article>

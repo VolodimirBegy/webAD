@@ -43,12 +43,74 @@ WeightedDirectedMatrix.prototype.extendBy=function(amount,gm){
 	}
 }
 
-WeightedDirectedMatrix.prototype.initStage=function(cont){
+WeightedDirectedMatrix.prototype.initStage=function(cont,contMin){
 	this.stage = new Kinetic.Stage({
   		container: cont,
 		width: 0,
 		height: 0
 	}); 
+	
+	this.stageMin = new Kinetic.Stage({
+  		container: contMin,
+		width: 150,
+		height: 150
+	}); 
+}
+
+WeightedDirectedMatrix.prototype.drawMin=function(){
+	this.stageMin.removeChildren();
+  	var layer = new Kinetic.Layer();
+  	
+	var rects=new Array(this.minNum);
+	for(var i=0;i<this.minNum;i++){
+		rects[i]=new Array(this.minNum);
+	}
+
+  	for(var i=0;i<this.minNum;i++){
+  		
+  		var lineV = new Kinetic.Line({
+			points: [5+150/this.minNum*i,0,5+150/this.minNum*i,150],
+			stroke: 'black',
+			strokeWidth: 2*this.scale,
+		});
+  		
+  		var lineH = new Kinetic.Line({
+			points: [0,5+150/this.minNum*i,150,5+150/this.minNum*i],
+			stroke: 'black',
+			strokeWidth: 2*this.scale,
+		});
+  		
+
+  		for(var j=0;j<this.minNum;j++){
+  			var strokeCol="black";
+  			var fill="white";
+  			if(j==i)fill="red";
+  			else if(this.miniMatrix[i][j]!=undefined){
+  				fill="lime";
+  			}
+  			var rect = new Kinetic.Rect({
+  				x: 5+150/this.minNum*i,
+  				y: 5+150/this.minNum*j,
+  				width: 150/this.minNum,
+  				height: 150/this.minNum,
+  				fill: fill,
+  				stroke: strokeCol,
+  				strokeWidth: 2*this.scale
+  			});
+  			
+  			rect.ij=""+(i)+":"+(j);
+  			var um=this;
+  			
+  			rects[i][j]=rect;
+  			layer.add(rect);
+  		}
+  		
+  		
+	  	layer.add(lineH);
+		layer.add(lineV);
+  	}
+
+	this.stageMin.add(layer);	  
 }
 
 WeightedDirectedMatrix.prototype.zoomIn=function(){

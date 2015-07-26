@@ -36,7 +36,21 @@ WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 	this.nodes=[];
 	this.edges=[];
 
-	this.costMatrix=_matrix;
+	//matrix deep copy
+	this.costMatrix=[];
+
+	for(var i=0;i<_matrix.length;i++){
+		this.costMatrix.push(new Array(_matrix.length));
+	}
+	
+	for(var i=0;i<_matrix.length;i++){
+		for(var j=0;j<_matrix.length;j++){
+			if(_matrix[i][j]!=undefined){
+				this.costMatrix[i][j]=_matrix[i][j];
+			}
+		}
+	}
+	//matrix deep copy
 	
 	this.matrixLink=new Array(_matrix.length);
 	
@@ -230,11 +244,13 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 	this.matrixLink=newG.matrixLink;
 	
 	for(var i=0;i<og.nodes.length;i++){
-		this.nodes[i].index=og.nodes[i].index;
-		this.nodes[i].color=og.nodes[i].color;
-		this.nodes[i].oColor=og.nodes[i].oColor;
-		this.nodes[i].xPosition=og.nodes[i].xPosition;
-		this.nodes[i].yPosition=og.nodes[i].yPosition;
+		if(this.nodes[i]!=undefined){
+			this.nodes[i].index=og.nodes[i].index;
+			this.nodes[i].color=og.nodes[i].color;
+			this.nodes[i].oColor=og.nodes[i].oColor;
+			this.nodes[i].xPosition=og.nodes[i].xPosition;
+			this.nodes[i].yPosition=og.nodes[i].yPosition;
+		}
 	}
 
 	this.i=og.i;
@@ -350,7 +366,8 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
 	var last_state=this.db[this.db.length-1];
 	var same=true;
 	
-	if(last_state==undefined || new_state.nodes.length!=last_state.nodes.length ||
+	if(last_state==undefined || new_state.costMatrix.length!=last_state.costMatrix.length||
+			new_state.nodes.length!=last_state.nodes.length ||
 			new_state.edges.length!=last_state.edges.length || (last_state.Q==undefined && new_state.Q!=undefined)
 			||(last_state.Q!=undefined && new_state.Q.length!=last_state.Q.length)
 			||(last_state.S==undefined && new_state.S==undefined)

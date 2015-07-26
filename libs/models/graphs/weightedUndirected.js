@@ -35,10 +35,25 @@ function WeightedUndirectedGraph(){
 	this.actStateID=-1;
 }
 
-WeightedUndirectedGraph.prototype.fill=function(_matrix){	
+WeightedUndirectedGraph.prototype.fill=function(_matrix,startNode){	
 	this.nodes=[];
 	this.edges=[];
-	this.costMatrix=_matrix;
+	//matrix deep copy
+	this.costMatrix=[];
+
+	for(var i=0;i<_matrix.length;i++){
+		this.costMatrix.push(new Array(_matrix.length));
+	}
+	
+	for(var i=0;i<_matrix.length;i++){
+		for(var j=0;j<_matrix.length;j++){
+			if(_matrix[i][j]!=undefined){
+				this.costMatrix[i][j]=_matrix[i][j];
+			}
+		}
+	}
+	//matrix deep copy
+	this.startNode=startNode;
 	this.matrixLink=new Array(_matrix.length);
 	
 	function addConnected(graph,index){
@@ -102,7 +117,7 @@ WeightedUndirectedGraph.prototype.fill=function(_matrix){
 		}
 	}
 	
-	addConnected(this,0);
+	addConnected(this,this.startNode);
 	
 	this.gridSize=Math.ceil(Math.sqrt(this.nodes.length));
 	var index=0;
@@ -152,7 +167,7 @@ function compare(a,b) {
 
 WeightedUndirectedGraph.prototype.copy=function(){
 	var newG = new WeightedUndirectedGraph();
-	newG.fill(this.costMatrix);
+	newG.fill(this.costMatrix,this.startNode);
 	for(var i=0;i<this.nodes.length;i++){
 		newG.nodes[i].index=this.nodes[i].index;
 		newG.nodes[i].color=this.nodes[i].color;
@@ -200,19 +215,22 @@ WeightedUndirectedGraph.prototype.copy=function(){
 
 WeightedUndirectedGraph.prototype.replaceThis=function(og){
 	var newG = new WeightedUndirectedGraph();
-	newG.fill(og.costMatrix);
+	newG.fill(og.costMatrix,og.startNode);
 
 	this.startNode=newG.startNode;
+	
 	this.costMatrix=newG.costMatrix;
 	this.nodes=newG.nodes;
 	this.edges=newG.edges;
 	this.matrixLink=newG.matrixLink;
 	for(var i=0;i<og.nodes.length;i++){
-		this.nodes[i].index=og.nodes[i].index;
-		this.nodes[i].color=og.nodes[i].color;
-		this.nodes[i].oColor=og.nodes[i].oColor;
-		this.nodes[i].xPosition=og.nodes[i].xPosition;
-		this.nodes[i].yPosition=og.nodes[i].yPosition;
+		if(this.nodes[i]!=undefined){
+			this.nodes[i].index=og.nodes[i].index;
+			this.nodes[i].color=og.nodes[i].color;
+			this.nodes[i].oColor=og.nodes[i].oColor;
+			this.nodes[i].xPosition=og.nodes[i].xPosition;
+			this.nodes[i].yPosition=og.nodes[i].yPosition;
+		}
 	}
 
 	this.i=og.i;
@@ -303,7 +321,8 @@ WeightedUndirectedGraph.prototype.saveInDB=function(){
 	var last_state=this.db[this.db.length-1];
 	var same=true;
 	
-	if(last_state==undefined || new_state.nodes.length!=last_state.nodes.length ||
+	if(last_state==undefined || new_state.costMatrix.length!=last_state.costMatrix.length||
+			new_state.nodes.length!=last_state.nodes.length ||
 			new_state.edges.length!=last_state.edges.length){
 		same=false;
 	}
