@@ -188,6 +188,12 @@ Vector.prototype.setRandomElements=function(){
  
 Vector.prototype.setColorsBubbleSort=function(){
 	if(!this.finished){
+		
+		if(this.elements.length==1){
+			this.elements[0].color=this.col3;
+			return;
+		}
+		
 		for(var j=0;j<=this.j;j++){
 			this.elements[j].color=this.col4;
 		}
@@ -218,8 +224,8 @@ Vector.prototype.setColorsBubbleSort=function(){
 
 Vector.prototype.bubbleSort=function(){
 	//this.finished=false;
-	if(this.elements.length==1 || this.finished){
-		this.elements[0].color=this.col3;
+	if(this.size()==1 || this.finished){
+		this.setColorsBubbleSort();
 		this.draw();
 		this.saveInDB();
 		return;
@@ -232,7 +238,8 @@ Vector.prototype.bubbleSort=function(){
 	 	var firstDelay=0;
         setTimeout(function(){
 					 function sort(vector){
-      					 firstDelay=100*vector.speed;
+						 firstDelay=100*vector.speed;
+						 
 						 setTimeout(function(){
 							 var extraState=false;
 							 if(vector.elements[vector.i].value>vector.elements[vector.i+1].value){
@@ -247,7 +254,7 @@ Vector.prototype.bubbleSort=function(){
 							 if(extraState)
 								 vector.saveInDB();
 							 vector.draw();
-							 
+							
 							 function delay(vector){
       							 setTimeout(function(){
           							 vector.i=vector.i+1;
@@ -257,7 +264,7 @@ Vector.prototype.bubbleSort=function(){
 	          							 vector.draw();
 	          							 sort(vector);
           							 }
-          							 else if((vector.swapflag)||(!vector.swapflag && !vector.isSorted())){
+          							 else if((vector.swapflag && vector.j>1)||(!vector.swapflag && !vector.isSorted())){
           								 vector.i=0;
           								 vector.j=vector.j-1;
           								 vector.swapflag=false;
