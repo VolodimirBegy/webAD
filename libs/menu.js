@@ -1,8 +1,8 @@
-function _class(id, clas) {
+function _class(id, hideClass) {
 	var elem = $("#" + id + "");
-	if ( elem.hasClass(clas) ) {
-		elem.removeClass(clas);
+	if ( elem.hasClass(hideClass) ) {
+		elem.removeClass(hideClass);
 	} else {
-		elem.addClass(clas);
+		elem.addClass(hideClass);
 	}
 }

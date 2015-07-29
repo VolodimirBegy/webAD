@@ -189,11 +189,6 @@ Vector.prototype.setRandomElements=function(){
 Vector.prototype.setColorsBubbleSort=function(){
 	if(!this.finished){
 		
-		if(this.elements.length==1){
-			this.elements[0].color=this.col3;
-			return;
-		}
-		
 		for(var j=0;j<=this.j;j++){
 			this.elements[j].color=this.col4;
 		}
@@ -225,6 +220,7 @@ Vector.prototype.setColorsBubbleSort=function(){
 Vector.prototype.bubbleSort=function(){
 	//this.finished=false;
 	if(this.size()==1 || this.finished){
+		this.finished=true;
 		this.setColorsBubbleSort();
 		this.draw();
 		this.saveInDB();
