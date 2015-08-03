@@ -99,7 +99,7 @@ UnweightedUndirectedMatrix.prototype.drawMin=function(){
   			var strokeCol="black";
   			var fill="white";
   			if(j==i)fill="red";
-  			else if(this.miniMatrix[i][j]==1){
+  			else if(this.miniMatrix[j][i]==1){
   				fill="lime";
   			}
   			var rect = new Kinetic.Rect({
