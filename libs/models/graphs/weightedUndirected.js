@@ -352,6 +352,7 @@ WeightedUndirectedGraph.prototype.saveInDB=function(){
 }
 
 WeightedUndirectedGraph.prototype.kruskal=function(){
+	//[39]
 	if(this.nodes.length==1)
 		return;
 	var delay=0;

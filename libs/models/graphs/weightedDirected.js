@@ -403,6 +403,7 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
 }
 
 WeightedDirectedGraph.prototype.dijkstra=function(){
+	//[25]
 	var delay=2000;
 	//Q, uSet, i, dist, prev, S
 	if(this.Q==undefined || this.Q.length==0){
