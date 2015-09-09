@@ -353,7 +353,7 @@ WeightedDirectedGraphView.prototype.draw=function(){
 						 this.circle.weights[k].setY(yTo-30);
 					 else
 						 this.circle.weights[k].setY(yTo+10);
-					 
+					 //[34]
 					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
@@ -467,6 +467,7 @@ WeightedDirectedGraphView.prototype.draw=function(){
 						 this.circle.weights[k].setY(yTo-30);
 					 else
 						 this.circle.weights[k].setY(yTo+10);
+					 //[34]
 					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
@@ -519,6 +520,7 @@ WeightedDirectedGraphView.prototype.draw=function(){
 			_stroke=5*this.scale;
 	    
 	    var line = new Kinetic.Line({
+	    	//[34]
 	        points: [xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)],
 	        stroke: this.model.edges[i].color,
 			strokeWidth: _stroke,
@@ -659,6 +661,7 @@ WeightedDirectedGraphView.prototype.draw=function(){
 					 this.weights[k].setY(yTo-30);
 				 else
 					 this.weights[k].setY(yTo+10);
+				 //[34]
 				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 			}
 			
@@ -717,6 +720,7 @@ WeightedDirectedGraphView.prototype.draw=function(){
 					 this.weights[k].setY(yTo-30);
 				 else
 					 this.weights[k].setY(yTo+10);
+				 //[34]
 				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
 			}
 			

@@ -194,7 +194,8 @@ HashTableView.prototype.draw=function(){
 					var Y=y+20*this.scale;
 					var fromX=prevBucket.getX()+prevBucket.getWidth()+5*this.scale
 					var angle = Math.atan2(0,toX-fromX);
-						    
+					
+					//[34]
 					var arrow = new Kinetic.Line({
 						points: [fromX, Y, toX, Y, toX-headlen*Math.cos(angle-Math.PI/6),Y-headlen*Math.sin(angle-Math.PI/6),toX, Y, toX-headlen*Math.cos(angle+Math.PI/6),Y-headlen*Math.sin(angle+Math.PI/6)],
 						stroke: "black",

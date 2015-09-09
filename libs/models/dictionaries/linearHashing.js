@@ -212,6 +212,7 @@ LinearHashing.prototype.saveInDB=function(){
 	this.actStateID=nextID;
 }
 
+//[32]
 function decbin(dec,length){
 	var out = "";
 	while(length--)

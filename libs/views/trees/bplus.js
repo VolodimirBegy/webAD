@@ -264,6 +264,7 @@ BPlusTreeView.prototype.draw=function(){
 				    var angle = Math.atan2(0,toX-tmpNodes[i].xPosition+_radiusX);
 				    
 				    var arrow = new Kinetic.Line({
+				    	//[34]
 				        points: [tmpNodes[i].xPosition+_radiusX+1*this.scale, Y, toX, Y, toX-headlen*Math.cos(angle-Math.PI/6),Y-headlen*Math.sin(angle-Math.PI/6),toX, Y, toX-headlen*Math.cos(angle+Math.PI/6),Y-headlen*Math.sin(angle+Math.PI/6)],
 				        stroke: "#FF8000",
 				        strokeWidth:2*this.scale

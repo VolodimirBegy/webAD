@@ -500,7 +500,7 @@ UnweightedDirectedGraphView.prototype.draw=function(){
 					 }
 					 
 					 yTo=yTo-yDiff;
-					 
+					 //[34]
 					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
@@ -606,7 +606,7 @@ UnweightedDirectedGraphView.prototype.draw=function(){
 					 }
 					 
 					 yTo=yTo-yDiff;
-
+					 //[34]
 					 this.circle.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 				}
 				
@@ -659,6 +659,7 @@ UnweightedDirectedGraphView.prototype.draw=function(){
 			_stroke=5*this.scale;
 	    
 	    var line = new Kinetic.Line({
+	    	//[34]
 	        points: [xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)],
 	        stroke: this.model.edges[i].color,
 			strokeWidth: _stroke,
@@ -768,6 +769,7 @@ UnweightedDirectedGraphView.prototype.draw=function(){
 				 }
 				 
 				 yTo=yTo-yDiff;
+				 //[34]
 				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]); 
 			}
 			
@@ -818,7 +820,7 @@ UnweightedDirectedGraphView.prototype.draw=function(){
 				 }
 				 
 				 yTo=yTo-yDiff;
-
+				 //[34]
 				 this.lines[k].setPoints([xFrom, yFrom, xTo, yTo, xTo-headlen*Math.cos(angle-Math.PI/6),yTo-headlen*Math.sin(angle-Math.PI/6),xTo, yTo, xTo-headlen*Math.cos(angle+Math.PI/6),yTo-headlen*Math.sin(angle+Math.PI/6)]);
 			}
 			
