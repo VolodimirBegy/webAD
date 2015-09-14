@@ -56,7 +56,7 @@ Vector.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	var last_state=this.db[this.db.length-1];
 	
 	var same=true;
@@ -81,32 +81,32 @@ Vector.prototype.saveInDB=function(){
 	}
 }
 
-Vector.prototype.copy=function(toCopy){
+Vector.prototype.copy=function(){
 	var newVector=new Vector();
 	newVector.paused=true;
 
-	newVector.pivot=toCopy.pivot;
-	newVector.range=toCopy.range;
-	newVector.sortedElements=toCopy.sortedElements;
-	newVector.r=toCopy.r;
-	newVector.l=toCopy.l;
+	newVector.pivot=this.pivot;
+	newVector.range=this.range;
+	newVector.sortedElements=this.sortedElements;
+	newVector.r=this.r;
+	newVector.l=this.l;
 	
-	newVector.col1=toCopy.col1;
-	newVector.col2=toCopy.col2;
-	newVector.col3=toCopy.col3;
-	newVector.col4=toCopy.col4;
-	newVector.col5=toCopy.col5;
+	newVector.col1=this.col1;
+	newVector.col2=this.col2;
+	newVector.col3=this.col3;
+	newVector.col4=this.col4;
+	newVector.col5=this.col5;
 	
-	newVector.speed=toCopy.speed;
+	newVector.speed=this.speed;
 	
 	newVector.sortedElements=[];
-	for(var i=0;i<toCopy.sortedElements.length;i++){
-		newVector.sortedElements.push(toCopy.sortedElements[i]);
+	for(var i=0;i<this.sortedElements.length;i++){
+		newVector.sortedElements.push(this.sortedElements[i]);
 	}
 	newVector.elements=[];
-	for(var i=0;i<toCopy.elements.length;i++){
-		newVector.elements.push(new Element(toCopy.elements[i].value));
-		newVector.elements[i].color=toCopy.elements[i].color;
+	for(var i=0;i<this.elements.length;i++){
+		newVector.elements.push(new Element(this.elements[i].value));
+		newVector.elements[i].color=this.elements[i].color;
 	}
 	return newVector;
 }

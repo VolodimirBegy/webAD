@@ -275,7 +275,7 @@ UnweightedUndirectedGraph.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	var last_state=this.db[this.db.length-1];
 	var same=true;
 	

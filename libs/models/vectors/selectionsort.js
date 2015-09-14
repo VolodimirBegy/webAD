@@ -55,7 +55,7 @@ Vector.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	//code snippet for ignoring duplicates
 	var last_id=this.db.length-1;
 	var last_state=this.db[last_id];
@@ -81,28 +81,28 @@ Vector.prototype.saveInDB=function(){
 	}
 }
 
-Vector.prototype.copy=function(toCopy){
+Vector.prototype.copy=function(){
 	var newVector=new Vector();
-	newVector.sorted=toCopy.sorted;
-	newVector.i=toCopy.i;
-	newVector.j=toCopy.j;
-	newVector.tmpmin=toCopy.tmpmin;
+	newVector.sorted=this.sorted;
+	newVector.i=this.i;
+	newVector.j=this.j;
+	newVector.tmpmin=this.tmpmin;
 	newVector.paused=true;
 
-	newVector.col1=toCopy.col1;
-	newVector.col2=toCopy.col2;
-	newVector.col3=toCopy.col3;
-	newVector.col4=toCopy.col4;
-	newVector.col5=toCopy.col5;
+	newVector.col1=this.col1;
+	newVector.col2=this.col2;
+	newVector.col3=this.col3;
+	newVector.col4=this.col4;
+	newVector.col5=this.col5;
 	
-	newVector.speed=toCopy.speed;
+	newVector.speed=this.speed;
 	
-	newVector.stepDelay=toCopy.stepDelay;
+	newVector.stepDelay=this.stepDelay;
 	
 	newVector.elements=[];
-	for(var i=0;i<toCopy.elements.length;i++){
-		newVector.elements.push(new Element(toCopy.elements[i].value));
-		newVector.elements[i].color=toCopy.elements[i].color;
+	for(var i=0;i<this.elements.length;i++){
+		newVector.elements.push(new Element(this.elements[i].value));
+		newVector.elements[i].color=this.elements[i].color;
 	}
 	return newVector;
 }

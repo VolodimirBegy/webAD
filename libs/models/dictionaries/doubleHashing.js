@@ -164,7 +164,7 @@ DoubleHashing.prototype.saveInDB=function(){
 	var nextID=this.db.length;
 	var last_state=this.db[this.db.length-1];
 	var same=true;
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	
 	if(last_state==undefined || new_state.rows.length!=last_state.rows.length || 
 			new_state.fillFactor!=last_state.fillFactor || new_state.calc!=last_state.calc){

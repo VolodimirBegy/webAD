@@ -206,7 +206,7 @@ LinearHashing.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	this.db.push(new_state);
 	
 	this.actStateID=nextID;

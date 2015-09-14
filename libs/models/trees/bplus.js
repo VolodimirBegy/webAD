@@ -52,16 +52,16 @@ BPlusTree.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	this.db.push(new_state);
 	
 	this.actStateID=nextID;
 }
 
-BPlusTree.prototype.copy=function(toCopy){
-	var history=toCopy.history;
+BPlusTree.prototype.copy=function(){
+	var history=this.history;
 	var tree=new BPlusTree();
-	tree.order=toCopy.order;
+	tree.order=this.order;
 	
 	while(history.length>0){
 		var index=0;

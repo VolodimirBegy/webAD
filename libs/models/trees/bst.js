@@ -36,7 +36,7 @@ BinSearchTree.prototype.init=function(){
 	this.saveInDB();
 }
 
-BinSearchTree.prototype.copy=function(toCopy){
+BinSearchTree.prototype.copy=function(){
 	var newTree=new BinSearchTree();
 			
 	function recursivePreorderTraversal(newTree,node){
@@ -48,7 +48,7 @@ BinSearchTree.prototype.copy=function(toCopy){
 		recursivePreorderTraversal(newTree,node.rightChild);
 	}
 
-	recursivePreorderTraversal(newTree,toCopy.root);
+	recursivePreorderTraversal(newTree,this.root);
 
 	return newTree;
 }
@@ -258,7 +258,7 @@ BinSearchTree.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	this.db.push(new_state);
 	
 	this.actStateID=nextID;
