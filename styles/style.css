@@ -48,6 +48,7 @@ ul.dis li:hover a span {top:0;text-shadow:2px 2px 0 #FB7B00, 0 0 5px #FB7B00, 0 
 .popup {overflow:auto !important;display:block;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.7);padding:20px 50px}
 .popup .closer {position:absolute;top:0;left:0;right:0;bottom:0;z-index:1}
 .popup .pole {width:60%;min-height:200px;position:relative;z-index:2;padding:10px;margin:20px auto;background:white;border:5px solid #587A9E;box-shadow:0 0 10px black;color:#587A9E;overflow:auto;max-height:calc(100% - 70px)}
+.popup .pole2 {width:60%;min-height:200px;position:relative;z-index:2;padding:10px;margin:20px auto;background:white;border:5px solid #587A9E;box-shadow:0 0 10px black;color:#587A9E;overflow:auto;max-height:calc(100% - 70px)}
 
 a.close {display:block;padding:5px;background:red;color:white;text-decoration:none;position:absolute;top:12px;right:19%;z-index:999;width:15px;border-radius:5px;text-align:center;border:1px solid white;box-shadow:2px 2px 5px black}
 a.close:hover {background:#900;top:11px;margin-left:-1px;box-shadow:4px 4px 7px black}
@@ -76,6 +77,11 @@ a.close:active {background:#900;top:13px;margin-left:1px;box-shadow:0 0 1px blac
 .pole ul a {background:#587A9E;box-shadow:inset 0px 2px 20px white, 2px 2px 5px silver;text-decoration:none}
 .pole a:hover {background-color:orange}
 .pole a:active, .pole ul span {background-color:orange}
+
+.pole2 ul li {margin:10px 0}
+.pole2 ul a, .pole2 ul span {display:block;padding:3px 5px;color:white;border-radius:3px;border:1px solid rgba(0,0,0,0.3);width:150px;text-align:center}
+.pole2 ul a {background:#587A9E;box-shadow:inset 0px 2px 20px white, 2px 2px 5px silver;text-decoration:none}
+.pole2 ul span {background-color:orange}
 
 .ani, ul.dis li, ul.dis li a:before, ul.dis li a span {-webkit-transition:all 0.5s ease-in-out;-moz-transition:all 0.5s ease-in-out;-o-transition:all 0.5s ease-in-out;-ms-transition:all 0.5s ease-in-out;transition:all 0.5s ease-in-out}
 .ani:hover {-webkit-transform:scale(1); -moz-transform:scale(1); -o-transform:scale(1); -ms-transform:scale(1); transform:scale(1)}
