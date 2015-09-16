@@ -9,4 +9,5 @@ Following algorithms and data structures are visualized:
 * Binary Search Tree, B+ Tree, Binary Min Heap, Heap Sort
 
 To start the visualization just open the 'index.html' in the 'htmls' folder
+
 Tape-Recorder provides flexible switching of animation
