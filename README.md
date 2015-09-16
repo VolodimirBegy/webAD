@@ -1,5 +1,5 @@
 # webAD
-webbased visualization of Algorithms and Datastructures
+web-based visualization of Algorithms and Datastructures
 
 Built on the MVC architectural pattern. All JS files are in the 'libs' directory.
 
