@@ -1,7 +1,9 @@
 # webAD
 webbased visualization of Algorithms and Datastructures
 
-Built on the MVC architectural pattern. Logic is located in 'models' folder, drawings are in the 'views'
+Built on the MVC architectural pattern. All JS files are in the 'libs' directory.
+
+Logic is located in 'models' folder, drawings are in the 'views'
 
 Following algorithms and data structures are visualized:
 * Bubble/Selection/Quick Sort

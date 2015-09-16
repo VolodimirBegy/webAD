@@ -19,7 +19,7 @@ function Row (){
 	this.color="black";
 	this.extraCheck=false;
 }
-
+//test
 function DoubleHashing(){
 	this.view=new HashTableView(this);
 	this.rows=[];
