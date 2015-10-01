@@ -27,19 +27,18 @@ function Vector(){
 
 Vector.prototype.init=function(){
 	this.elements=[];
-	this.finished=false;
 	this.i=0;
 	this.j=0;
 	this.speed=5;
-	this.paused=false;
+	this.paused=true;
 	this.finished=false;
 	
 	this.col1="#00FF80";
 	this.col2="#FF0000";
 	this.col3="#F7D358";
 	this.col4="#CC2EFA";
-	
-	this.saveInDB();
+	if(this.actStateID!=-1)
+		this.saveInDB();
 }
 
 Vector.prototype.saveInDB=function(){
@@ -224,6 +223,7 @@ Vector.prototype.bubbleSort=function(){
 		this.setColorsBubbleSort();
 		this.draw();
 		this.saveInDB();
+		clearTimes();
 		return;
 	}
 	
@@ -271,6 +271,9 @@ Vector.prototype.bubbleSort=function(){
           								 vector.setColorsBubbleSort();
 	          							 vector.saveInDB();
 	          							 vector.draw();
+	          							 
+	          							//change the button. better way?
+	          							 clearTimes();
           							 }
           							 
       							 	},100*vector.speed)

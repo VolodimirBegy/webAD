@@ -22,7 +22,7 @@ function Vector(){
 	this.view=new VectorView(this);
 
 	this.db=[];
-	this.actStateID=0;
+	this.actStateID=-1;
 	this.elements=[];
 }
 
@@ -42,9 +42,11 @@ Vector.prototype.init=function(){
 	this.col4="#FFFF66";
 	this.col5="#DDDDE0";
 	
-	this.paused=false;
+	this.paused=true;
 	this.finished=false;
-	this.saveInDB();
+	
+	if(this.actStateID!=-1)
+		this.saveInDB();
 }
 
 
@@ -84,6 +86,7 @@ Vector.prototype.saveInDB=function(){
 Vector.prototype.copy=function(){
 	var newVector=new Vector();
 	newVector.paused=true;
+	newVector.finished=this.finished;
 
 	newVector.pivot=this.pivot;
 	newVector.range=this.range;
@@ -113,6 +116,7 @@ Vector.prototype.copy=function(){
 
 Vector.prototype.replaceThis=function(toCopy){
 	this.paused=true;
+	this.finished=toCopy.finished;
 	
 	this.pivot=toCopy.pivot;
 	this.range=toCopy.range;
@@ -404,7 +408,13 @@ Vector.prototype.quicksort=function(){
 							}
 							else{
 								vector.pivot=undefined;vector.r=undefined;
-								vector.l=undefined;vector.draw();vector.saveInDB();return;
+								vector.l=undefined;vector.draw();vector.finished=true;
+								vector.saveInDB();
+								
+								//change the button. better way?
+								clearTimes();
+								
+								return;
 							}
 						}
 					}
@@ -419,7 +429,12 @@ Vector.prototype.quicksort=function(){
 		this.range="0-"+(this.size()-1);
 		this.pivot=0;
 	}
+	else if(this.range!=undefined && this.r==undefined){
+		return;
+	}
 	partition(this);
+	
+	
 }
  
 Vector.prototype.getElementsByPrompt=function(){
@@ -461,6 +476,7 @@ Vector.prototype.example=function(){
 	 this.r=_range[1];
 	 
 	 this.setColorsQuicksort();
+	 this.saveInDB();
 	 this.draw();
 }
 

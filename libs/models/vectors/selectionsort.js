@@ -27,7 +27,6 @@ function Vector(){
 
 Vector.prototype.init=function(){
 	this.elements=[];
-	this.sorted=false;
 	this.i=0;
 	this.j=0;
 
@@ -44,7 +43,8 @@ Vector.prototype.init=function(){
 	
 	this.paused=false;
 	this.finished=false;
-	this.saveInDB();
+	if(this.actStateID!=-1)
+		this.saveInDB();
 }
 
 Vector.prototype.saveInDB=function(){
@@ -83,7 +83,7 @@ Vector.prototype.saveInDB=function(){
 
 Vector.prototype.copy=function(){
 	var newVector=new Vector();
-	newVector.sorted=this.sorted;
+	newVector.finished=this.finished;
 	newVector.i=this.i;
 	newVector.j=this.j;
 	newVector.tmpmin=this.tmpmin;
@@ -108,7 +108,7 @@ Vector.prototype.copy=function(){
 }
 
 Vector.prototype.replaceThis=function(toCopy){
-	this.sorted=toCopy.sorted;
+	this.finished=toCopy.finished;
 	this.i=toCopy.i;
 	this.j=toCopy.j;
 	this.tmpmin=toCopy.tmpmin;
@@ -202,9 +202,9 @@ Vector.prototype.setRandomElements=function(){
 }
  
 Vector.prototype.setColorsSelectionSort=function(){
-	if(!this.sorted){
+	if(!this.finished){
 		for(var j=0;j<this.j;j++){
-			this.elements[j].color=this.col4; //sorted gold
+			this.elements[j].color=this.col4; //finished gold
 		}
 
 		if(this.j==this.tmpmin)
@@ -224,7 +224,7 @@ Vector.prototype.setColorsSelectionSort=function(){
 	
 	else{
 		for(var i=0;i<this.size();i++){
-			this.elements[i].color=this.col4; //sorted gold
+			this.elements[i].color=this.col4; //finished gold
 		}
 	}
 }
@@ -235,10 +235,11 @@ Vector.prototype.selectionSort=function(){
 		return;
 	}
 	else if(this.elements.length==1){
-		this.sorted=true;
+		this.finished=true;
 		this.setColorsSelectionSort();
 		this.draw();
 		this.saveInDB();
+		clearTimes();
 		return;
 	}
 	
@@ -305,12 +306,16 @@ Vector.prototype.selectionSort=function(){
 					},delay)
 					
 				}
-				//end reached and sorted
+				//end reached and finished
 				else{
-					vector.sorted=true;
+					vector.finished=true;
 					vector.setColorsSelectionSort();
 					vector.saveInDB();
 					vector.draw();
+					
+					//change the button. better way?
+					clearTimes();
+					
 					return;
 				}
 			},vector.speed*100)

@@ -179,16 +179,16 @@
 	
 	function un_pause(){
 		if(vec!=undefined && vec.size()>0){
-	  		var elem = $("#p");
-			if(elem.hasClass("p1")){
-				clearTimes();
-				vec.paused=true;
-				elem.removeClass("p1");
-			}
-			else{
-				vec.paused=false;
-				vec.quicksort(); 
-				elem.addClass("p1");
+			if(vec.finished!=true){
+		  		var elem = $("#p");
+				if(elem.hasClass("p1")){
+					clearTimes();
+				}
+				else{
+					vec.paused=false;
+					vec.quicksort(); 
+					elem.addClass("p1");
+				}
 			}
 			
 		}

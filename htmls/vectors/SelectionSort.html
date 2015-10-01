@@ -141,7 +141,7 @@
 	function create(){
 		clearTimes();
 		
-		if(vec.getElementsByPrompt()){
+		if(vec.getElementsByPrompt() && vec.size()>1){
 			var elem = $("#p");
 			elem.addClass("p1");
 			resetFields();
@@ -180,18 +180,17 @@
 	
 	function un_pause(){
 		if(vec!=undefined && vec.size()>0){
-      		var elem = $("#p");
-			if(elem.hasClass("p1")){
-				clearTimes();
-				vec.paused=true;
-				elem.removeClass("p1");
+			if(vec.finished!=true){
+	      		var elem = $("#p");
+				if(elem.hasClass("p1")){
+					clearTimes();
+				}
+				else{
+					vec.paused=false;
+					vec.selectionSort(); 
+					elem.addClass("p1");
+				}
 			}
-			else{
-				vec.paused=false;
-				vec.selectionSort(); 
-				elem.addClass("p1");
-			}
-			
 		}
 		else
 			alert("No vector created!");

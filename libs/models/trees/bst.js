@@ -32,10 +32,6 @@ function BinSearchTree(){
 	this.actStateID=-1;
 }
 
-BinSearchTree.prototype.init=function(){
-	this.saveInDB();
-}
-
 BinSearchTree.prototype.copy=function(){
 	var newTree=new BinSearchTree();
 			
