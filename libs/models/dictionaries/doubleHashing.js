@@ -34,6 +34,7 @@ DoubleHashing.prototype.init=function(){
 	this.rows=[];
 	this.fillFactor=0;
 	this.calc=undefined;
+	
 	if(this._static){
 		var size=parseInt(prompt("Size:"));
 		
