@@ -60,7 +60,7 @@ Vector.prototype.init=function(){
 	
 	this.stepDelay=0;
 	
-	this.paused=false;
+	this.paused=true;
 	this.finished=false;
 	if(this.actStateID!=-1)
 		this.saveInDB();
@@ -352,6 +352,10 @@ Vector.prototype.mergeSort=function(){
 	}
 	var start=0;
 	var end=this.elements.length-1;
+
+	this.setColorsMergeSort();
+	this.draw();
+	this.saveInDB();
 
 	function step(vector){
 		var firstDelay=0;
