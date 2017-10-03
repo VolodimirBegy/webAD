@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <title>webAD</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width">
+  
+  <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
+  <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
+  
+  <script src="../../libs/externalLibs/jquery.min.js"></script>
+  <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>ipt>
+  
+  <script type="text/javascript" src="../../libs/menu.js"></script>
+
+  <script src="../../libs/views/vectors/mergesort.js"></script>
+  <script src="../../libs/models/vectors/mergesort.js"></script>
+</head>
+
+<script>
+	var vec=undefined;
+	
+	function _create(){
+		vec=new Vector();
+		var c1 = document.getElementById("container1");
+		vec.view.initStage(c1);
+		vec.example();
+		resetFields();
+	}
+	
+	function resetFields(){
+		$("#col1").val(vec.col1);
+		$("#col2").val(vec.col2);
+		$("#col3").val(vec.col3);
+		$("#col4").val(vec.col4);
+		$("#col5").val(vec.col5);
+		
+		var sp = $("#speed");
+		sp.val(vec.speed);
+	}
+	
+	function speed(){
+		
+		if(vec!=undefined && vec.size()>0){
+			var sp = $("#speed");
+			vec.speed=parseInt(sp.val());
+			if(vec.stepDelay!=0)
+				vec.stepDelay=vec.speed*100;
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+		
+	
+	function col1(){
+		if(vec!=undefined && vec.size()>0){
+			var col1 = $("#col1");
+			vec.col1=col1.val();
+			vec.setColorsMergeSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+	
+	function col2(){
+		if(vec!=undefined && vec.size()>0){
+			var col2 = $("#col2");
+			vec.col2=col2.val();
+			vec.setColorsMergeSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+	
+	function col3(){
+		if(vec!=undefined && vec.size()>0){
+			var col3 = $("#col3");
+			vec.col3=col3.val();
+			vec.setColorsMergeSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+	
+	function col4(){
+		if(vec!=undefined && vec.size()>0){
+			var col4 = $("#col4");
+			vec.col4=col4.val();
+			vec.setColorsMergeSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+	
+	function col5(){
+		if(vec!=undefined && vec.size()>0){
+			var col5 = $("#col5");
+			vec.col5=col5.val();
+			vec.setColorsMergeSort();
+			vec.draw();
+			vec.saveInDB();
+		}
+		else{
+			alert("No vector created!");
+			resetFields();
+		}
+	}
+
+	function clearTimes(){
+		var elem = $("#p");
+		elem.removeClass("p1");
+		vec.paused=true;
+		//[30]
+		var pids = window.setTimeout(function() {}, 0);
+
+		while (pids--) {
+    		window.clearTimeout(pids); 
+		}
+	}
+
+	function create(){
+		clearTimes();
+		
+		if(vec.getElementsByPrompt() && vec.size()>1){
+			var elem = $("#p");
+			elem.addClass("p1");
+			resetFields();
+		}
+	}	
+
+	function rand(){
+		clearTimes();
+
+		vec.setRandomElements();
+
+		var elem = $("#p");
+		elem.addClass("p1");
+		resetFields();
+	}
+	
+	function pre(){
+		vec.prev();
+		resetFields();
+	}
+	
+	function next(){
+		vec.next();
+		resetFields();
+	}
+	
+	function first(){
+		vec.firstState();
+		resetFields();
+	}
+	
+	function last(){
+		vec.lastState();
+		resetFields();
+	}
+	
+	function un_pause(){
+		if(vec!=undefined && vec.size()>0){
+			if(vec.finished!=true){
+	      		var elem = $("#p");
+				if(elem.hasClass("p1")){
+					clearTimes();
+				}
+				else{
+					vec.paused=false;
+					vec.mergeSort(); 
+					elem.addClass("p1");
+				}
+			}
+		}
+		else
+			alert("No vector created!");
+	}
+	
+	function zoomIn(){
+     	vec.view.zoomIn();
+	}
+	
+	function zoomOut(){
+     	vec.view.zoomOut();
+	}
+
+</script>
+
+<body id="body" class="page" onload="_create();">
+<header id="header">
+	<ul>
+		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
+		<li><a href="javascript:_class('config', 'hide')" class="conf">Config</a></li>
+		<li><a href="javascript:_class('about', 'hide')" class="idea">About</a></li>
+	</ul>
+</header>
+<aside>
+	<a href="../index.html" class="logo"></a>
+	<ul class="dis">
+		<li><a href="javascript:_class('vec', 'hide')" class="v"><span>Vectors</span></a></li>
+		<li><a href="javascript:_class('dic', 'hide')" class="d"><span>Dictionaries</span></a></li>
+		<li><a href="javascript:_class('lis', 'hide')" class="l"><span>Lists</span></a></li>
+		<li><a href="javascript:_class('gra', 'hide')" class="g"><span>Graphs</span></a></li>
+		<li><a href="javascript:_class('tre', 'hide')" class="t"><span>Trees</span></a></li>
+	</ul>
+</aside>
+<article>
+	<div id="menu" class="open">
+		<a href="javascript:_class('menu', 'open')">Merge Sort</a>
+		<input type="button" value="Generate Random" id="rand" onclick="rand();return false;">
+		<input type="button" value="Enter Manually" id="add" onclick="create();return false;">
+	</div>
+	<div id="container1"></div>
+</article>
+<footer>
+	<div class="rul">
+		<a href="#" class="l2" id="first" onclick="first();return false;"></a>
+		<a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
+		<a href="#" id="p" onclick="un_pause();return false;"></a>
+		<a href="#" class="r1" id="next" onclick="next();return false;"></a>
+		<a href="#" class="r2" id="last" onclick="last();return false;"></a>
+		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
+		<a href="#" class="z1" onclick="zoomIn();return false;"></a>
+	</div>
+	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+</footer>
+<div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Info</h2>
+	Legend: First the array is split into seperated buckets until every bucket contains only one element. Then two buckets are merged and sorted (where the unsorted elements are red and the sorted ones are green) in the section Helparray (where the elements are marked as blue) where the smalest part is inserted until no element is left in the base bucket. Then the base bucket ist filled with the Helparray. This procedure is repeated until only one bucket with all elements is left. This is the end state and all elements are marked as gold. 
+	All not selected elements are purple (5).
+	<br><br>
+	In computer science, merge sort (also commonly spelled mergesort) is an O(n log n) comparison-based sorting algorithm. Most implementations produce a stable sort, which means that the implementation preserves the input order of equal elements in the sorted output. Mergesort is a divide and conquer algorithm that was invented by John von Neumann in 1945. A detailed description and analysis of bottom-up mergesort appeared in a report by Goldstine and Neumann as early as 1948. [17]
+	<br>
+	<div>[17]:<a href="https://en.wikipedia.org/wiki/Merge_sort" target="_blank">https://en.wikipedia.org/wiki/Merge_sort</a></div>
+	</div>
+</div>
+<div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Config</h2>
+	Animation speed:
+  	<input type="number" name="speed" style="width:40px" id="speed" min="1" max="20" step="1" value="10" onchange="speed();return false;" >
+ 	<br>Color (1):
+  	<input type="color" name="col1" id="col1" onchange="col1();return false;">
+  	<br>Color (2):
+  	<input type="color" name="col2" id="col2" onchange="col2();return false;">
+  	<br>Color (3):
+  	<input type="color" name="col3" id="col3" onchange="col3();return false;">
+  	<br>Color (4):
+  	<input type="color" name="col4" id="col4" onchange="col4();return false;">
+	<br>Color (5):
+  	<input type="color" name="col5" id="col5" onchange="col5();return false;">
+	</div>
+</div>
+<div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
+	<div class="pole2"><h2>About</h2>
+		<a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
+			<img src="../../images/uni.png" width="250px" alt="bsimage">
+		</a>
+		<a href="https://github.com/VolodimirBegy/webAD" target="_blank">
+			<img src="../../images/Octocat.png" width="100px" alt="bsimage">
+		</a>
+	</div>
+</div>
+<div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Vectors</h2>
+     	<ul>
+           	<li><a href="BubbleSort.html">Bubble Sort</a></li>
+           	<li><a href="SelectionSort.html">Selection Sort</a></li>
+		<li><span>Merge Sort</span></li>
+           	<li><a href="QuickSort.html">Quick Sort</a></li>
+          </ul>
+	</div>
+</div>
+<div id="dic" class="popup hide"><div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Dictionaries</h2>
+       	<ul>
+           	<li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
+           	<li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
+           	<li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
+          </ul>
+	</div>
+</div>
+<div id="lis" class="popup hide"><div class="closer" onclick="javascript:_class('lis', 'hide')"></div><a href="javascript:_class('lis', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Lists</h2>
+     	<ul>
+             	<li>Coming soon</li>
+          </ul>
+	</div>
+</div>
+<div id="gra" class="popup hide"><div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Graphs</h2>
+     	<ul>
+			<li><a href="../graphs/bfs.html">Breadth First Search</a></li>
+			<li><a href="../graphs/dfs.html">Depth First Search</a></li>
+			<li><a href="../graphs/kruskal.html">Kruskal</a></li>
+			<li><a href="../graphs/dijkstra.html">Dijkstra</a></li>
+        </ul>
+	</div>
+</div>
+<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Trees</h2>
+	     <ul>
+           	<li><a href="../trees/bst.html">Binary Search Tree</a></li>
+           	<li><a href="../trees/bplus.html">B+ Tree</a></li>
+           	<li><a href="../trees/heap.html">Binary Heap</a></li>
+           	<li><a href="../trees/heapSort.html">Heap Sort</a></li>
+          </ul>
+	</div>
+</div>
+</body>
+</html>
