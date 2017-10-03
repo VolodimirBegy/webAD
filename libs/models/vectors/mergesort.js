@@ -407,7 +407,10 @@ Vector.prototype.mergeSort=function(){
 						vector.status = status;
 						vector.setColorsMergeSort();
 						vector.draw();
-						vector.saveInDB();
+						//Saving to much: Only save when status > 0
+						if(status > 0){
+							vector.saveInDB();
+						}
 						step(vector);
 					}
 					else if(status == 1){
