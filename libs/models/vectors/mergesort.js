@@ -508,25 +508,16 @@ Vector.prototype.mergeSort=function(){
 					}
 					if(vector.pointer1>=start2 && vector.pointer2 < start2 + len2)
 					{
-						//Alle Verbleibenden setzen
-						while (vector.pointer2 < start2 + len2){
-							vector.newVector[vector.newPointer ]=vector.elements[vector.pointer2];
-							//Disen Vektor verstecken
-							vector.elements[vector.pointer2] = new Element(0);
-							vector.pointer2++;
-							vector.newPointer++;
-						}
+						vector.newVector[vector.newPointer ]=vector.elements[vector.pointer2];
+						vector.elements[vector.pointer2] = new Element(0);
+						vector.pointer2++;
 						done=false;
 					}
 					else if(vector.pointer2 == start2 + len2 && vector.pointer1 < start2)
 					{
-						while (vector.pointer1 < start2){
-							vector.newVector[vector.newPointer]=vector.elements[vector.pointer1];
-							//Disen Vektor verstecken
-							vector.elements[vector.pointer1] = new Element(0);
-							vector.pointer1++;
-							vector.newPointer++;
-						}
+						vector.newVector[vector.newPointer]=vector.elements[vector.pointer1];
+						vector.elements[vector.pointer1] = new Element(0);
+						vector.pointer1++;
 						done=false;
 					}
 					else if(vector.pointer2< start2 + len2 && vector.pointer1 < start2)
