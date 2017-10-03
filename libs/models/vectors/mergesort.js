@@ -411,9 +411,12 @@ Vector.prototype.mergeSort=function(){
 						if(status > 0){
 							vector.saveInDB();
 						}
-						step(vector);
+						if(status == 0){
+							step(vector);
+							//Only do step when there will be no other action.
+						}
 					}
-					else if(status == 1){
+					if(status == 1){
 						
 						if(vector.doesSort){
 							sort(vector);
