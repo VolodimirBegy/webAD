@@ -249,6 +249,9 @@ Vector.prototype.prev=function(){
 	      	this.replaceThis(rs);
 	      	this.draw();
 		}
+		else if(this.actStateID == 0){
+			this.firstState();
+		}
 	}
 	else
 		window.alert("Pause the sorting first!");
@@ -355,7 +358,7 @@ Vector.prototype.mergeSort=function(){
 
 	this.setColorsMergeSort();
 	this.draw();
-	this.saveInDB();
+	//this.saveInDB();
 
 	function step(vector){
 		var firstDelay=0;
