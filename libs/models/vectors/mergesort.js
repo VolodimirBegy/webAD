@@ -36,6 +36,8 @@ function Vector(){
 
 Vector.prototype.init=function(){
 	this.elements=[];
+	this.db=[];
+	this.actStateID=-1;
 
 	this.col1="#00FF80";
 	//this.col2="#00FFFF";
@@ -300,6 +302,7 @@ Vector.prototype.lastState=function(){
 }
  
 Vector.prototype.setRandomElements=function(){
+
 	 var tempElements=[];
 	 var tempVal;
 	 var number=Math.floor(Math.random() * (20 - 1 + 1)) + 1;
@@ -311,7 +314,10 @@ Vector.prototype.setRandomElements=function(){
 
 	 this.init();
 	 this.elements=tempElements;
-	 this.mergeSort();
+	this.setColorsMergeSort();
+	this.saveInDB();
+	this.draw();
+	this.mergeSort();
 }
  
 Vector.prototype.setColorsMergeSort=function(){
@@ -603,6 +609,9 @@ Vector.prototype.getElementsByPrompt=function(){
 	 if(_in){
 		 this.init();
 		 this.elements=tempElements;
+		this.setColorsMergeSort();
+		this.saveInDB();
+		this.draw();
 		 this.mergeSort();
 		 return true;
 	 }
