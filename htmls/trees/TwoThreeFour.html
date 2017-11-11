@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>webAD</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
+
+    <script src="../../libs/externalLibs/jquery.min.js"></script>
+    <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
+    <script src="../../libs/externalLibs/cycle.js"></script>
+
+    <script type="text/javascript" src="../../libs/menu.js"></script>
+
+    <script src="../../libs/views/trees/TwoThreeFour.js"></script>
+    <script src="../../libs/models/trees/TwoThreeFour.js"></script>
+</head>
+<script>
+    var tree = undefined;
+    function init() {
+        var c1 = document.getElementById("container1");
+        var list = document.getElementById("versions");
+        tree = new TwoThreeFour();
+        tree.view.initStage(c1);
+        tree.init();
+        colorInit();
+    }
+
+    function example() {
+        tree.example();
+    }
+
+    function clearTimes() {
+        var pids = window.setTimeout(function () {
+        }, 0);
+
+        while (pids--) {
+            window.clearTimeout(pids);
+        }
+
+        var tmpNodes = [];
+        if (tree.root != undefined)
+            tmpNodes.push(tree.root);
+        var finished = false;
+
+        do {
+            for (var i = 0; i < tmpNodes.length; i++) {
+                if (tmpNodes[i] != undefined) tmpNodes[i].color = "#ADFF2F";
+            }
+            finished = true;
+            var oldNodes = tmpNodes;
+            tmpNodes = [];
+            do {
+                if (oldNodes[0] != undefined) {
+                    tmpNodes.push(oldNodes[0].leftChild);
+                    tmpNodes.push(oldNodes[0].rightChild);
+                }
+                oldNodes.shift();
+            } while (oldNodes.length != 0);
+
+            for (var k = 0; k < tmpNodes.length; k++) {
+                if (tmpNodes[k] != undefined)
+                    finished = false;
+            }
+        } while (!finished);
+    }
+
+    function add() {
+        clearTimes();
+        tree.add();
+        updateListBox();
+        var selectBox = document.getElementById("versions");
+        selectBox.selectedIndex = selectBox.length - 1;
+        changeFunc();
+    }
+
+    function search() {
+        tree.search();
+    }
+
+    function rem() {
+        clearTimes();
+        tree.remove();
+        updateListBox();
+        var selectBox = document.getElementById("versions");
+        selectBox.selectedIndex = selectBox.options.length - 1;
+        changeFunc();
+    }
+
+    function random() {
+        clearTimes();
+        tree.random();
+        updateListBox();
+        var selectBox = document.getElementById("versions");
+        selectBox.selectedIndex = selectBox.options.length - 1;
+        changeFunc();
+    }
+
+    function pre() {
+        clearTimes();
+        var selectBox = document.getElementById("versions");
+        if (selectBox.selectedIndex > 0)
+            selectBox.selectedIndex = selectBox.selectedIndex - 1;
+        changeFunc();
+    }
+
+    function next() {
+        clearTimes();
+        var selectBox = document.getElementById("versions");
+        if (selectBox.selectedIndex < selectBox.options.length - 1)
+            selectBox.selectedIndex = selectBox.selectedIndex + 1;
+        changeFunc();
+    }
+
+    function first() {
+        clearTimes();
+        var selectBox = document.getElementById("versions");
+        for (var i = 1; ; i++) {
+            var selectedValue = selectBox.options[selectBox.selectedIndex - i].value;
+            if (tree.history[selectedValue][0] == 'major') {
+                selectBox.selectedIndex = selectBox.selectedIndex - i;
+                changeFunc();
+                return;
+            }
+        }
+    }
+
+    function last() {
+        clearTimes();
+        var selectBox = document.getElementById("versions");
+        for (var i = 1; ; i++) {
+            var selectedValue = selectBox.options[selectBox.selectedIndex + i].value;
+            if (tree.history[selectedValue][0] == 'major') {
+                selectBox.selectedIndex = selectBox.selectedIndex + i;
+                changeFunc();
+                return;
+            }
+        }
+    }
+
+    function zoomIn() {
+        tree.view.zoomIn();
+    }
+
+    function zoomOut() {
+        tree.view.zoomOut();
+    }
+
+    function changeFunc() {
+        var selectBox = document.getElementById("versions");
+        var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+        tree.loadVersion(selectedValue);
+    }
+
+    function updateListBox() {
+        var selectBox = document.getElementById("versions");
+        if (tree.history.length < selectBox.length)
+            selectBox.options.length = 0;
+
+        var diff = tree.history.length - selectBox.length;
+        var start = selectBox.length;
+        for (var i = 0; i < diff; i++) {
+            var opt = document.createElement('option');
+            opt.value = start + i;
+            var entry = tree.history[start + i];
+            opt.innerHTML = (start + i) + ' ' + (entry[0]=='minor'?'*':'') + ' ' + entry[1];
+            selectBox.appendChild(opt);
+        }
+    }
+
+    function colorInit() {
+        $("#colActive").val(tree.view.colActive);
+        $("#colInvalid").val(tree.view.colInvalid);
+        $("#colNotFound").val(tree.view.colNotFound);
+    }
+
+    function resetVersions() {
+        tree.history = [];
+        tree.pushToHistory('major', 'clear history', tree.root)
+        updateListBox();
+    }
+
+    function removeOptions(selectbox) {
+        var i;
+        for (i = selectbox.options.length - 1; i >= 0; i--) {
+            selectbox.remove(i);
+        }
+    }
+
+
+    function colorChange() {
+        if (tree != undefined) {
+            var colActive = $("#colActive");
+            var colInvalid = $("#colInvalid");
+            var colNotFound = $("#colNotFound");
+            tree.view.colActive = colActive.val();
+            tree.view.colInvalid = colInvalid.val();
+            tree.view.colNotFound = colNotFound.val();
+            tree.view.updateColors();
+        }
+        else {
+            resetFields();
+        }
+    }
+</script>
+
+<body id="body" class="page" onload="init(); example(); updateListBox(); return false;">
+<header id="header">
+    <ul>
+        <li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
+        <li><a href="javascript:_class('config', 'hide')" class="conf">Config</a></li>
+        <li><a href="javascript:_class('about', 'hide')" class="idea">About</a></li>
+    </ul>
+</header>
+<aside>
+    <a href="../index.html" class="logo"></a>
+    <ul class="dis">
+        <li><a href="javascript:_class('vec', 'hide')" class="v"><span>Vectors</span></a></li>
+        <li><a href="javascript:_class('dic', 'hide')" class="d"><span>Dictionaries</span></a></li>
+        <li><a href="javascript:_class('lis', 'hide')" class="l"><span>Lists</span></a></li>
+        <li><a href="javascript:_class('gra', 'hide')" class="g"><span>Graphs</span></a></li>
+        <li><a href="javascript:_class('tre', 'hide')" class="t"><span>Trees</span></a></li>
+    </ul>
+</aside>
+<article>
+    <div id="menu" class="open">
+        <a href="javascript:_class('menu', 'open')">2-3-4 Tree</a>
+        <input type="button" value="Generate Random" id="random" onclick="random();return false;">
+        <input type="button" value="Add Value" id="add" onclick="add();return false;">
+        <input type="button" value="Remove Value" id="remove" onclick="rem();return false;">
+        <input type="button" value="Search for Value" id="search" onclick="search();return false;">
+        <select id="versions" name="sometext" size="10" style="width: 100%" onchange="changeFunc();">
+
+        </select>
+    </div>
+    <div id="container1"></div>
+</article>
+<footer>
+    <div class="rul">
+        <a href="#" class="l2" id="first" onclick="first();return false;"></a>
+        <a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
+        <a href="#" id="p"></a>
+        <a href="#" class="r1" id="next" onclick="next();return false;"></a>
+        <a href="#" class="r2" id="last" onclick="last();return false;"></a>
+        <a href="#" class="z2" onclick="zoomOut();return false;"></a>
+        <a href="#" class="z1" onclick="zoomIn();return false;"></a>
+    </div>
+    webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further
+    questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+</footer>
+<div id="info" class="popup hide">
+    <div class="closer" onclick="javascript:_class('info', 'hide')"></div>
+    <a href="javascript:_class('info', 'hide')" class="close">X</a>
+    <div class="pole"><h2>Info</h2>
+        Ein 2-3-4 Baum ist ein Mehrwegbaum mit den folgenden Eigenschaften
+        Größeneigenschaft: jeder interne Knoten hat mindestens 2 und maximal 4 Kinder
+        Tiefeneigenschaft: alle externe Knoten besitzen dieselbe Tiefe
+        Abhängig von der Anzahl der Kinder heißt ein interner Knoten 2-Knoten, 3-Knoten oder 4-Knoten
+        <img style="width: 100%" src="../../images/234Tree.png" alt="234Tree image">
+        <div>[1]: <a href="https://cewebs.cs.univie.ac.at/ADS/ss15/" target="_blank">https://cewebs.cs.univie.ac.at/ADS/ss15/</a>
+            <br/>
+            <div>[2]: <a href="https://en.wikipedia.org/wiki/2%E2%80%933%E2%80%934_tree" target="_blank">https://en.wikipedia.org/wiki/2%E2%80%933%E2%80%934_tree</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="config" class="popup hide">
+    <div class="closer" onclick="javascript:_class('config', 'hide')"></div>
+    <a href="javascript:_class('config', 'hide')" class="close">X</a>
+    <div class="pole"><h2>Config</h2>
+
+        <input type="button" name="resetVersions" value="reset versions" id="resetVersions"
+               onclick="resetVersions();return false;">
+        <br>Color (Active):
+        <input type="color" name="colActive" id="colActive" onchange="colorChange(); return false;">
+        <br>Color (Invalid):
+        <input type="color" name="colInvalid" id="colInvalid" onchange="colorChange(); return false;">
+        <br>Color (Not Found):
+        <input type="color" name="colNotFound" id="colNotFound" onchange="colorChange(); return false;">
+    </div>
+</div>
+</div>
+<div id="about" class="popup hide">
+    <div class="closer" onclick="javascript:_class('about', 'hide')"></div>
+    <a href="javascript:_class('about', 'hide')" class="close">X</a>
+    <div class="pole"><h2>About</h2>
+        <a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
+            <img src="../../images/uni.png" width="250px" alt="bsimage">
+        </a>
+        <a href="https://github.com/VolodimirBegy/webAD" target="_blank">
+            <img src="../../images/octocat.png" width="100px" alt="bsimage">
+        </a>
+    </div>
+</div>
+
+
+<div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Vectors</h2>
+     	<ul>
+			<li><a href="../vectors/BubbleSort.html">Bubble Sort</a></li>
+			<li><a href="../vectors/SelectionSort.html">Selection Sort</a></li>
+			<li><a href="../vectors/MergeSort.html">Merge Sort</a></li>
+			<li><a href="../vectors/QuickSort.html">Quick Sort</a></li>
+			<li><a href="../vectors/RadixSort.html">LSD Radix Sort</a></li>
+			<li><a href="../vectors/BucketSort.html">Bucket Sort</a></li>
+			<li><a href="../vectors/CountingSort.html">Counting Sort</a></li>
+			<li><a href="../vectors/BinaryQuickSort.html">Binary Quicksort</a></li>
+        </ul>
+	</div>
+</div>
+<div id="dic" class="popup hide"><div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Dictionaries</h2>
+       	<ul>
+                        <li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
+                        <li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
+                        <li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
+                        <li><a href="../dictionaries/SeparateChaining.html">SeparateChaining</a></li>
+                        <li><a href="../dictionaries/ExtendibleHashing.html">Extendible Hashing</a></li>
+                        <li><a href="../dictionaries/Biseh.html">BISEH</a></li>
+        </ul>
+	</div>
+</div>
+<div id="lis" class="popup hide"><div class="closer" onclick="javascript:_class('lis', 'hide')"></div><a href="javascript:_class('lis', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Lists</h2>
+     	<ul>
+             	<li>Coming soon</li>
+          </ul>
+	</div>
+</div>
+<div id="gra" class="popup hide"><div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Graphs</h2>
+     	<ul>
+			<li><a href="../graphs/bfs.html">Breadth First Search</a></li>
+			<li><a href="../graphs/dfs.html">Depth First Search</a></li>
+			<li><a href="../graphs/kruskal.html">Kruskal</a></li>
+			<li><a href="../graphs/dijkstra.html">Dijkstra</a></li>
+            <li><a href="../graphs/prim.html">Prim</a></li>
+			<li><a href="../graphs/topo.html">Topologial Sort</a></li>
+        </ul>
+	</div>
+</div>
+<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Trees</h2>
+	     <ul>
+			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
+			<li><a href="../trees/bplus.html">B+ Tree</a></li>
+			<li><a href="../trees/heap.html">Binary Heap</a></li>
+			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
+			<li><a href="../trees/trie.html">Trie</a></li>
+			<li><a href="../trees/traversal.html">Traversal</a></li>
+			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+          </ul>
+	</div>
+</div>
+</body>
+</html>

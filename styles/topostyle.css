@@ -1,0 +1,45 @@
+/*https://www.w3schools.com/howto/howto_js_dropdown.asp>*/
+.dropbtn {
+    background-color: orange;
+    color: white;
+    align-content: center;
+    padding: 10px;
+    margin:  0px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8em;
+    width: 100em;
+    height: 2em;
+    min-width: 200px;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+    background-color: red;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: relative;
+    background-color: silver;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,10,0,0.2);
+    right: 0;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown a:hover {background-color: silver}
+
+.show {display:block;}

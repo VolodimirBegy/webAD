@@ -36,6 +36,8 @@ function Vector(){
 
 Vector.prototype.init=function(){
 	this.elements=[];
+	this.db=[];
+	this.actStateID=-1;
 
 	this.col1="#00FF80";
 	//this.col2="#00FFFF";
@@ -67,64 +69,66 @@ Vector.prototype.init=function(){
 }
 
 Vector.prototype.saveInDB=function(){
-	var count=this.db.length-1;
- 	if(count!=this.actStateID){
- 		this.db.splice(this.actStateID+1,count-this.actStateID);
- 	}
+	if(this.status > 0 || this.db.length <= 0){
+		var count=this.db.length-1;
+	 	if(count!=this.actStateID){
+	 		this.db.splice(this.actStateID+1,count-this.actStateID);
+	 	}
 
-	var nextID=this.db.length;
+		var nextID=this.db.length;
 	
-	var new_state = this.copy();
-	//code snippet for ignoring duplicates
-	var last_id=this.db.length-1;
-	var last_state=this.db[last_id];
+		var new_state = this.copy();
+		//code snippet for ignoring duplicates
+		var last_id=this.db.length-1;
+		var last_state=this.db[last_id];
 	
-	var same=true;
+		var same=true;
 	
-	if(last_state==undefined || last_state.elements.length!=new_state.elements.length ||
-			last_state.speed!=new_state.speed){
-		same=false;
-	}
-	else{
-		for(var i=0;i<new_state.elements.length;i++){
-			if(new_state.elements[i].color!=last_state.elements[i].color ||
-					new_state.elements[i].value!=last_state.elements[i].value)
-				same=false;
-		}
-		if(new_state.doesSort != last_state.doesSort){
-			same = false;
-		}
-		else if (new_state.newVector.length != last_state.newVector.length){
-			same = false;
+		if(last_state==undefined || last_state.elements.length!=new_state.elements.length ||
+				last_state.speed!=new_state.speed){
+			same=false;
 		}
 		else{
-			for(var i=0;i<new_state.newVector.length;i++){
-				if(new_state.newVector[i].color!=last_state.newVector[i].color ||
-						new_state.newVector[i].value!=last_state.newVector[i].value)
+			for(var i=0;i<new_state.elements.length;i++){
+				if(new_state.elements[i].color!=last_state.elements[i].color ||
+						new_state.elements[i].value!=last_state.elements[i].value)
 					same=false;
 			}
-		}
-		if(typeof new_state.seperatedElements != typeof last_state.seperatedElements){
-			same = false;
-		}
-		else if(typeof new_state.seperatedElements != 'undefinied'){
-			if(new_state.seperatedElements.length != last_state.seperatedElements.length){
+			if(new_state.doesSort != last_state.doesSort){
+				same = false;
+			}
+			else if (new_state.newVector.length != last_state.newVector.length){
 				same = false;
 			}
 			else{
-				for(var i = 0; i < new_state.seperatedElements.length; i++){
-					if(new_state.seperatedElements[i].length != last_state.seperatedElements[i])
-						same = false;
-					//wir müsse nicht weiter prüfen, da die Reihenfolge innerhalb der Arrays gleich sein sollte
+				for(var i=0;i<new_state.newVector.length;i++){
+					if(new_state.newVector[i].color!=last_state.newVector[i].color ||
+							new_state.newVector[i].value!=last_state.newVector[i].value)
+						same=false;
+				}
+			}
+			if(typeof new_state.seperatedElements != typeof last_state.seperatedElements){
+				same = false;
+			}
+			else if(typeof new_state.seperatedElements != 'undefinied'){
+				if(new_state.seperatedElements.length != last_state.seperatedElements.length){
+					same = false;
+				}
+				else{
+					for(var i = 0; i < new_state.seperatedElements.length; i++){
+						if(new_state.seperatedElements[i].length != last_state.seperatedElements[i])
+							same = false;
+						//wir müsse nicht weiter prüfen, da die Reihenfolge innerhalb der Arrays gleich sein sollte
+					}
 				}
 			}
 		}
-	}
-	//end code snippet for ignoring duplicates
-	if(!same){
-		this.db.push(new_state);
+		//end code snippet for ignoring duplicates
+		if(!same){
+			this.db.push(new_state);
 		
-		this.actStateID=nextID;
+			this.actStateID=nextID;
+		}
 	}
 }
 
@@ -249,6 +253,9 @@ Vector.prototype.prev=function(){
 	      	this.replaceThis(rs);
 	      	this.draw();
 		}
+		else if(this.actStateID == 0){
+			this.firstState();
+		}
 	}
 	else
 		window.alert("Pause the sorting first!");
@@ -295,6 +302,7 @@ Vector.prototype.lastState=function(){
 }
  
 Vector.prototype.setRandomElements=function(){
+
 	 var tempElements=[];
 	 var tempVal;
 	 var number=Math.floor(Math.random() * (20 - 1 + 1)) + 1;
@@ -306,7 +314,10 @@ Vector.prototype.setRandomElements=function(){
 
 	 this.init();
 	 this.elements=tempElements;
-	 this.mergeSort();
+	this.setColorsMergeSort();
+	this.saveInDB();
+	this.draw();
+	this.mergeSort();
 }
  
 Vector.prototype.setColorsMergeSort=function(){
@@ -355,7 +366,7 @@ Vector.prototype.mergeSort=function(){
 
 	this.setColorsMergeSort();
 	this.draw();
-	this.saveInDB();
+	//this.saveInDB();
 
 	function step(vector){
 		var firstDelay=0;
@@ -378,24 +389,35 @@ Vector.prototype.mergeSort=function(){
 							//Wir müssen weiter seperieren
 							var helpSeperated = [];
 							var counter = 0;
-							
+							//Count of HelpSeperated with only one vector. So if this counter == helpSeperated.lengh --> then status + 1 if 
+							var oneCounter = 0;				
 							for(var i=0;i<vector.seperatedElements.length;i++){
 								helpSeperated[counter] = 0;
 								if(vector.seperatedElements[i] >= 2){
 									//Aufteilen des Vektors und 
 									var middle = Math.floor(vector.seperatedElements[i] / 2);
 									helpSeperated[counter] = middle;
+									if(middle == 1)
+										oneCounter++;
 									//helpSeperated[i].push(help2Seperated);
 									helpSeperated[counter + 1] = vector.seperatedElements[i] - middle;
+									if(vector.seperatedElements[i] - middle == 1)
+										oneCounter++;
 									//helpSeperated[i].push(help2Seperated);
 									counter ++;
 								}
 								else{
 									helpSeperated[counter] = 1;
+									oneCounter++;
 								}
 								counter ++;
 							}
 							vector.seperatedElements = helpSeperated;
+							if(oneCounter == helpSeperated.length){
+								//Wir müssen den Status erhöhen
+								status ++;
+								vector.lastPos = -1;
+							}
 							
 						}
 						else{
@@ -411,12 +433,12 @@ Vector.prototype.mergeSort=function(){
 						if(status > 0){
 							vector.saveInDB();
 						}
-						if(status == 0){
+						//if(status == 0){
 							step(vector);
 							//Only do step when there will be no other action.
-						}
+						//}
 					}
-					if(status == 1){
+					else if(status == 1){
 						
 						if(vector.doesSort){
 							sort(vector);
@@ -587,6 +609,9 @@ Vector.prototype.getElementsByPrompt=function(){
 	 if(_in){
 		 this.init();
 		 this.elements=tempElements;
+		this.setColorsMergeSort();
+		this.saveInDB();
+		this.draw();
 		 this.mergeSort();
 		 return true;
 	 }
