@@ -4,7 +4,7 @@ Built on the MVC architectural pattern webAD visualizes algorithms and data stru
 Logic is located in 'models' folder, drawings are in the 'views'
 
 Following algorithms and data structures are visualized:
-* Bubble/Selection/Quick Sort
+* Bubble/Selection/Merge/Quick Sort
 * Double/Linear Hashing, Linear Probing
 * Breadth/Depth First Search, Kruskal and Dijkstra Algorithms
 * Binary Search Tree, B+ Tree, Binary Min Heap, Heap Sort
