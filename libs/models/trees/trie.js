@@ -458,27 +458,9 @@ Trie.prototype.add=function(word) {
 	}
 }
 
-Trie.prototype.search=function() { /* word search */
+Trie.prototype.search=function(word) { /* word search */
 
 	tree.running = true;
-
-	var cont;
-	do{
-		cont = false;
-		var word = (prompt("Search for word (upper case letters are ignored):"));
-		if(word===null){
-			tree.running = false;
-			tree.stopped = false;
-			return;
-		}
-
-		word = word.toLowerCase();
-
-		if(! /^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)){
-			alert("Value not allowed. Please type in a word that contains only letters.");
-			cont = true;
-		}
-	}while(cont)
 
 	word += "$";
 
@@ -609,26 +591,9 @@ Trie.prototype.search=function() { /* word search */
 	}
 }
 
-Trie.prototype.search2=function() { /* prefix search */
+Trie.prototype.search2=function(prefix) { /* prefix search */
 
 	tree.running = true;
-
-	var cont;
-	do{
-		cont = false;
-		var prefix = (prompt("Search for prefix (upper case letters are ignored):"));
-		if(prefix===null){
-			tree.running=false;
-			return;
-		}
-
-		prefix = prefix.toLowerCase();
-
-		if(! /^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(prefix)){
-			alert("Value not allowed. Please type in a prefix that contains only letters.");
-			cont = true;
-		}
-	}while(cont)
 
 	var actNode = this.root;
 
@@ -824,27 +789,9 @@ Trie.prototype.search2=function() { /* prefix search */
 
 }
 
-Trie.prototype.remove=function() {
+Trie.prototype.remove=function(word) {
 
 	tree.running = true;
-
-	var cont;
-	do{
-		cont = false;
-		var word = (prompt("Remove word (upper case letters are ignored):"));
-		if(word===null){
-			tree.running = false;
-			tree.stopped = false;
-			return;
-		}
-
-		word = word.toLowerCase();
-
-		if(! /^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)){
-			alert("Value not allowed. Please type in a word that contains only letters.");
-			cont = true;
-		}
-	}while(cont)
 
 	word += "$";
 

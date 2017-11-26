@@ -203,13 +203,23 @@ function newTreeByType(type){
     }
   }
 
+  function animateStopButton(){
+
+    var stopBtn = $("#p").addClass("p1");
+
+    function doLoop(btn) {
+      setTimeout(function() {
+        (tree.running === true) ? doLoop(btn) : btn.removeClass("p1");
+      }, 100)
+    }
+
+    doLoop(stopBtn);
+  }
+
+
   function add() {
     if (tree.running === false) {
       clearTimes();
-
-      // set stop button
-      var elem = $("#p");
-      elem.addClass("p1");
 
       var cont, word;
       do {
@@ -229,44 +239,39 @@ function newTreeByType(type){
         }
       } while (cont)
 
+      animateStopButton();
+
       tree.add(word);
-
-      // wait for animation end to reset stop button
-      doLoop(elem);
-
-      function doLoop(elem) {
-        setTimeout(function() {
-          if (tree.running === true) doLoop(elem);
-          else {
-            elem.removeClass("p1");
-          }
-        }, 10)
-      }
     }
   }
 
   // function remove() is predefined, "remove" can not be used as name
   function removeWord() {
     if (tree.running === false) {
+
       clearTimes();
 
-      // set stop button
-      var elem = $("#p");
-      elem.addClass("p1");
+      var cont, word;
+      do {
+        cont = false;
+        word = (prompt("Search for word (upper case letters are ignored):"));
+        if (word === null) {
+          tree.running = false;
+          tree.stopped = false;
+          return;
+        }
 
-      tree.remove();
+        word = word.toLowerCase();
 
-      // wait for animation end to reset stop button
-      doLoop(elem);
+        if (!/^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)) {
+          alert("Value not allowed. Please type in a word that contains only letters.");
+          cont = true;
+        }
+      } while (cont)
 
-      function doLoop(elem) {
-        setTimeout(function() {
-          if (tree.running === true) doLoop(elem);
-          else {
-            elem.removeClass("p1");
-          }
-        }, 10)
-      }
+      animateStopButton();
+
+      tree.remove(word);
     }
   }
 
@@ -274,23 +279,27 @@ function newTreeByType(type){
     if (tree.running === false) {
       clearTimes();
 
-      // set stop button
-      var elem = $("#p");
-      elem.addClass("p1");
+      var cont, word;
+    	do{
+    		cont = false;
+    		word = (prompt("Search for word (upper case letters are ignored):"));
+    		if(word===null){
+    			tree.running = false;
+    			tree.stopped = false;
+    			return;
+    		}
 
-      tree.search();
+    		word = word.toLowerCase();
 
-      // wait for animation end to reset stop button
-      doLoop(elem);
+    		if(! /^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)){
+    			alert("Value not allowed. Please type in a word that contains only letters.");
+    			cont = true;
+    		}
+    	}while(cont)
 
-      function doLoop(elem) {
-        setTimeout(function() {
-          if (tree.running === true) doLoop(elem);
-          else {
-            elem.removeClass("p1");
-          }
-        }, 10)
-      }
+      animateStopButton()
+
+      tree.search(word);
     }
   }
 
@@ -298,23 +307,26 @@ function newTreeByType(type){
     if (tree.running === false) {
       clearTimes();
 
-      // set stop button
-      var elem = $("#p");
-      elem.addClass("p1");
+      var cont, prefix;
+      do{
+        cont = false;
+        prefix = (prompt("Search for prefix (upper case letters are ignored):"));
+        if(prefix===null){
+          tree.running=false;
+          return;
+        }
 
-      tree.search2();
+        prefix = prefix.toLowerCase();
 
-      // wait for animation end to reset stop button
-      doLoop(elem);
+        if(! /^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(prefix)){
+          alert("Value not allowed. Please type in a prefix that contains only letters.");
+          cont = true;
+        }
+      }while(cont)
 
-      function doLoop(elem) {
-        setTimeout(function() {
-          if (tree.running === true) doLoop(elem);
-          else {
-            elem.removeClass("p1");
-          }
-        }, 10)
-      }
+      animateStopButton();
+
+      console.log(tree.search2(prefix));
     }
   }
 
@@ -415,7 +427,6 @@ function newTreeByType(type){
   }
 
   // tape recorder functions
-
   function first() {
     if (tree.running === false) {
       clearTimes();

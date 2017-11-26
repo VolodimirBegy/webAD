@@ -128,7 +128,7 @@ PatriciaNode.prototype.searchWord = function(word) { /* word search */
   word = word.substring(pos);
 
   //Case 1 - Word found
-  if (!word.length && this.isWord) {
+  if (pos == actNode.value.length && !word.length && actNode.isWord) {
     return this;
   }
 
@@ -169,6 +169,35 @@ PatriciaNode.prototype.searchPrefix = function(word) { /* prefix search */
   return null;
 }
 
+PatriciaNode.prototype.findWords = function() {
+
+  var words = [];
+
+  //Get full prefix
+  var actParent = this.parent;
+  var fullPrefix = '';
+  while(actParent){
+    fullPrefix = actParent.value + fullPrefix;
+    actParent = actParent.parent;
+  }
+
+  function recursiveTraversal(node, word) {
+
+    word += node.value;
+
+    if (node.isWord) {
+      words.push(word);
+    }
+
+    for (var j = 0, len = node.children.length; j < len; j++) {
+      recursiveTraversal(node.children[j], word);
+    }
+  }
+
+  recursiveTraversal(this, fullPrefix);
+
+  return words;
+}
 
 function Patricia() {
   this.view = new PatriciaView(this);
@@ -236,7 +265,8 @@ Patricia.prototype.findWords = function(tree) {
 
   tree = tree || this;
 
-  var words = [];
+  return tree.root.findWords();
+  /*var words = [];
 
   function recursiveTraversal(node, word) {
 
@@ -254,13 +284,14 @@ Patricia.prototype.findWords = function(tree) {
   if (tree.root.children.length)
     recursiveTraversal(tree.root, '');
 
-  return words;
+  return words;*/
 }
 
 Patricia.prototype.copy = function() {
   var newTree = new Patricia();
 
-  var words = this.findWords();
+  //var words = this.findWords();
+  var words = this.root.findWords();
   for (var j = 0; j < words.length; j++) {
     newTree.addFixed(words[j]);
   }
@@ -427,7 +458,7 @@ Patricia.prototype.create = function(words) {
   this.draw();
 }
 
-Patricia.prototype._finishAnimation = function(actNode){
+Patricia._finishAnimation = function(actNode){
   actNode.color = tree.color2;
 
   tree.continueAnimation = false;
@@ -437,6 +468,7 @@ Patricia.prototype._finishAnimation = function(actNode){
   tree.saveInDB();
   tree.draw();
 
+  return actNode;
 }
 
 Patricia.prototype.add = function(word) {
@@ -448,6 +480,7 @@ Patricia.prototype.add = function(word) {
   // ~~~~~~~~~~~~~~~ Loops ~~~~~~~~~~~~~~~~~~
   function doAddLoop(actNode) {
 
+    tree.continueAnimation = false;
     actNode.color = tree.color3;
     tree.draw();
 
@@ -467,7 +500,6 @@ Patricia.prototype.add = function(word) {
       //Case 2 - Prefix match: the word matches a prefix of the currents nodes string completely
       //Example: "testcase" <- "test"
       else if (actNode.value.length > pos && !word.length) {
-
         var node = new PatriciaNode(actNode.value.substring(0, pos), actNode.parent, true, [actNode]);
 
         for (var x = 0, len = actNode.parent.children.length; x < len; ++x) {
@@ -479,37 +511,29 @@ Patricia.prototype.add = function(word) {
         actNode.value = actNode.value.substring(pos);
         actNode.parent = node;
         actNode.color = tree.color2;
-        return doEndLoop(node);
+        return doEndLoop(actNode);
       }
 
       //Case 3 - Full match: the word matches the currents nodes string completely but is longer
       //Example: "test" <- "testcase"
       else if (actNode.value.length == pos && word.length) {
         var childIndex = Patricia._getMatchingChildsWordIndex(actNode, word);
+        actNode.color = tree.color2;
+
         if (childIndex !== undefined) {
 
-          actNode.color = tree.color2;
+          var nextChild = actNode.children[childIndex];
 
           if (tree.speed === 0) {
-            if (tree.continueAnimation === true) {
-              tree.continueAnimation = false;
-              return doAddLoop(actNode.children[childIndex]);
-            } else {
-              return doStopLoop(actNode.children[childIndex]);
-            }
+            return (tree.continueAnimation === true) ? doAddLoop(nextChild) : doStopLoop(nextChild);
           } else {
-            if (tree.stopped === true) {
-              return doStopLoop(actNode.children[childIndex]);
-            } else {
-              return doAddLoop(actNode.children[childIndex]);
-            }
+            return (tree.stopped === true) ? doStopLoop(nextChild) : doAddLoop(nextChild);
           }
 
         } else {
           //No child match was found. Create, push and return new node
-          actNode.color = tree.color2;
           actNode = actNode.children[actNode.children.push(new PatriciaNode(word, actNode, true)) - 1];
-          return doEndLoop(actNode);
+          return (tree.speed === 0) ? doStopLoop(actNode) : doEndLoop(actNode);
         }
       }
 
@@ -531,6 +555,10 @@ Patricia.prototype.add = function(word) {
         actNode = node.children[node.children.push(new PatriciaNode(word, node, true)) - 1];
         return doEndLoop(actNode);
       }
+
+    //Case 5 - Word already exists
+    return doEndLoop(actNode);
+
     }, 1000 / tree.speed * 5);
   }
 
@@ -540,21 +568,11 @@ Patricia.prototype.add = function(word) {
     tree.draw();
 
     setTimeout(function() {
-
       if (tree.speed === 0) {
-        if (tree.continueAnimation === true) {
-          Patricia._finishAnimation(actNode);
-        } else {
-          doEndLoop(actNode);
-        }
+        return (tree.continueAnimation === true) ? Patricia._finishAnimation(actNode) : doEndLoop(actNode);
       } else {
-        if (tree.stopped === true) {
-          doEndLoop(actNode);
-        } else {
-          Patricia._finishAnimation(actNode);
-        }
+        return (tree.stopped === true) ? doEndLoop(actNode) : Patricia._finishAnimation(actNode);
       }
-
     }, 1000 / tree.speed * 5);
   }
 
@@ -562,383 +580,185 @@ Patricia.prototype.add = function(word) {
     setTimeout(function() {
 
       if (tree.speed === 0) {
+        //tree.continueAnimation = false;
         if (tree.continueAnimation === true) {
           tree.continueAnimation = false;
-          actNode.color = tree.color2;
-          tree.draw();
-          doAddLoop(actNode);
+          return doAddLoop(actNode);
         } else {
-          doStopLoop(actNode);
+          return doStopLoop(actNode);
         }
       } else {
-        if (tree.stopped === true) {
-          doStopLoop(actNode);
-        } else {
-          actNode.color = tree.color2;
-          tree.draw();
-          doAddLoop(actNode);
-        }
+        return (tree.stopped === true) ? doStopLoop(actNode) : doAddLoop(actNode);
       }
 
     }, 1000 / tree.speed * 5);
   }
 
-  //actNode.color = color2;
-  //tree.draw();
 }
 
-Patricia.prototype.search = function() { /* word search */
+Patricia.prototype.search = function(word) { /* word search */
 
   tree.running = true;
+  //Make a final copy of word
+  const finalWord = word;
 
-  var cont;
-  do {
-    cont = false;
-    var word = (prompt("Search for word (upper case letters are ignored):"));
-    if (word === null) {
-      tree.running = false;
-      tree.stopped = false;
-      return;
-    }
-
-    word = word.toLowerCase();
-
-    if (!/^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)) {
-      alert("Value not allowed. Please type in a word that contains only letters.");
-      cont = true;
-    }
-  } while (cont)
-
-  word += "$";
-
-  var actNode = this.root;
-
-  actNode.color = tree.color3;
-  this.draw();
-  actNode.color = tree.color2;
-
-  var end = word.length;
-  var level = 0;
-
-  if (level < end) doSearchLoop(actNode);
+  doSearchLoop(this.root);
 
   // ~~~~~~~~~~~~~~~ Loops ~~~~~~~~~~~~~~~~~~
-
   function doSearchLoop(actNode) {
+
+    tree.continueAnimation = false;
+    actNode.color = tree.color3;
+    tree.draw();
+
     setTimeout(function() {
 
-      if (actNode.children === undefined) {
-        /* no children but still letters left to search for */
-        alert("The word \"" + word.slice(0, -1) + "\" could not be found!");
-        tree.draw();
-        tree.running = false;
-        tree.stopped = false;
-        return;
+      var pos = Patricia._checkMatchingPrefix(actNode, word);
+      word = word.substring(pos);
+
+      //Case 1 - Word found
+      if (!word.length && pos == actNode.value.length && actNode.isWord) {
+        alert("The word \"" + finalWord + "\" was found!");
+        return doEndLoop(actNode);
       }
-      /* letters exist, search for current letter */
+
+      //Case 2 - Full match: the word matches the currents nodes string completely but is longer
+      //Example: "test" <- "testcase"
       else {
-        var actChildren = actNode.children;
-        var found = false;
-        for (var j = 0; j < actChildren.length; j++) {
-          var actChild = actChildren[j];
-          if (actChild.value === word.charAt(level)) {
-            actNode = actNode.children[j];
-            found = true;
-            break;
+        var childIndex = Patricia._getMatchingChildsWordIndex(actNode, word);
+        if (childIndex !== undefined) {
+
+          var nextChild = actNode.children[childIndex];
+          actNode.color = tree.color2;
+
+          if (tree.speed === 0) {
+            return (tree.continueAnimation === true) ? doSearchLoop(nextChild) : doStopLoop(nextChild);
+          } else {
+            return (tree.stopped === true) ? doStopLoop(nextChild) : doSearchLoop(nextChild);
           }
         }
-
-        /* if current letter doesnt exist */
-        if (!found) {
-          alert("The word \"" + word.slice(0, -1) + "\" could not be found!");
-          tree.draw();
-          tree.running = false;
-          tree.stopped = false;
-          return;
-        }
       }
 
-      actNode.color = tree.color3;
-
-      level++;
-
-      if (tree.speed === 0) {
-        if (tree.continueAnimation === true) {
-          tree.continueAnimation = false;
-          tree.draw();
-          actNode.color = tree.color2;
-          if (level < end) doSearchLoop(actNode);
-          if (level === end) doEndLoop();
-        } else doStopLoop(level, end, actNode);
-      } else {
-        if (tree.stopped === true) doStopLoop(level, end, actNode);
-        else {
-          tree.draw();
-          actNode.color = tree.color2;
-          if (level < end) doSearchLoop(actNode);
-          if (level === end) doEndLoop();
-        }
-      }
-
-    }, 1000 / tree.speed * 5)
-  }
-
-  function doEndLoop() {
-    setTimeout(function() {
-
-      if (tree.speed === 0) {
-        if (tree.continueAnimation === true) {
-          tree.continueAnimation = false;
-          alert("The word \"" + word.slice(0, -1) + "\" was found!");
-          tree.draw();
-          tree.running = false;
-          tree.stopped = false;
-        } else doEndLoop();
-      } else {
-        if (tree.stopped === true) doEndLoop();
-        else {
-          alert("The word \"" + word.slice(0, -1) + "\" was found!");
-          tree.draw();
-          tree.running = false;
-          tree.stopped = false;
-        }
-      }
-
-    }, 1000 / tree.speed * 5)
-  }
-
-  function doStopLoop(level, end, actNode) {
-    setTimeout(function() {
-
-      if (tree.speed === 0) {
-        if (tree.continueAnimation === true) {
-          tree.continueAnimation = false;
-          tree.draw();
-          actNode.color = tree.color2;
-          if (level < end) doSearchLoop(actNode);
-          if (level === end) doEndLoop();
-        } else doStopLoop(level, end, actNode);
-      } else {
-        if (tree.stopped === true) doStopLoop(level, end, actNode);
-        else {
-          tree.draw();
-          actNode.color = tree.color2;
-          if (level < end) doSearchLoop(actNode);
-          if (level === end) doEndLoop();
-        }
-      }
-
-    }, 1000 / tree.speed * 5)
-  }
-}
-
-Patricia.prototype.search2 = function() { /* prefix search */
-
-  tree.running = true;
-
-  var cont;
-  do {
-    cont = false;
-    var prefix = (prompt("Search for prefix (upper case letters are ignored):"));
-    if (prefix === null) {
-      tree.running = false;
-      return;
-    }
-
-    prefix = prefix.toLowerCase();
-
-    if (!/^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(prefix)) {
-      alert("Value not allowed. Please type in a prefix that contains only letters.");
-      cont = true;
-    }
-  } while (cont)
-
-  var actNode = this.root;
-
-  actNode.color = tree.color3;
-  this.draw();
-  actNode.color = tree.color2;
-
-  var end = prefix.length;
-  var level = 0;
-
-  if (level < end) doSearchLoop(actNode);
-
-  // ~~~~~~~~~~~~~~~ Loops ~~~~~~~~~~~~~~~~~~
-
-  function doSearchLoop(actNode) {
-    setTimeout(function() {
-
-      if (actNode.children === undefined) {
-        /* no children but still letters left to search for */
-        alert("The prefix \"" + prefix + "\" could not be found!");
-        tree.draw();
-        tree.running = false;
-        tree.stopped = false;
-        return;
-      }
-      /* letters exist, search for current letter */
-      else {
-        var actChildren = actNode.children;
-        var found = false;
-        for (var j = 0; j < actChildren.length; j++) {
-          var actChild = actChildren[j];
-          if (actChild.value === prefix.charAt(level)) {
-            actNode = actNode.children[j];
-            found = true;
-            break;
-          }
-        }
-
-        /* if current letter doesnt exist */
-        if (!found) {
-          alert("The prefix \"" + prefix + "\" could not be found!");
-          tree.draw();
-          tree.running = false;
-          tree.stopped = false;
-          return;
-        }
-      }
-
-      actNode.color = tree.color3;
-
-      level++;
-
-      if (tree.speed === 0) {
-        if (tree.continueAnimation === true) {
-          tree.continueAnimation = false;
-          tree.draw();
-          actNode.color = tree.color2;
-          if (level < end) doSearchLoop(actNode);
-          if (level === end) doEndLoop(actNode);
-        } else doStopLoop(level, end, actNode);
-      } else {
-        if (tree.stopped === true) doStopLoop(level, end, actNode);
-        else {
-          tree.draw();
-          actNode.color = tree.color2;
-          if (level < end) doSearchLoop(actNode);
-          if (level === end) doEndLoop(actNode);
-        }
-      }
-
+      //Case 3 - No word found
+      alert("The word \"" + finalWord + "\" could not be found!");
+      return doEndLoop(actNode);
     }, 1000 / tree.speed * 5)
   }
 
   function doEndLoop(actNode) {
+
+    actNode.color = tree.color3;
+    tree.draw();
+
+    setTimeout(function() {
+      if (tree.speed === 0) {
+        return Patricia._finishAnimation(actNode);
+      } else {
+        return (tree.stopped === true) ? doEndLoop(actNode) : Patricia._finishAnimation(actNode);
+      }
+    }, 1000 / tree.speed * 5);
+  }
+
+  function doStopLoop(actNode) {
     setTimeout(function() {
 
       if (tree.speed === 0) {
+        //tree.continueAnimation = false;
         if (tree.continueAnimation === true) {
           tree.continueAnimation = false;
-          alert("The prefix \"" + prefix + "\" was found!");
-
-          /* find all words with this prefix */
-          var words = [];
-          var word = prefix.slice(0, -1);
-
-          if (actNode != undefined)
-            recursiveTraversal(actNode, word);
-
-          function recursiveTraversal(actNode, word) {
-            if (actNode.value === "$") {
-
-              words.push(word);
-              return;
-            }
-
-            if (actNode.value != "0") word += actNode.value;
-            var actChildren = actNode.children;
-
-            for (var j = 0; j < actChildren.length; j++) {
-
-              recursiveTraversal(actNode.children[j], word);
-            }
-          }
-
-          var allWords = "";
-
-          for (var i = 0; i < words.length; i++) {
-            if (i != 0) allWords += ", ";
-            allWords += words[i];
-          }
-
-          alert("The following words share the prefix \"" + prefix + "\":\n" + allWords);
-
-          tree.draw();
-          tree.running = false;
-          tree.stopped = false;
-        } else doEndLoop(actNode);
-      } else {
-        if (tree.stopped === true) doEndLoop(actNode);
-        else {
-          alert("The prefix \"" + prefix + "\" was found!");
-
-          /* find all words with this prefix */
-          var words = [];
-          var word = prefix.slice(0, -1);
-
-          if (actNode != undefined)
-            recursiveTraversal(actNode, word);
-
-          function recursiveTraversal(actNode, word) {
-            if (actNode.value === "$") {
-
-              words.push(word);
-              return;
-            }
-
-            if (actNode.value != "0") word += actNode.value;
-            var actChildren = actNode.children;
-
-            for (var j = 0; j < actChildren.length; j++) {
-
-              recursiveTraversal(actNode.children[j], word);
-            }
-          }
-
-          var allWords = "";
-
-          for (var i = 0; i < words.length; i++) {
-            if (i != 0) allWords += ", ";
-            allWords += words[i];
-          }
-
-          alert("The following words share the prefix \"" + prefix + "\":\n" + allWords);
-
-          tree.draw();
-          tree.running = false;
-          tree.stopped = false;
+          return doSearchLoop(actNode);
+        } else {
+          return doStopLoop(actNode);
         }
+      } else {
+        return (tree.stopped === true) ? doStopLoop(actNode) : doSearchLoop(actNode);
       }
 
-    }, 1000 / tree.speed * 5)
+    }, 1000 / tree.speed * 5);
   }
+}
 
-  function doStopLoop(level, end, actNode) {
-    setTimeout(function() {
+Patricia.prototype.search2 = function(word) { /* prefix search */
 
-      if (tree.speed === 0) {
-        if (tree.continueAnimation === true) {
-          tree.continueAnimation = false;
-          tree.draw();
-          actNode.color = tree.color2;
-          if (level < end) doSearchLoop(actNode);
-          if (level === end) doEndLoop(actNode);
-        } else doStopLoop(level, end, actNode);
-      } else {
-        if (tree.stopped === true) doStopLoop(level, end, actNode);
-        else {
-          tree.draw();
-          actNode.color = tree.color2;
-          if (level < end) doSearchLoop(actNode);
-          if (level === end) doEndLoop(actNode);
+    tree.running = true;
+    //Make a final copy of word
+    const finalWord = word;
+
+    return doSearchLoop(this.root);
+
+    // ~~~~~~~~~~~~~~~ Loops ~~~~~~~~~~~~~~~~~~
+    function doSearchLoop(actNode) {
+
+      tree.continueAnimation = false;
+      actNode.color = tree.color3;
+      tree.draw();
+
+      setTimeout(function() {
+
+        var pos = Patricia._checkMatchingPrefix(actNode, word);
+        word = word.substring(pos);
+
+        //Case 1 - Word found
+        if (!word.length) {
+          alert("The prefix \"" + finalWord + "\" was found!");
+          alert("The following words share the prefix \"" + finalWord + "\":\n" + actNode.findWords());
+          return doEndLoop(actNode);
         }
-      }
 
-    }, 1000 / tree.speed * 5)
-  }
+        //Case 2 - Full match: the word matches the currents nodes string completely but is longer
+        //Example: "test" <- "testcase"
+        else {
+          var childIndex = Patricia._getMatchingChildsWordIndex(actNode, word);
+          if (childIndex !== undefined) {
 
+            var nextChild = actNode.children[childIndex];
+            actNode.color = tree.color2;
+
+            if (tree.speed === 0) {
+              return (tree.continueAnimation === true) ? doSearchLoop(nextChild) : doStopLoop(nextChild);
+            } else {
+              return (tree.stopped === true) ? doStopLoop(nextChild) : doSearchLoop(nextChild);
+            }
+          }
+        }
+
+        //Case 3 - No word found
+        alert("The prefix \"" + finalWord + "\" could not be found!");
+        return doEndLoop(actNode);
+      }, 1000 / tree.speed * 5)
+    }
+
+    function doEndLoop(actNode) {
+
+      actNode.color = tree.color3;
+      tree.draw();
+
+      setTimeout(function() {
+        if (tree.speed === 0) {
+          return Patricia._finishAnimation(actNode);
+        } else {
+          return (tree.stopped === true) ? doEndLoop(actNode) : Patricia._finishAnimation(actNode);
+        }
+      }, 1000 / tree.speed * 5);
+    }
+
+    function doStopLoop(actNode) {
+      setTimeout(function() {
+
+        if (tree.speed === 0) {
+          //tree.continueAnimation = false;
+          if (tree.continueAnimation === true) {
+            tree.continueAnimation = false;
+            return doSearchLoop(actNode);
+          } else {
+            return doStopLoop(actNode);
+          }
+        } else {
+          return (tree.stopped === true) ? doStopLoop(actNode) : doSearchLoop(actNode);
+        }
+
+      }, 1000 / tree.speed * 5);
+    }
 }
 
 Patricia.prototype.remove = function() {
