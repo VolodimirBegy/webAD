@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
 function PatriciaNode(value, parent, isWord, children) {
 
   this.value = value || '';
@@ -266,31 +267,11 @@ Patricia.prototype.findWords = function(tree) {
   tree = tree || this;
 
   return tree.root.findWords();
-  /*var words = [];
-
-  function recursiveTraversal(node, word) {
-
-    word += node.value;
-
-    if (node.isWord) {
-      words.push(word);
-    }
-
-    for (var j = 0, len = node.children.length; j < len; j++) {
-      recursiveTraversal(node.children[j], word);
-    }
-  }
-
-  if (tree.root.children.length)
-    recursiveTraversal(tree.root, '');
-
-  return words;*/
 };
 
 Patricia.prototype.copy = function() {
   var newTree = new Patricia();
 
-  //var words = this.findWords();
   var words = this.root.findWords();
   for (var j = 0; j < words.length; j++) {
     newTree.addFixed(words[j]);
@@ -542,6 +523,7 @@ Patricia.prototype.add = function(word) {
       //Case 4 - Common Prefix: the words share a common prefix
       //Example: "testcase" <- "testing"
       else if (actNode.value.length > pos && word.length) {
+
         var node = new PatriciaNode(actNode.value.substring(0, pos), actNode.parent, false, [actNode]);
 
         var childIndex = Patricia._getChildInParentIndex(actNode);
@@ -798,6 +780,9 @@ Patricia.prototype.remove = function(word) {
         }
 
       Patricia._finishAnimation(actNode, true);
+    }
+    else{
+      alert("The word \"" + word + "\" could not be found!");
     }
   });
 };

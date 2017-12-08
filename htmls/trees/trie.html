@@ -20,6 +20,9 @@
 
   <script src="../../libs/views/trees/patricia.js"></script>
   <script src="../../libs/models/trees/patricia.js"></script>
+
+  <script src="../../libs/views/trees/briandais.js"></script>
+  <script src="../../libs/models/trees/briandais.js"></script>
 </head>
 
 <script>
@@ -67,8 +70,8 @@ function newTreeByType(type){
         switch (type) {
           case 'patricia':
             return new Patricia();
-            /*case 'briandais':
-              return new Briandais();*/
+            case 'briandais':
+              return new Briandais();
           default:
             return new Trie();
         }
@@ -80,7 +83,9 @@ function newTreeByType(type){
 
       var type = $(this).val();
       var tempDB = tree.db;
+      var tempSpeed = tree.speed;
       var tempActStateID = tree.actStateID;
+      var tempScale = tree.view.scale;
       tree = newTreeByType(type);
 
       //Replicate DB for new trie type
@@ -94,6 +99,8 @@ function newTreeByType(type){
       }
 
       tree.actStateID = tempActStateID;
+      tree.speed = tempSpeed;
+      tree.view.scale = tempScale;
       tree.replaceThis(tree.db[tempActStateID]);
       tree.view.initStage($('#container1')[0]);
       tree.draw();
@@ -103,6 +110,7 @@ function newTreeByType(type){
 
 
   function clearTimes() {
+
 
     var pids = window.setTimeout(function() {}, 0);
 
@@ -141,8 +149,6 @@ function newTreeByType(type){
       }
     } while (!finished);
   }
-
-  // button functions
 
   // function new() is predefined, "new" can not be used as name
   function newTree() {
@@ -298,7 +304,6 @@ function newTreeByType(type){
     	}while(cont)
 
       animateStopButton()
-
       tree.search(word);
     }
   }
@@ -325,8 +330,7 @@ function newTreeByType(type){
       }while(cont)
 
       animateStopButton();
-
-      console.log(tree.search2(prefix));
+      tree.search2(prefix);
     }
   }
 
@@ -447,7 +451,6 @@ function newTreeByType(type){
       if (tree.running === true && tree.speed != 0) {
         var elem = $("#p");
         if (elem.hasClass("p1")) {
-          //clearTimes();
           elem.removeClass("p1");
           tree.stopped = true;
         } else {
@@ -531,7 +534,7 @@ function newTreeByType(type){
       <div class="sub-menu">
         <input type="radio" name="type" id="radio_trie" value="trie" checked="checked"><label for="radio_trie">Trie</label><br>
         <input type="radio" name="type" id="radio_patricia" value="patricia"><label for="radio_patricia">PATRICIA</label><br>
-        <!--<input type="radio" name="type" id="radio_briandais" value="briandais"><label for="radio_briandais">De la Briandais</label>-->
+        <input type="radio" name="type" id="radio_briandais" value="briandais"><label for="radio_briandais">De la Briandais</label>
       </div>
     </div>
 
@@ -565,7 +568,7 @@ function newTreeByType(type){
       of the string associated with that node, and the root is associated with the empty string. Values are not necessarily associated with every node. Rather, values tend only to be associated with leaves, and with some inner nodes that correspond to
       keys of interest." [30]
       <br /><br />
-      <img src="../../images/trie.gif" />
+      <!--<img src="../../images/trie.gif" />-->
       <br /><br />
       <div>[30]:<a href="https://en.wikipedia.org/wiki/Trie" target="_blank">https://en.wikipedia.org/wiki/Trie</a></div>
       <br />
