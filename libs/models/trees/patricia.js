@@ -208,9 +208,9 @@ function Patricia() {
   this.root = new PatriciaNode();
 
   this.speed = 5;
-  this.color1 = "#B0D6DD";
-  this.color2 = "#75ADCC";
-  this.color3 = "#FF7F50";
+
+  trieUtils.setDefaultColors(this);
+
   this.running = false;
   this.stopped = false;
   this.continueAnimation = false;
@@ -257,11 +257,6 @@ Patricia._checkMatchingPrefix = function(node, word) {
   return pos;
 };
 
-Patricia.prototype.init = function(id) {
-  this.view.initStage($('#' + id)[0]);
-  this.saveInDB();
-};
-
 Patricia.prototype.findWords = function(tree) {
 
   tree = tree || this;
@@ -270,27 +265,11 @@ Patricia.prototype.findWords = function(tree) {
 };
 
 Patricia.prototype.copy = function() {
-  var newTree = new Patricia();
-
-  var words = this.root.findWords();
-  for (var j = 0; j < words.length; j++) {
-    newTree.addFixed(words[j]);
-  }
-  return newTree;
+  return trieUtils.copy(new Patricia());
 };
 
 Patricia.prototype.saveInDB = function() {
-
-  var count = this.db.length - 1;
-  if (count != this.actStateID) {
-    this.db.splice(this.actStateID + 1, count - this.actStateID);
-  }
-
-  var nextID = this.db.length;
-
-  var new_state = this.copy();
-  this.db.push(new_state);
-  this.actStateID = nextID;
+  trieUtils.saveInDB();
 };
 
 Patricia.prototype.replaceThis = function(toCopy) {
@@ -304,105 +283,9 @@ Patricia.prototype.replaceThis = function(toCopy) {
   }
 };
 
-Patricia.prototype.prev = function() {
-  if (this.actStateID > 0) {
-    var prev_id = this.actStateID - 1;
-    this.actStateID = prev_id;
-
-    //make actual node to THIS:
-    this.replaceThis(this.db[prev_id]);
-    this.draw();
-  }
-};
-
-Patricia.prototype.next = function() {
-  if (this.actStateID < this.db.length - 1) {
-    var next_id = this.actStateID + 1;
-    this.actStateID = next_id;
-    //make actual node to THIS:
-    this.replaceThis(this.db[next_id]);
-    this.draw();
-  }
-};
-
-Patricia.prototype.firstState = function() {
-  this.actStateID = 0;
-  //make actual node to THIS:
-  this.replaceThis(this.db[0]);
-  this.draw();
-};
-
-Patricia.prototype.lastState = function() {
-  var last_id = this.db.length - 1;
-  this.actStateID = last_id;
-  //make actual node to THIS:
-  this.replaceThis(this.db[last_id]);
-  this.draw();
-};
-
-Patricia.prototype.example = function() {
-
-  var words = ["cat", "car", "cone", "core"];
-
-  for (var i = 0; i < words.length; i++) {
-    this.addFixed(words[i]);
-  }
-  this.saveInDB();
-  this.draw();
-};
 
 Patricia.prototype.random = function() {
-
-  var randomWords = [];
-
-  // pick random number of words from 3 to 6
-  do {
-    var randomWordsToPick = Math.floor((Math.random() * 10)) % 7;
-  } while (randomWordsToPick < 3)
-
-  this.root = new PatriciaNode();
-
-  var wordList = ["add", "age", "and", "ant", "any", "are", "art", "at", "axe",
-    "bag", "back", "bat", "bare", "bee", "bell", "bear", "bird", "bit", "blur", "bold", "bone", "boy", "bowl", "box", "byte",
-    "cake", "car", "card", "care", "carp", "cat", "cone", "cop", "core", "cozy", "cube",
-    "dig", "dim", "dip", "dirt", "do", "dock", "doll", "done", "door", "dove", "dry", "dull",
-    "ever", "egg", "envy", "end", "else",
-    "fast", "find", "fire", "fish", "fit", "flip", "fly", "fond", "four", "five",
-    "gift", "god", "gold", "gone", "good", "grid",
-    "hair", "hand", "hang", "hat", "have", "hear", "heat", "horn", "hot", "hold",
-    "life", "lit", "log", "long", "loop", "lost", "lot", "love", "low", "luck",
-    "nine", "net", "near", "neat", "new", "no", "node", "nope",
-    "off", "old", "on", "or", "over",
-    "pad", "pair", "pan", "park", "paw", "pile", "pink", "pot",
-    "roar", "rose", "rant", "red", "risk", "root", "rob",
-    "sail", "shop", "ship", "silk", "sin", "sick", "sled", "slow", "snow", "sock", "soap", "song",
-    "tail", "tale", "tall", "tell", "tea", "ten", "tent", "thin", "toy", "tone", "tree", "tuna", "two",
-    "warm", "wear", "weed", "wild", "win", "wing", "wind", "wise", "wig", "worn",
-
-    "angry", "bored", "cargo", "light", "thing", "three"
-  ];
-
-  var wordListsize = wordList.length;
-  //alert("wordListsize: "+wordListsize);
-
-  for (var i = 0; i < randomWordsToPick; i++) {
-    // generate number from 0 to 999
-    var randomNumber = Math.floor((Math.random() * 1000));
-    // get word at randomNumber not bigger than wordListSize
-    var word = wordList[randomNumber % wordListsize];
-    // add word if not already in array
-    if (randomWords.indexOf(word) === -1)
-      randomWords.push(word);
-    else
-      i--; //choose another word
-  }
-
-  for (var i = 0; i < randomWordsToPick; i++) {
-    this.addFixed(randomWords[i]);
-  }
-
-  this.saveInDB();
-  this.draw();
+  trieUtils.random(new PatriciaNode());
 };
 
 Patricia.prototype.addFixed = function(word) {
@@ -423,20 +306,11 @@ Patricia.prototype.removeWord = function(word) {
 
 
 Patricia.prototype.newTree = function() {
-  this.root = new PatriciaNode();
-  this.saveInDB();
-  this.draw();
+  trieUtils.newTree(new PatriciaNode());
 };
 
 Patricia.prototype.create = function(words) {
-
-  this.root = new PatriciaNode();
-
-  for (var i = 0; i < words.length; i++) {
-    this.addFixed(words[i]);
-  }
-  this.saveInDB();
-  this.draw();
+  trieUtils.create(new PatriciaNode(), words);
 };
 
 Patricia._finishAnimation = function(actNode, saveInDB){

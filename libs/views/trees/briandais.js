@@ -19,12 +19,23 @@ function BriandaisView(_model) {
   this.rectLength = 30 * this.scale;
 }
 
+BriandaisView.prototype.setDimensions = function(){
+  var container = $(this.stage.attrs.container);
+  this.stage.setWidth(container.prop("scrollWidth") - 10);
+  this.stage.setHeight(container.prop("scrollHeight") - 50);
+};
+
 BriandaisView.prototype.initStage = function(cont) {
   this.stage = new Kinetic.Stage({
     container: cont,
-    draggable: true,
-    width: 0,
-    height: 0
+    draggable: true
+  });
+
+  this.setDimensions();
+
+  var _this = this;
+  $(window).resize(function() {
+    _this.setDimensions();
   });
 };
 
@@ -116,6 +127,8 @@ BriandaisView.prototype.draw = function() {
   // calculate x and y position of every node
   function recursiveTraversalPosition(node, childShift, rectLength) {
 
+    tmpNodes.push(node); //Remove this after discussd with professor if exact width and height calculation is necessary
+
     //Only root node is supposed to have no parent
     if (!node.parent) {
       node.xPosition = rectLength;
@@ -145,7 +158,7 @@ BriandaisView.prototype.draw = function() {
     return shift;
   }
 
-  if (this.model.root)
+  /*if (this.model.root)
     recursiveTraversalLevel(this.model.root, 0);
 
   // calculate width
@@ -169,8 +182,8 @@ BriandaisView.prototype.draw = function() {
     w = 1000;
   }
 
-  this.stage.setHeight(h);
-  this.stage.setWidth(w);
+  this.stage.setHeight();
+  this.stage.setWidth($('#container1').prop("scrollWidth"));*/
   this.stage.removeChildren();
 
   var layer = new Kinetic.Layer();

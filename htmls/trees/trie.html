@@ -15,6 +15,8 @@
 
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
+  <script src="../../libs/models/trees/trieUtils.js"></script>
+
   <script src="../../libs/views/trees/trie.js"></script>
   <script src="../../libs/models/trees/trie.js"></script>
 
@@ -29,7 +31,6 @@
   var tree = undefined;
   var type = 'trie';
 
-
   function getUrlParameter(key) {
     var params = window.location.search.substr(1).split('&');
 
@@ -42,42 +43,30 @@
     return false;
   }
 
-  /*function init() {
-    tree = new Trie();
-    tree.init;
-    tree.view.initStage($('#container1')[0]);
-    resetFields();
-  }
-
-  function example() {
-    tree.example();
-  }*/
-
   function init() {
     var type = getUrlParameter('type')
     tree = newTreeByType(type);
     //Preselect Radio Buttons
-    $('input[name=type]').filter('[value='+ type + ']').attr('checked', true);
-    tree.init('container1');
+    $('input[name=type]').filter('[value=' + type + ']').attr('checked', true);
+    trieUtils.init('container1');
     resetFields();
+        trieUtils.example();
   }
 
-  function example() {
-    tree.example();
-  }
 
-function newTreeByType(type){
-        switch (type) {
-          case 'patricia':
-            return new Patricia();
-            case 'briandais':
-              return new Briandais();
-          default:
-            return new Trie();
-        }
-}
+  function newTreeByType(type) {
+    switch (type) {
+      case 'patricia':
+        return new Patricia();
+      case 'briandais':
+        return new Briandais();
+      default:
+        return new Trie();
+    }
+  }
 
   $(document).ready(function() {
+
     //Rebuild current trie type as newly selected trie type
     $('input[name=type]').on('change', function() {
 
@@ -86,18 +75,23 @@ function newTreeByType(type){
       var tempSpeed = tree.speed;
       var tempActStateID = tree.actStateID;
       var tempScale = tree.view.scale;
+
       tree = newTreeByType(type);
 
       //Replicate DB for new trie type
-      for(var x  = 0, len = tempDB.length; x < len; ++x){
-       var tempWords = tempDB[x].findWords();
-       var tempTree = newTreeByType(type);
-       for(var i = 0, wordLength = tempWords.length; i < wordLength; ++i){
-         tempTree.addFixed(tempWords[i]);
-       }
-       tree.db.push(tempTree);
+      for (var x = 0, len = tempDB.length; x < len; ++x) {
+        var tempWords = tempDB[x].findWords();
+        var tempTree = newTreeByType(type);
+        for (var i = 0, wordLength = tempWords.length; i < wordLength; ++i) {
+          tempTree.addFixed(tempWords[i]);
+        }
+        tree.db.push(tempTree);
       }
 
+      //Set trie colors according to currents color selection
+      $('input.color[type=color]').each(function(){
+    		tree[$(this).attr('data-ref')] = $(this).val();
+    	})
       tree.actStateID = tempActStateID;
       tree.speed = tempSpeed;
       tree.view.scale = tempScale;
@@ -106,11 +100,38 @@ function newTreeByType(type){
       tree.draw();
 
     })
+
+    //Listen to change of color input
+    $('input.color[type=color]').on('input', function() {
+      if (tree.root) {
+        var input = $(this);
+        tree[input.attr('data-ref')] = input.val();
+        tree.draw();
+      } else {
+        alert("No tree created!");
+        resetFields();
+      }
+    })
+
+    //Listen to reset color button click
+    $('input.color-reset').on('click', function() {
+      if (tree.root) {
+        //change color to default color defined in data-ref attribute of color input element
+        var input = $(this);
+        var ref = input.attr('data-ref');
+        var colorInput = $('input.color[type=color][data-ref=' + ref + ']');
+        tree[ref] = colorInput.attr('data-default');
+        tree.draw();
+        resetFields();
+      } else {
+        alert("No tree created!");
+        resetFields();
+      }
+    })
   })
 
 
   function clearTimes() {
-
 
     var pids = window.setTimeout(function() {}, 0);
 
@@ -209,199 +230,87 @@ function newTreeByType(type){
     }
   }
 
-  function animateStopButton(){
+  function animateStopButton() {
 
     var stopBtn = $("#p").addClass("p1");
 
     function doLoop(btn) {
       setTimeout(function() {
-        (tree.running === true) ? doLoop(btn) : btn.removeClass("p1");
+        (tree.running === true) ? doLoop(btn): btn.removeClass("p1");
       }, 100)
     }
 
     doLoop(stopBtn);
   }
 
+  function inputWord(question) {
+    var cont, word;
+    do {
+      cont = false;
+      word = (prompt(question));
+      if (word === null) {
+        tree.running = false;
+        tree.stopped = false;
+        return;
+      }
+
+      word = word.toLowerCase();
+
+      if (!/^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)) {
+        alert("Value not allowed. Please type in a word that contains only letters.");
+        cont = true;
+      }
+    } while (cont)
+
+    return word;
+  }
 
   function add() {
     if (tree.running === false) {
       clearTimes();
-
-      var cont, word;
-      do {
-        cont = false;
-        word = (prompt("Add word (upper case letters are ignored):"));
-        if (word === null) {
-          tree.running = false;
-          tree.stopped = false;
-          return;
-        }
-
-        word = word.toLowerCase();
-
-        if (!/^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)) {
-          alert("Value not allowed. Please type in a word that contains only letters.");
-          cont = true;
-        }
-      } while (cont)
-
-      animateStopButton();
-
-      tree.add(word);
+      var word = inputWord("Add word (upper case letters are ignored):");
+      if (word) {
+        animateStopButton();
+        tree.add(word);
+      }
     }
   }
 
   // function remove() is predefined, "remove" can not be used as name
   function removeWord() {
     if (tree.running === false) {
-
       clearTimes();
-
-      var cont, word;
-      do {
-        cont = false;
-        word = (prompt("Search for word (upper case letters are ignored):"));
-        if (word === null) {
-          tree.running = false;
-          tree.stopped = false;
-          return;
-        }
-
-        word = word.toLowerCase();
-
-        if (!/^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)) {
-          alert("Value not allowed. Please type in a word that contains only letters.");
-          cont = true;
-        }
-      } while (cont)
-
-      animateStopButton();
-
-      tree.remove(word);
+      var word = inputWord("Remove word (upper case letters are ignored):");
+      if (word) {
+        animateStopButton();
+        tree.remove(word);
+      }
     }
   }
 
   function search() {
     if (tree.running === false) {
       clearTimes();
-
-      var cont, word;
-    	do{
-    		cont = false;
-    		word = (prompt("Search for word (upper case letters are ignored):"));
-    		if(word===null){
-    			tree.running = false;
-    			tree.stopped = false;
-    			return;
-    		}
-
-    		word = word.toLowerCase();
-
-    		if(! /^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(word)){
-    			alert("Value not allowed. Please type in a word that contains only letters.");
-    			cont = true;
-    		}
-    	}while(cont)
-
-      animateStopButton()
-      tree.search(word);
+      var word = inputWord("Search for word (upper case letters are ignored):");
+      if (word) {
+        animateStopButton();
+        tree.search(word);
+      }
     }
   }
 
   function search2() {
     if (tree.running === false) {
       clearTimes();
-
-      var cont, prefix;
-      do{
-        cont = false;
-        prefix = (prompt("Search for prefix (upper case letters are ignored):"));
-        if(prefix===null){
-          tree.running=false;
-          return;
-        }
-
-        prefix = prefix.toLowerCase();
-
-        if(! /^[a-z\u00e4\u00f6\u00fc\u00df]+$/.test(prefix)){
-          alert("Value not allowed. Please type in a prefix that contains only letters.");
-          cont = true;
-        }
-      }while(cont)
-
-      animateStopButton();
-      tree.search2(prefix);
+      var prefix = inputWord("Search for prefix (upper case letters are ignored):");
+      if (prefix) {
+        animateStopButton();
+        tree.search2(prefix);
+      }
     }
   }
 
   // config functions
-
-  function col1() {
-    if (tree.root != undefined) {
-      var col1 = $("#col1");
-      tree.color1 = col1.val();
-      tree.draw();
-    } else {
-      alert("No tree created!");
-      resetFields();
-    }
-  }
-
-  function col2() {
-    if (tree.root != undefined) {
-      var col2 = $("#col2");
-      tree.color2 = col2.val();
-      tree.draw();
-    } else {
-      alert("No tree created!");
-      resetFields();
-    }
-  }
-
-  function col3() {
-    if (tree.root != undefined) {
-      var col3 = $("#col3");
-      tree.color3 = col3.val();
-      tree.draw();
-    } else {
-      alert("No tree created!");
-      resetFields();
-    }
-  }
-
-  function resetc1() {
-    if (tree.root != undefined) {
-      tree.color1 = "#B0D6DD"; //#ADEF9F
-      tree.draw();
-      resetFields();
-    } else {
-      alert("No tree created!");
-      resetFields();
-    }
-  }
-
-  function resetc2() {
-    if (tree.root != undefined) {
-      tree.color2 = "#75ADCC"; //#ADFF2F
-      tree.draw();
-      resetFields();
-    } else {
-      alert("No tree created!");
-      resetFields();
-    }
-  }
-
-  function resetc3() {
-    if (tree.root != undefined) {
-      tree.color3 = "#FF7F50";;
-      tree.draw();
-      resetFields();
-    } else {
-      alert("No tree created!");
-      resetFields();
-    }
-  }
-
   function speed() {
     if (tree.root != undefined) {
       var sp = $("#speed");
@@ -422,26 +331,27 @@ function newTreeByType(type){
   }
 
   function resetFields() {
-    $("#col1").val(tree.color1);
-    $("#col2").val(tree.color2);
-    $("#col3").val(tree.color3);
+    $('input.color[type=color]').each(function(){
+      var input = $(this);
+      input.val(tree[input.attr('data-ref')]);
+    })
 
-    var sp = $("#speed");
-    sp.val(tree.speed);
+    $("#speed").val(tree.speed);
   }
 
   // tape recorder functions
   function first() {
     if (tree.running === false) {
       clearTimes();
-      tree.firstState();
+      trieUtils.firstState();
+      resetFields();
     }
   }
 
   function prev() {
     if (tree.running === false) {
       clearTimes();
-      tree.prev();
+      trieUtils.prev();
       resetFields();
     }
   }
@@ -477,10 +387,9 @@ function newTreeByType(type){
   function next() {
     if (tree.running === false) {
       clearTimes();
-      tree.next();
+      trieUtils.next();
       resetFields();
-    } else if (tree.speed === 0) // running and manual speed
-    {
+    } else if (tree.speed === 0) { // running and manual speed
       tree.continueAnimation = true;
     }
   }
@@ -488,7 +397,7 @@ function newTreeByType(type){
   function last() {
     if (tree.running === false) {
       clearTimes();
-      tree.lastState();
+      trieUtils.lastState();
       resetFields();
     }
   }
@@ -503,7 +412,7 @@ function newTreeByType(type){
 </script>
 
 
-<body id="body" class="page" onload="init();example();return false;">
+<body id="body" class="page" onload="init();return false;">
   <header id="header">
     <ul>
       <li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
@@ -584,16 +493,16 @@ function newTreeByType(type){
       <div id="alertbox" style="visibility:hidden; float: left; position: relative; margin-left:1em; background-color: #FF5555; color: white;">Allowed values from 0 to 10.</div>
       <br /><br />
       <div style="float: left; clear: left; width: 10.5em;">Start & End Node Color:</div>
-      <input type="color" name="col1" id="col1" onchange="col1();return false;">
-      <input type="button" value="Reset color" id="rc1" onclick="resetc1();return false;">
+      <input type="color" class="color" name="col1" id="col1" data-default="#ADFF2F" data-ref="color1">
+      <input type="button" class="color-reset" value="Reset color" id="rc1" data-ref="color1">
       <br />
       <div style="float: left; clear: left; width: 10.5em;">Normal Node Color:</div>
-      <input type="color" name="col2" id="col2" onchange="col2();return false;">
-      <input type="button" value="Reset color" id="rc2" onclick="resetc2();return false;">
+      <input type="color" class="color" name="col2" id="col2" data-default="#75ADCC" data-ref="color2">
+      <input type="button" class="color-reset" value="Reset color" id="rc2" data-ref="color2">
       <br />
       <div style="float: left; clear: left; width: 10.5em;">Highlighting Color:</div>
-      <input type="color" name="col3" id="col3" onchange="col3();return false;">
-      <input type="button" value="Reset color" id="rc3" onclick="resetc3();return false;">
+      <input type="color" class="color" name="col3" id="col3" data-default="#FF7F50" data-ref="color3">
+      <input type="button" class="color-reset" value="Reset color" id="rc3" data-ref="color3">
       <br /><br /> During animation no other function can be started until animation has ended. Set animation speed to 10 to make animation end the fastest.<br /><br /> Animation can be stopped at any time using the pause button in automatic mode. The
       pause button will turn into a play button. Resume by pressing the play button.<br /><br /> For manual mode set animation speed to 0. In manual mode click forward to coninue animation for one step. Click forward until animation ends or set animation
       speed back to automatic mode (speed from 1 to 10) and let it end automatically.

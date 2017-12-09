@@ -32,17 +32,12 @@ function Trie(){
 	this.root=node;
 
 	this.speed = 5;
-	this.color1 = "#B0D6DD";
-	this.color2 = "#75ADCC";
-	this.color3 = "#FF7F50";
+
+	trieUtils.setDefaultColors(this);
+
 	this.running = false;
 	this.stopped = false;
 	this.continueAnimation = false;
-}
-
-Trie.prototype.init=function(id){
-	this.view.initStage($('#' + id)[0]);
-	this.saveInDB();
 }
 
 Trie.prototype.findWords=function(tree){
@@ -71,34 +66,17 @@ Trie.prototype.findWords=function(tree){
 		recursiveTraversal(tree.root, word);
 
 	return words;
-}
+};
 
 Trie.prototype.copy=function(){
-	var newTree=new Trie();
+	return trieUtils.copy(new Trie());
+};
 
-	var words = this.findWords(tree);
-	for(var j=0;j<words.length;j++){
+Trie.prototype.saveInDB = function(){
+	trieUtils.saveInDB();
+};
 
-		newTree.addFixed(words[j]);
-	}
-	return newTree;
-}
-
-Trie.prototype.saveInDB=function(){
-
-	var count=this.db.length-1;
- 	if(count!=this.actStateID){
- 		this.db.splice(this.actStateID+1,count-this.actStateID);
- 	}
-
-	var nextID=this.db.length;
-
-	var new_state = this.copy();
-	this.db.push(new_state);
-	this.actStateID=nextID;
-}
-
-Trie.prototype.replaceThis=function(toCopy){
+Trie.prototype.replaceThis = function(toCopy){
 
 	var words = this.findWords(toCopy);
 
@@ -111,131 +89,13 @@ Trie.prototype.replaceThis=function(toCopy){
 
 		this.addFixed(words[j]);
 	}
+};
 
-
-	/*function recursivePreorderTraversal(tree, node){
-		if(node===undefined)
-			return;
-
-		tree.addFixed(node.value); // !!!!
-
-		if(node.children!=undefined)
-			for(var i=0;i<node.children.length;i++)
-				recursivePreorderTraversal(tree, node.children[i]);
-	}
-		recursivePreorderTraversal(this, toCopy.root);
-	*/
-
-}
-
-Trie.prototype.prev=function(){
-	if(this.actStateID>0){
-		var prev_id=this.actStateID-1;
-		this.actStateID=prev_id;
-		var rs=this.db[prev_id];
-		//make actual node to THIS:
-      	this.replaceThis(rs);
-      	this.draw();
-	}
-}
-
-Trie.prototype.next=function(){
-	if(this.actStateID<this.db.length-1){
-		var next_id=this.actStateID+1;
-		this.actStateID=next_id;
-		var rs=this.db[next_id];
-		//make actual node to THIS:
-      	this.replaceThis(rs);
-      	this.draw();
-	}
-}
-
-Trie.prototype.firstState=function(){
-	this.actStateID=0;
-	var rs=this.db[0];
-	//make actual node to THIS:
-    this.replaceThis(rs);
-    this.draw();
-}
-
-Trie.prototype.lastState=function(){
-	var last_id=this.db.length-1;
-	this.actStateID=last_id;
-	var rs=this.db[last_id];
-	//make actual node to THIS:
-     this.replaceThis(rs);
-     this.draw();
-}
-
-Trie.prototype.example=function(){
-
-	var words=["cat", "car", "cone", "core"];
-
-	for(var i=0;i<words.length;i++){
-		this.addFixed(words[i]);
-	}
-	this.saveInDB();
-	this.draw();
-}
-
-Trie.prototype.random=function(){
-
-	var randomWords =[];
-
-	// pick random number of words from 3 to 6
-	do{
-		var randomWordsToPick = Math.floor((Math.random() * 10)) % 7;
-	}while(randomWordsToPick<3)
-
-	this.root = undefined;
+Trie.prototype.random = function(){
 	var node = new Node();
 	node.value = "0";
-	this.root = node;
-
-	var wordList = [ "add",  "age",  "and",  "ant",  "any",  "are",  "art",   "at",  "axe",
-					 "bag", "back",  "bat", "bare",  "bee", "bell", "bear", "bird",  "bit", "blur", "bold", "bone",  "boy", "bowl",  "box", "byte",
-					"cake",  "car", "card", "care", "carp",  "cat", "cone",  "cop", "core", "cozy", "cube",
-					 "dig",  "dim",  "dip", "dirt",   "do", "dock", "doll", "done", "door", "dove",  "dry", "dull",
-					"ever",  "egg", "envy",  "end", "else",
-					"fast", "find", "fire", "fish",  "fit", "flip",  "fly", "fond", "four", "five",
-					"gift",  "god", "gold", "gone", "good", "grid",
-					"hair", "hand", "hang",  "hat", "have", "hear", "heat", "horn",  "hot", "hold",
-					"life",  "lit",  "log", "long", "loop", "lost",  "lot", "love",  "low", "luck",
-					"nine",  "net", "near", "neat",  "new",   "no", "node", "nope",
-					 "off",  "old",   "on",   "or", "over",
-					 "pad", "pair",  "pan", "park",  "paw", "pile", "pink",  "pot",
-					"roar", "rose", "rant",  "red", "risk", "root",  "rob",
-					"sail", "shop", "ship", "silk",  "sin", "sick", "sled", "slow", "snow", "sock", "soap", "song",
-					"tail", "tale", "tall", "tell",  "tea",  "ten", "tent", "thin",  "toy", "tone", "tree", "tuna",  "two",
-					"warm", "wear", "weed", "wild",  "win", "wing", "wind", "wise",  "wig", "worn",
-
-					"angry", "bored", "cargo", "light", "thing", "three"
-					];
-
-	var wordListsize = wordList.length;
-	//alert("wordListsize: "+wordListsize);
-
-	for(var i=0;i<randomWordsToPick;i++){
-		// generate number from 0 to 999
-		var randomNumber = Math.floor((Math.random() * 1000));
-		// get word at randomNumber not bigger than wordListSize
-		var word = wordList[randomNumber % wordListsize];
-		// add word if not already in array
-		if(randomWords.indexOf(word) === -1)
-			randomWords.push(word);
-		else
-			i--; //choose another word
-	}
-
-	//randomWords = ["off","bag","bat","cat"];
-
-	for(var i=0;i<randomWordsToPick;i++){
-		this.addFixed(randomWords[i]);
-	}
-
-	this.saveInDB();
-	this.draw();
-}
+	trieUtils.random(node);
+};
 
 Trie.prototype.addFixed=function(word) {
 	/* word is a character array (e.g. "cat") */
@@ -287,33 +147,19 @@ Trie.prototype.addFixed=function(word) {
 			}
 		}
 	}
-}
+};
 
 Trie.prototype.newTree=function() {
-
-	this.root = undefined;
 	var node = new Node();
 	node.value = "0";
-	this.root = node;
-
-	this.saveInDB();
-	this.draw();
-}
+	trieUtils.newTree(node)
+};
 
 Trie.prototype.create=function(words) {
-
-	this.root = undefined;
 	var node = new Node();
 	node.value = "0";
-	this.root = node;
-
-	for(var i=0;i<words.length;i++){
-		this.addFixed(words[i]);
-	}
-	this.saveInDB();
-	this.draw();
-
-}
+	trieUtils.create(node, words);
+};
 
 Trie.prototype.add=function(word) {
 
@@ -456,7 +302,7 @@ Trie.prototype.add=function(word) {
 
 		},1000/tree.speed*5)
 	}
-}
+};
 
 Trie.prototype.search=function(word) { /* word search */
 
@@ -589,7 +435,7 @@ Trie.prototype.search=function(word) { /* word search */
 
 		},1000/tree.speed*5)
 	}
-}
+};
 
 Trie.prototype.search2=function(prefix) { /* prefix search */
 
@@ -786,8 +632,7 @@ Trie.prototype.search2=function(prefix) { /* prefix search */
 
 		},1000/tree.speed*5)
 	}
-
-}
+};
 
 Trie.prototype.remove=function(word) {
 
@@ -1040,8 +885,8 @@ Trie.prototype.remove=function(word) {
 		},1000/tree.speed*5)
 	}
 
-}
+};
 
 Trie.prototype.draw=function(){
 	this.view.draw();
-}
+};

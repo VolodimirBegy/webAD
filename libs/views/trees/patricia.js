@@ -18,12 +18,23 @@ function PatriciaView(_model) {
   this.scale = 1;
 }
 
+PatriciaView.prototype.setDimensions = function(){
+  var container = $(this.stage.attrs.container);
+  this.stage.setWidth(container.prop("scrollWidth") - 10);
+  this.stage.setHeight(container.prop("scrollHeight") - 50);
+};
+
 PatriciaView.prototype.initStage = function(cont) {
   this.stage = new Kinetic.Stage({
     container: cont,
-    draggable: true,
-    width: 0,
-    height: 0
+    draggable: true
+  });
+
+  this.setDimensions();
+
+  var _this = this;
+  $(window).resize(function() {
+    _this.setDimensions();
   });
 };
 
@@ -42,7 +53,7 @@ PatriciaView.prototype.draw = function() {
   // fill tmpNodes, calculate maxlevel and nodes per level (npl)
   var tmpNodes = [];
   var npl = [];
-  var yRadius = 20 * this.scale;
+  var _radius = 20 * this.scale;
   var fontWidth = 5 * this.scale;
   var maxlevel = 0;
   var ends = 0;
@@ -75,13 +86,15 @@ PatriciaView.prototype.draw = function() {
   // calculate x and y position of every node
   function recursiveTraversalPosition(node, childShift) {
 
+    tmpNodes.push(node); //Remove this after discussd with professor if exact width and height calculation is necessary
+
     //Only root node is supposed to have no parent
     if (!node.parent) {
-      node.xPosition = yRadius * 3;
-      node.yPosition = yRadius * 3;
+      node.xPosition = _radius * 3;
+      node.yPosition = _radius * 3;
     } else {
       node.xPosition = node.parent.xPosition;
-      node.yPosition = node.parent.yPosition + yRadius * 3;
+      node.yPosition = node.parent.yPosition + _radius * 3;
     }
 
     node.xPosition += childShift;
@@ -93,10 +106,10 @@ PatriciaView.prototype.draw = function() {
         //Shift according to text width and presceding child text width
         /*var tempShift = fontWidth * node.children[i].value.length;
         tempShift += fontWidth * node.children[i - 1].value.length;
-        tempShift = (tempShift < yRadius) ? yRadius : tempShift;
+        tempShift = (tempShift < _radius) ? _radius : tempShift;
         shift += tempShift;*/
 
-        shift += fontWidth * node.children[i].value.length + (yRadius * 2);
+        shift += fontWidth * node.children[i].value.length + (_radius * 2);
 
           //shift += rectLength * Object.keys(node.chars).length / 2;
       }
@@ -107,7 +120,7 @@ PatriciaView.prototype.draw = function() {
     return shift;
   }
 
-  if (this.model.root)
+  /*if (this.model.root)
     recursiveTraversalLevel(this.model.root, 0);
 
   // calculate width
@@ -119,10 +132,10 @@ PatriciaView.prototype.draw = function() {
   }
 
   // define vals for drawing
-  var w = (yRadius * 3 + yRadius * 4 * ends) * this.scale;
+  var w = (_radius * 3 + _radius * 4 * ends) * this.scale;
   var h = 500;
   if (maxlevel > 7){
-    h = 300 + (maxlevel - 4) * 3 * yRadius;
+    h = 300 + (maxlevel - 4) * 3 * _radius;
   }
   if (this.scale > 1.1){
     h *= this.scale;
@@ -132,7 +145,8 @@ PatriciaView.prototype.draw = function() {
   }
 
   this.stage.setHeight(h);
-  this.stage.setWidth(w);
+  this.stage.setWidth(w);*/
+
   this.stage.removeChildren();
 
   var layer = new Kinetic.Layer();
@@ -165,8 +179,8 @@ PatriciaView.prototype.draw = function() {
         x: tmpNodes[i].xPosition,
         y: tmpNodes[i].yPosition,
         radius: {
-          x:(tmpNodes[i].value.length * fontWidth < yRadius) ? yRadius : (fontWidth * tmpNodes[i].value.length),
-          y:yRadius
+          x:(tmpNodes[i].value.length * fontWidth < _radius) ? _radius : (fontWidth * tmpNodes[i].value.length),
+          y:_radius
         },
         fill: tmpNodes[i].color,
         strokeWidth: 4 * this.scale,
@@ -193,9 +207,9 @@ PatriciaView.prototype.draw = function() {
       // draw line (if node not root)
       if (tmpNodes[i].parent) {
         var line = new Kinetic.Line({
-          points: [circle.getX(), circle.getY() - yRadius, tmpNodes[i].parent.xPosition, tmpNodes[i].parent.yPosition + yRadius],
+          points: [circle.getX(), circle.getY() - _radius, tmpNodes[i].parent.xPosition, tmpNodes[i].parent.yPosition + _radius],
           stroke: "blue",
-          strokeWidth: (0.1 * yRadius),
+          strokeWidth: (0.1 * _radius),
           lineJoin: 'round',
         });
         layer.add(line);
