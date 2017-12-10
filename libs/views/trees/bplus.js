@@ -1,24 +1,8 @@
-/*
- Software License Agreement (BSD License)
- http://wwwlab.cs.univie.ac.at/~a1100570/webAD/
- Copyright (c), Volodimir Begy
- All rights reserved.
 
 
- Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following condition is met:
-
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-function BPlusTreeView(_model){
-	this.model=_model;
+function BPlusTreeView(mod, cont){
+	this.model=mod;
 	this.scale=1;
-}
-
-BPlusTreeView.prototype.initStage=function(cont){
 	this.stage = new Kinetic.Stage({
   		container: cont,
   		draggable: true,
@@ -27,285 +11,296 @@ BPlusTreeView.prototype.initStage=function(cont){
 	}); 
 }
 
+
 BPlusTreeView.prototype.zoomIn=function(){
-  if(this.scale<3)this.scale=this.scale+0.1;
-  this.draw();
+	if(this.scale<3)this.scale=this.scale+0.1;
+ 	this.draw();
 }
 
 BPlusTreeView.prototype.zoomOut=function(){
-  if(this.scale>0.5)this.scale=this.scale-0.1;
-  this.draw();
+  	if(this.scale>0.5)this.scale=this.scale-0.1;
+  	this.draw();
 }
 
-BPlusTreeView.prototype.draw=function(){
-	
-	var _radiusX=57*this.model.order*this.scale;
-	var _radius=20*this.scale;
-	var lastX=0,lastY=0;
+BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
+
+	var nodeWidth=100*this.model.order*this.scale; // Knotenbreite
+	var nodeHeight = 20*this.scale; // Knotenhoehe
+	var vertDist=200*this.scale; // vertikaler Abstand zwischen den Ebenen	
+	var horDist = nodeWidth + 50*this.scale;// 250*this.scale; Distanz von 40 px ist gut (war so urspruenglich)
+	var startPosX = 140*this.scale;
 	var layer = new Kinetic.Layer();
+	var moveSpeed=parseInt(this.model.speed);
+
+	var actVal=parseInt(actualValue);
+	var op=parseInt(operation); // 1 = add, 2 = delete, 3 = search, 4=double value
 	
 	var tmpNodes=[];
-	if(this.model.root!=undefined)
-		tmpNodes.push(this.model.root);
-	var level=1;
-	var finished=new Boolean();
-	finished=false;
-	
-	var oldNodes=[];
-	
-	//determine x and y, draw
-	do{
-		
-		for(var i=0;i<tmpNodes.length;i++){
-			var xPos=50;
+	var helpNode=undefined;
+	var i=0, j=0;
 
-			if(tmpNodes[i]!=undefined){
-
-					var prev=undefined;
-					var ci=i;
-					while(ci>0){
-						if(tmpNodes[ci-1]!=undefined){
-							prev=tmpNodes[ci-1];
-							break;
-						}
-						ci--;
-					}
-					
-					if(i>0 && prev!=undefined && prev.xPosition+_radiusX*1.5>xPos){
-  						while(prev.xPosition+_radiusX+15*this.scale>xPos)
-      						xPos++;
-					}
-			}
-
-			tmpNodes[i].xPosition=xPos;
-			yPos=_radius+level*2*_radius;
-			tmpNodes[i].yPosition=yPos; 
-			if(i==tmpNodes.length-1){
-				lastY=yPos+_radius;
-				lastX=xPos+_radiusX;
-			}
-		}
-		
-		finished=true;
-		
-		var oldNodes2=tmpNodes;
-		
-		oldNodes=[];
-		for(var i=0;i<tmpNodes.length;i++){
-			if(tmpNodes[i]!=undefined)
-				oldNodes.push(tmpNodes[i]);
-		}
-		
-		tmpNodes=[];
-		oldNodes3=tmpNodes;//to set X of last level
-		do{
-			if(oldNodes2[0]!=undefined){
-				for(var i=0;i<oldNodes2[0].pointers.length;i++){
-					tmpNodes.push(oldNodes2[0].pointers[i]);
-				}
-			}
-			oldNodes2.shift();
-		}while(oldNodes2.length!=0);
-		
-		for(var k=0;k<tmpNodes.length;k++){
-			if(tmpNodes[k]!=undefined)
-				finished=false;
-		}
-		
-		if(finished){//if on last level
-			tmpNodes=oldNodes3;
-			for(var i=0;i<tmpNodes.length;i++){
-				var xPos=50;
-
-				if(tmpNodes[i]!=undefined){
-
-						var prev=undefined;
-						var ci=i;
-						while(ci>0){
-							if(tmpNodes[ci-1]!=undefined){
-								prev=tmpNodes[ci-1];
-								break;
-							}
-							ci--;
-						}
-						
-						if(i>0 && prev!=undefined && prev.xPosition+_radiusX*1.5>xPos){
-	  						while(prev.xPosition+_radiusX+15>xPos)
-	      						xPos++;
-						}
-				}
-
-				tmpNodes[i].xPosition=xPos;
-				yPos=_radius+level*2*_radius;
-				tmpNodes[i].yPosition=yPos; 
-			}
-		}
-		level++;
-	}while(!finished);
-
-	
-	while(oldNodes.length!=0){
-		for(var i=0;i<oldNodes.length;i++){
-			if(oldNodes[i].parent!=undefined){
-			var pLen=oldNodes[i].parent.pointers.length;
-			if(pLen%2==0){
-				var leftX=oldNodes[i].parent.pointers[pLen/2-1].xPosition;
-				var rightX=oldNodes[i].parent.pointers[pLen/2].xPosition;
-				oldNodes[i].parent.xPosition=(leftX+rightX)/2;
-			}
-			else{
-				oldNodes[i].parent.xPosition=oldNodes[i].parent.pointers[pLen/2-0.5].xPosition;
-			}
-			}
-		}
-		var temp=[];
-		for(var i=0;i<oldNodes.length;i++){
-			temp.push(oldNodes[i]);
-		}
-		oldNodes=[];
-		
-		do{
-			var _in=false;
-			for(var i=0;i<oldNodes.length;i++){
-				if(temp[0].parent!=undefined && oldNodes[i]==temp[0].parent){
-					_in=true;break;
-				}
-			}
-			if(!_in){
-				if(temp[0].parent!=undefined)
-					oldNodes.push(temp[0].parent);
-			}
-			temp.shift();
-		}while(temp.length!=0);
+	if(this.model.root!=undefined) tmpNodes.push(this.model.root); // Wurzel hinzufuegen
+	while(tmpNodes[i]!=undefined){ // uebrige Knoten hinzu
+		helpNode=tmpNodes[i];
+		for(j=0; j<helpNode.pointers.length; j++){ 	
+			if(helpNode.pointers[j]!=undefined) tmpNodes.push(helpNode.pointers[j]);
+		}		
+		i++;
 	}
+
+	var level=2, oldLevel=1, childCount=0, s=0, a, b, c;
+	var middleChild=undefined, middleChildLeft=undefined, middleChildRight=undefined;
+
+	for(i=0; i<tmpNodes.length; i++){
+
+		level=1;
+		helpNode=tmpNodes[i]; // Ebene feststellen
+		while(helpNode.parent!=undefined){
+			helpNode=helpNode.parent;
+			level++;
+		}
+		if(level>oldLevel) s=0;
+		tmpNodes[i].xPosition= startPosX + horDist*s;
+		tmpNodes[i].yPosition=vertDist*level;
+		s++;
+		oldLevel=level;
+	}
+
+	for(i=tmpNodes.length-1; i>=0; i--){
+
+		childCount=tmpNodes[i].pointers.length;
+		if(childCount>0){
+
+			if(childCount%2!=0){ 
+				middleChild=tmpNodes[i].pointers[(childCount-1)/2]; // mittleres Kind ermitteln
+				tmpNodes[i].xPosition=middleChild.xPosition;
+			}else{
+				middleChildLeft=tmpNodes[i].pointers[childCount/2-1]; // mittleres Kind ermitteln
+				middleChildRight=tmpNodes[i].pointers[childCount/2];
+
+				a=middleChildLeft.xPosition + nodeWidth;
+				b=middleChildRight.xPosition;
+				c=(b-a)*0.5;
+					
+				tmpNodes[i].xPosition= a + c - nodeWidth * 0.5;
+			}
+		}
+	}
+
 	
-	tmpNodes=[];
-	if(this.model.root!=undefined)
-		tmpNodes.push(this.model.root);
-	var level=1;
-	var finished=new Boolean();
-	finished=false;
-	
-	//determine x and y, draw
-	do{
-		for(var i=0;i<tmpNodes.length;i++){
-			if(tmpNodes[i]!=undefined){
+
+
+
+
+	for(var i=0; i<tmpNodes.length; i++){ // alle Knoten durchgehen
+		if(tmpNodes[i]!=undefined){
+
+			var nodeBox = new Kinetic.Rect({ // das Rechteck fuer den ganzen Knoten
+				x: tmpNodes[i].xPosition,
+				y: tmpNodes[i].yPosition,
+				width: nodeWidth + 10*this.scale, // Breite des Knotens
+			     height: nodeHeight,
+				fill: tmpNodes[i].color,
+				stroke: 'black',
+				strokeWidth: 2*this.scale,
 				
-				for(var j=0;j<this.model.order*2;j++){
+			});
+			layer.add(nodeBox);
+
+		
+			for(var j=0; j<this.model.order*2; j++){ // jetzt die Zellen des Blattes
 					
-					var circle = new Kinetic.Rect({
-						x: tmpNodes[i].xPosition+_radiusX/(this.model.order*2)*j,
-						y: tmpNodes[i].yPosition,
-						width: _radiusX/(this.model.order*2),
-					    height: _radius,
-						fill: tmpNodes[i].color,
-						stroke: 'black',
-						strokeWidth: 2*this.scale,
-						//draggable: true
-					});
-					
-					var _val="x";
-					if(tmpNodes[i].keys[j]!=undefined)
-						_val=tmpNodes[i].keys[j];
-					
+				var cell = new Kinetic.Rect({ // Hier werden die Zellen hinzugefuegt
+					x: tmpNodes[i].xPosition + nodeWidth/(this.model.order*2)*j + 10*this.scale, // punkte, wo die Zellen beginnen
+					y: tmpNodes[i].yPosition,
+					width: nodeWidth/(this.model.order*2.5), // breite der zellen
+				     height: nodeHeight,
+					fill: tmpNodes[i].color,
+					stroke: 'black',
+					strokeWidth: 2*this.scale, // liniendicke
+				});
+				layer.add(cell);
+
+				if(tmpNodes[i].keys[j]!=undefined){
+
+					var content = tmpNodes[i].keys[j];	
+					var color = "black";
+
+					if(tmpNodes[i].keys[j]==actVal && actNode == undefined){ 
+						if(op==1) color="green"; // neu hinzugefuegter Wert ist gruen
+						else if(op==3) color="green";
+						else if(op==4) color="red";
+					}
+				
 					var val = new Kinetic.Text({
-						x: circle.getX()+3*this.scale,
-						y: circle.getY()+3*this.scale,
-						text: _val,
+						x: cell.getX()+3*this.scale,
+						y: cell.getY()+3*this.scale,
+						text: content,
 						fontSize: 15*this.scale,
 						fontFamily: 'Calibri',
-						fill: 'black',
-						width: 50+(0.6*_radiusX),
-						//align: 'center'
+						fill: color,
+						width: 50+(0.6*nodeWidth),
 					});
-					
-					layer.add(circle);
 					layer.add(val);
-					
-				}
+				}	
+			} 
 
-				if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined){
+			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined){ // jetzt die Pfeile
 		
-					var parX=tmpNodes[i].parent.xPosition;
-					
-					var j=0;
-					for(;j<tmpNodes[i].parent.pointers.length;j++){
-						if(tmpNodes[i].parent.pointers[j]==tmpNodes[i])break;
-					}
-					
-					parX+=(_radiusX/(this.model.order*2))*j;
-					
-					var lineCol="black";
-					var mIndex=0;
-					for(var j=0;j<tmpNodes[i].parent.pointers.length;j++){
-						if(tmpNodes[i].parent.pointers[j]==tmpNodes[i]){
-							mIndex=j;break;
-						}
-					}
-					
-					if(tmpNodes[i].parent.neededKid==mIndex){
-						lineCol="#FF8000";
-					}
-					
-					var line = new Kinetic.Line({
-						points: [tmpNodes[i].xPosition+_radiusX/2,tmpNodes[i].yPosition,parX,tmpNodes[i].parent.yPosition+_radius],
-						stroke: lineCol,
-						strokeWidth: 2*this.scale,
-						lineJoin: 'round',
-					});
+				var parX=tmpNodes[i].parent.xPosition; // x-Wert des Elternknotens
+				var j;
+				for(j=0; j<tmpNodes[i].parent.pointers.length; j++){
+					if(tmpNodes[i].parent.pointers[j]==tmpNodes[i]) break; // ermitteln, welche Nummer der Zeiger vom Elternknoten hat
 				}
-				//linked list
-				if(tmpNodes[i].is_leaf && i<tmpNodes.length-1){
-					var headlen = 7*this.scale;   // how long you want the head of the arrow to be, you could calculate this as a fraction of the distance between the points as well.
-				   
-				    var toX=tmpNodes[i+1].xPosition;
-				    var Y=tmpNodes[i].yPosition+_radius/2;
-				    
-				    var angle = Math.atan2(0,toX-tmpNodes[i].xPosition+_radiusX);
-				    
-				    var arrow = new Kinetic.Line({
-				    	//[34]
-				        points: [tmpNodes[i].xPosition+_radiusX+1*this.scale, Y, toX, Y, toX-headlen*Math.cos(angle-Math.PI/6),Y-headlen*Math.sin(angle-Math.PI/6),toX, Y, toX-headlen*Math.cos(angle+Math.PI/6),Y-headlen*Math.sin(angle+Math.PI/6)],
-				        stroke: "#FF8000",
-				        strokeWidth:2*this.scale
-				    });
-				}
-			}
-
-			
-			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined)
+				parX = parX + (nodeWidth/(this.model.order*2))*j + 5; // jetzt steht der Startpunkt fest	
+				var line = new Kinetic.Line({
+					points: [tmpNodes[i].xPosition + nodeWidth/2 + 5, tmpNodes[i].yPosition, parX, tmpNodes[i].parent.yPosition + nodeHeight],
+					stroke: 'black',
+					strokeWidth: 2*this.scale,
+					lineJoin: 'round',
+				});
 				layer.add(line);
-			if(tmpNodes[i].is_leaf && i<tmpNodes.length-1)
-				layer.add(arrow);
-		}
-		
-		finished=true;
-		var oldNodes=tmpNodes; tmpNodes=[];
-
-		do{
-			if(oldNodes[0]!=undefined){
-				for(var i=0;i<oldNodes[0].pointers.length;i++){
-					tmpNodes.push(oldNodes[0].pointers[i]);
-				}
 			}
-			oldNodes.shift();
-		}while(oldNodes.length!=0);
-		
-		for(var k=0;k<tmpNodes.length;k++){
-			if(tmpNodes[k]!=undefined)
-				finished=false;
 		}
-		level++;
-	}while(!finished);
-	
-	var w=lastX+50*this.scale;
-	var h=lastY+50*this.scale
-	
-	if(h<500)h=500;
-	if(w<1000)w=1000;
-	
-	this.stage.setWidth(w);
-	this.stage.setHeight(h);
+	}
+
+
+	// Die Box mit dem Protokoll hinzufuegen
+	var boxHeight=(this.model.history.length * 20 + 5)*this.scale;
+	var distBottom=100*this.scale;
+
+	var protocolBox = new Kinetic.Rect({ 
+			x: 20*this.scale,
+			y: 50*this.scale,
+			width: 90*this.scale, 
+		     height: boxHeight,
+			stroke: 'black',
+			strokeWidth: 2*this.scale,
+			
+	});
+	layer.add(protocolBox);
+
+
+	var val;
+	var latestVal;
+	var color="black";
+	var hist, histOp, histVal;
+
+	for(i=0; i<this.model.history.length; i++){ // Die Zeilen der Protokoll-Box. Hier wird auf die Geschichte zugegriffen
+
+		hist=this.model.history[i];
+		histOp=hist.charAt(0);
+		histVal=hist.substr(2);
+
+		if(histOp=='r') color = "red";
+		else if(histOp=='a') color = "green";
+
+		val = new Kinetic.Text({
+			x: 25*this.scale,
+			y: 55*this.scale + i * 20*this.scale,
+			text: i+1 + ". " + histVal,
+			fontSize: 15*this.scale,
+			fontFamily: 'Calibri',
+			fill: color,
+			width: 90*this.scale,
+		});
+		layer.add(val);
+	}
+			
+
+	var height=(vertDist+nodeHeight)*level;
+	if(height<(boxHeight+distBottom)) height=boxHeight+distBottom;
+
+	this.stage.setWidth(2*(startPosX*2+s*nodeWidth+10)); // Breite und Hoehe der Flaeche festlegen
+	this.stage.setHeight(height);
 	this.stage.removeChildren();
-	this.stage.add(layer);	  
+	this.stage.add(layer);	
+
+
+	if(actNode!=undefined){ // wandernder Kreis bei erster Zeichnung
+
+		color="black";
+		if(op==1) color="#66ff33"; // hinzufuegen
+		else if(op==2) color="#ff6666"; // loeschen
+		else if(op==3) color="#00ccff"; // suchen
+
+		var circle = new Kinetic.Circle({
+			radius: 20*this.scale,
+			stroke: 'black',
+			strokeWidth: 2*this.scale,
+			fill: color,
+		});
+
+
+		var nVal = new Kinetic.Text({
+			x: -15,
+			y: -5,
+			text: actVal,
+			fontSize: 15*this.scale,
+			fontFamily: 'Calibri',
+			fill: 'black',
+			width: 50+(0.6*nodeWidth),
+		});
+
+		var ball = new Kinetic.Group({
+			x: tmpNodes[0].xPosition + nodeWidth/2,
+			y: tmpNodes[0].yPosition - nodeHeight,	
+			draggable: true
+		});
+		
+		ball.add(circle);
+		ball.add(nVal);
+		layer.add(ball);
+
+		var visitedNodes=[];
+		var tweens=[];
+		
+		for(i=tmpNodes.length-1; i>=0; i--){
+
+			helpNode=tmpNodes[i];
+			if(helpNode==actNode){ 
+				visitedNodes.push(helpNode);
+				while(helpNode.parent!=undefined && helpNode.parent!=this.model.root){
+					visitedNodes.unshift(helpNode.parent);
+					helpNode=helpNode.parent;
+				}
+				finished=true;
+				break;
+			}
+		}
+
+		i=0;	
+	
+		function moveCircle(){
+		
+			var tween = new Kinetic.Tween({
+				node: ball,
+				x: visitedNodes[i].xPosition + nodeWidth/2,
+				y: visitedNodes[i].yPosition - nodeHeight,
+				duration: moveSpeed,
+				onFinish: function(){
+					i++;
+					if(visitedNodes[i]!=undefined){
+
+						setTimeout(function(){ 
+							moveCircle();
+						}, 1000);
+					}
+				}
+			});
+
+			tween.play();
+		}
+
+		if(tmpNodes.length>1) moveCircle();
+
+	}
+
 }
+
+
+
+
+
+
+
