@@ -50,19 +50,16 @@
     $('input[name=type]').filter('[value=' + type + ']').attr('checked', true);
     trieUtils.init('container1');
     resetFields();
-        trieUtils.example();
+    trieUtils.example();
   }
 
 
   function newTreeByType(type) {
     switch (type) {
-      case 'patricia':
-        return new Patricia();
-      case 'briandais':
-        return new Briandais();
-      default:
-        return new Trie();
+      case 'patricia': return new Patricia();
+      case 'briandais': return new Briandais();
     }
+    return new Trie();
   }
 
   $(document).ready(function() {
@@ -89,9 +86,9 @@
       }
 
       //Set trie colors according to currents color selection
-      $('input.color[type=color]').each(function(){
-    		tree[$(this).attr('data-ref')] = $(this).val();
-    	})
+      $('input.color[type=color]').each(function() {
+        tree[$(this).attr('data-ref')] = $(this).val();
+      })
       tree.actStateID = tempActStateID;
       tree.speed = tempSpeed;
       tree.view.scale = tempScale;
@@ -331,7 +328,7 @@
   }
 
   function resetFields() {
-    $('input.color[type=color]').each(function(){
+    $('input.color[type=color]').each(function() {
       var input = $(this);
       input.val(tree[input.attr('data-ref')]);
     })

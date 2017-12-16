@@ -13,181 +13,200 @@
  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-function TrieView(_model){
-	this.model=_model;
-	this.scale=1;
+function TrieView(_model) {
+  this.model = _model;
+  this.scale = 1;
 }
 
-TrieView.prototype.initStage=function(cont){
-	this.stage = new Kinetic.Stage({
-  		container: cont,
-  		draggable: true,
-		width: 0,
-		height: 0
+TrieView.prototype.setDimensions = function(){
+  var container = $(this.stage.attrs.container);
+  this.stage.setWidth(container.prop("scrollWidth") - 10);
+  this.stage.setHeight(container.prop("scrollHeight") - 50);
+};
+
+TrieView.prototype.initStage = function(cont) {
+  this.stage = new Kinetic.Stage({
+    container: cont,
+    draggable: true
+  });
+
+	this.setDimensions();
+
+	var _this = this;
+	$(window).resize(function() {
+		_this.setDimensions();
 	});
 }
 
-TrieView.prototype.zoomIn=function(){
-  if(this.scale<2.5)this.scale=this.scale+0.1;
-  	this.draw();
+TrieView.prototype.zoomIn = function() {
+  if (this.scale < 2.5) this.scale = this.scale + 0.1;
+  this.draw();
 }
 
-TrieView.prototype.zoomOut=function(){
-  if(this.scale>0.5)this.scale=this.scale-0.1;
-  	this.draw();
+TrieView.prototype.zoomOut = function() {
+  if (this.scale > 0.5) this.scale = this.scale - 0.1;
+  this.draw();
 }
 
-TrieView.prototype.draw=function(){
-	//this.model.setColor();
+TrieView.prototype.draw = function() {
+  //this.model.setColor();
 
-	// fill tmpNodes, calculate maxlevel and nodes per level (npl)
-	var tmpNodes=[];
+  // fill tmpNodes, calculate maxlevel and nodes per level (npl)
+  var tmpNodes = [];
+
+	var rectLength = 30 * this.scale;
+
+
+  /*var level = 0;
+  var ends = 0;
 	var maxlevel = 0;
 	var npl = [];
 
-	var level = 0;
-	var ends = 0;
-	function recursiveTraversalLevel(actNode, level){
+  function recursiveTraversalLevel(actNode, level) {
+
+    tmpNodes.push(actNode);
+    if (npl[level] === undefined)
+      npl[level] = 1;
+    else
+      npl[level]++;
+    level++;
+
+    if (actNode.value === "$" || actNode.children === undefined) {
+      if (level > maxlevel)
+        maxlevel = level;
+      ends++;
+      return;
+    }
+
+    var actChildren = actNode.children;
+    for (var j = 0; j < actChildren.length; j++) {
+
+      recursiveTraversalLevel(actNode.children[j], level);
+    }
+  }
+  if (this.model.root != undefined)
+    recursiveTraversalLevel(this.model.root, level);
+
+  // calculate width
+  var maxNpl = 0;
+  for (var i = 0; i < npl.length; i++) {
+
+    if (npl[i] > maxNpl)
+      maxNpl = npl[i];
+  }
+
+
+  // define vals for drawing
+  var w = (rectLength * 3 + rectLength * 4 * ends) * this.scale;
+  var h = 500;
+  if (maxlevel > 7)
+    h = 300 + (maxlevel - 4) * 3 * rectLength;
+  if (this.scale > 1.1)
+    h *= this.scale;
+  if (w < 1000) w = 1000;
+
+  this.stage.setHeight(h);
+  this.stage.setWidth(w);
+	*/
+
+  this.stage.removeChildren();
+
+  var layer = new Kinetic.Layer();
+
+  // calculate x and y position of every node
+
+  function recursiveTraversalPosition(actNode, childShift) {
 
 		tmpNodes.push(actNode);
-		if(npl[level]===undefined)
-			npl[level]=1;
-		else
-			npl[level]++;
-		level++;
 
-		if(actNode.value==="$" || actNode.children===undefined){
-			if(level>maxlevel)
-				maxlevel = level;
-			ends++;
-			return;
-		}
+    if (actNode.value === "0") {
+      actNode.xPosition = rectLength * 1.5;
+      actNode.yPosition = rectLength;
+    } else {
+      actNode.xPosition = actNode.parent.xPosition;
+      actNode.yPosition = actNode.parent.yPosition + rectLength * 2;
+    }
 
-		var actChildren = actNode.children;
-		for(var j=0;j<actChildren.length;j++){
+    actNode.xPosition += childShift;
 
-			recursiveTraversalLevel(actNode.children[j], level);
-		}
-	}
-	if(this.model.root!=undefined)
-		recursiveTraversalLevel(this.model.root, level);
+    var shift = 0;
+    var children = actNode.children;
+    if (children === undefined)
+      return 0;
+    for (var i = 0; i < children.length; i++) {
 
-	// calculate width
-	var maxNpl = 0;
-	for(var i=0;i<npl.length;i++){
+      if (i > 0) {
+        shift += rectLength * 2;
+      }
+      shift += recursiveTraversalPosition(children[i], shift * 2);
 
-		if(npl[i]>maxNpl)
-			maxNpl = npl[i];
-	}
+    }
+    actNode.xPosition += shift;
 
+    return shift;
+  }
 
-	// define vals for drawing
-	var _radius = 20*this.scale;
-	var w = (_radius*3 + _radius*4*ends ) *this.scale;
-	var h=500;
-	if(maxlevel>7)
-		h=300+(maxlevel-4)*3*_radius;
-	if(this.scale>1.1)
-		h*=this.scale;
-	if(w<1000)w=1000;
-
-	this.stage.setHeight(h);
-	this.stage.setWidth(w);
-	this.stage.removeChildren();
-
-	var layer = new Kinetic.Layer();
-
-	// calculate x and y position of every node
-
-	function recursiveTraversalPosition(actNode, childShift){
-
-		if(actNode.value==="0"){
-			actNode.xPosition = _radius*3;
-			actNode.yPosition = _radius*3;
-		}
-		else{
-			actNode.xPosition = actNode.parent.xPosition;
-			actNode.yPosition = actNode.parent.yPosition + _radius*3;
-		}
-
-		actNode.xPosition += childShift;
-
-		var shift = 0;
-		var children = actNode.children;
-		if(children===undefined)
-			return 0;
-		for(var i=0;i<children.length;i++){
-
-			if(i>0){
-				shift += _radius*2;
-			}
-			shift += recursiveTraversalPosition(children[i], shift*2);
-
-		}
-		actNode.xPosition += shift;
-
-		return shift;
-	}
-
-	if(this.model.root!=undefined)
-		recursiveTraversalPosition(this.model.root, 0);
+  if (this.model.root != undefined)
+    recursiveTraversalPosition(this.model.root, 0);
 
 
-	// draw nodes from tmpNodes
-	for(var i=0;i<tmpNodes.length;i++){
+  // draw nodes from tmpNodes
+  for (var i = 0; i < tmpNodes.length; i++) {
 
-		// draw (if node exists)
-		if(tmpNodes[i]!=undefined){
+    // draw (if node exists)
+    if (tmpNodes[i] != undefined) {
 
-			// make start node a different color
-			if(tmpNodes[i].value==="0" && tmpNodes[i].color!=tree.color3)
-				tmpNodes[i].color = tree.color1;
+      // make start node a different color
+      if (tmpNodes[i].value === "0" && tmpNodes[i].color != tree.color3)
+        tmpNodes[i].color = tree.color1;
 
-			// make end nodes a different color
-			else if(tmpNodes[i].value==="$" && tmpNodes[i].color!=tree.color3)
-				tmpNodes[i].color = tree.color1;
+      // make end nodes a different color
+      else if (tmpNodes[i].value === "$" && tmpNodes[i].color != tree.color3)
+        tmpNodes[i].color = tree.color1;
 
-			else if(tmpNodes[i].color!=tree.color3)
-				tmpNodes[i].color = tree.color2;
+      else if (tmpNodes[i].color != tree.color3)
+        tmpNodes[i].color = tree.color2;
 
-			// draw node
-			var circle = new Kinetic.Circle({
-				x: tmpNodes[i].xPosition,
-				y: tmpNodes[i].yPosition,
-				radius:_radius,
-				fill: tmpNodes[i].color,
-				strokeWidth: 4*this.scale,
-				//draggable: true
-			});
-			layer.add(circle);
+      // draw node
 
-			// draw value on node (if not root)
-			if(tmpNodes[i].value!="0"){
-				var val = new Kinetic.Text({
-					x: circle.getX()-40*this.scale,
-					y: circle.getY()-7*this.scale,
-					text: tmpNodes[i].value,
-					fontSize: 15*this.scale,
-					fontFamily: 'Calibri',
-					fill: 'black',
-					width: 80*this.scale,
-					align: 'center'
-				});
-				layer.add(val);
-			}
+      var rect = new Kinetic.Rect({
+        x: tmpNodes[i].xPosition,
+        y: tmpNodes[i].yPosition,
+        height: rectLength,
+        width: rectLength,
+        fill: tmpNodes[i].color,
+        strokeWidth: 2 * this.scale,
+        stroke: 'blue'
+      });
+      layer.add(rect);
 
-			// draw line (if node not root)
-			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined){
-				var line = new Kinetic.Line({
-					points: [circle.getX(),circle.getY()-_radius,tmpNodes[i].parent.xPosition,tmpNodes[i].parent.yPosition+_radius],
-					stroke: "blue",
-					strokeWidth: (0.1*_radius),
-					lineJoin: 'round',
-				});
-				layer.add(line);
-			}
-		}
-	}
+      // draw value on node (if not root)
+      if (tmpNodes[i].value != "0") {
+        var val = new Kinetic.Text({
+					x: rect.getX(),
+          y: rect.getY() + 8,
+          text: tmpNodes[i].value,
+          fontSize: 15 * this.scale,
+          fontFamily: 'Calibri',
+          fill: 'black',
+          width: rect.getWidth(),
+          align: 'center'
+        });
+        layer.add(val);
+      }
 
-	this.stage.add(layer);
+      // draw line (if node not root)
+      if (tmpNodes[i] != undefined && tmpNodes[i].parent != undefined) {
+        var line = new Kinetic.Line({
+          points: [rect.getX() + rectLength / 2, rect.getY(), tmpNodes[i].parent.xPosition + rectLength / 2, tmpNodes[i].parent.yPosition + rectLength],
+          stroke: "blue",
+          strokeWidth: 2 * this.scale,
+          lineJoin: 'round',
+        });
+        layer.add(line);
+      }
+    }
+  }
+
+  this.stage.add(layer);
 }

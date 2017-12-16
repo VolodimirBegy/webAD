@@ -48,13 +48,20 @@ PatriciaView.prototype.zoomOut = function() {
   this.draw();
 };
 
+PatriciaView._calcWidth = function(node, fontWidth, rectLength) {
+  var tempWidth = fontWidth * (node.value.length || 1) + (rectLength / 2);
+  return (tempWidth < rectLength) ? rectLength : tempWidth;
+};
+
 PatriciaView.prototype.draw = function() {
 
   // fill tmpNodes, calculate maxlevel and nodes per level (npl)
   var tmpNodes = [];
+  var fontWidth = 8 * this.scale;
+  var rectLength = 30 * this.scale;
+
+  /*
   var npl = [];
-  var _radius = 20 * this.scale;
-  var fontWidth = 5 * this.scale;
   var maxlevel = 0;
   var ends = 0;
 
@@ -81,7 +88,7 @@ PatriciaView.prototype.draw = function() {
     for (var j = 0, len = node.children.length; j < len; ++j) {
       recursiveTraversalLevel(node.children[j], level);
     }
-  }
+  }*/
 
   // calculate x and y position of every node
   function recursiveTraversalPosition(node, childShift) {
@@ -90,11 +97,11 @@ PatriciaView.prototype.draw = function() {
 
     //Only root node is supposed to have no parent
     if (!node.parent) {
-      node.xPosition = _radius * 3;
-      node.yPosition = _radius * 3;
+      node.xPosition = rectLength * 1.5;
+      node.yPosition = rectLength;
     } else {
       node.xPosition = node.parent.xPosition;
-      node.yPosition = node.parent.yPosition + _radius * 3;
+      node.yPosition = node.parent.yPosition + rectLength * 2;
     }
 
     node.xPosition += childShift;
@@ -109,7 +116,7 @@ PatriciaView.prototype.draw = function() {
         tempShift = (tempShift < _radius) ? _radius : tempShift;
         shift += tempShift;*/
 
-        shift += fontWidth * node.children[i].value.length + (_radius * 2);
+        shift += PatriciaView._calcWidth(node.children[i], fontWidth, rectLength);
 
           //shift += rectLength * Object.keys(node.chars).length / 2;
       }
@@ -174,42 +181,47 @@ PatriciaView.prototype.draw = function() {
         tmpNodes[i].color = tree.color2;
       }
 
-      // draw node
-      var circle = new Kinetic.Ellipse({
+
+      var group = new Kinetic.Group({
         x: tmpNodes[i].xPosition,
-        y: tmpNodes[i].yPosition,
-        radius: {
-          x:(tmpNodes[i].value.length * fontWidth < _radius) ? _radius : (fontWidth * tmpNodes[i].value.length),
-          y:_radius
-        },
-        fill: tmpNodes[i].color,
-        strokeWidth: 4 * this.scale,
+        y: tmpNodes[i].yPosition
       });
 
-      layer.add(circle);
+      layer.add(group);
+
+      // draw node
+      var rect = new Kinetic.Rect({
+        height:rectLength,
+        width:PatriciaView._calcWidth(tmpNodes[i], fontWidth, rectLength),
+        fill: tmpNodes[i].color,
+        strokeWidth: 2 * this.scale,
+        stroke:'blue'
+      });
+
+      group.add(rect);
+
 
       // draw value on node (if not root)
       if (tmpNodes[i].parent) {
-        var val = new Kinetic.Text({
-          x: circle.getX() - 50 * this.scale,
-          y: circle.getY() - 7 * this.scale,
+        var text = new Kinetic.Text({
+          y: rect.getY() + 8 * this.scale,
           text: tmpNodes[i].value,
           fontSize: 15 * this.scale,
           fontFamily: 'Calibri',
           fill: 'black',
-          width: 100 * this.scale,
+          width: rect.getWidth(),
           align: 'center',
           wrap: 'none'
         });
-        layer.add(val);
+        group.add(text);
       }
 
       // draw line (if node not root)
       if (tmpNodes[i].parent) {
         var line = new Kinetic.Line({
-          points: [circle.getX(), circle.getY() - _radius, tmpNodes[i].parent.xPosition, tmpNodes[i].parent.yPosition + _radius],
+          points: [group.getX() + rect.getWidth() / 2, group.getY(), tmpNodes[i].parent.xPosition + PatriciaView._calcWidth(tmpNodes[i].parent, fontWidth, rectLength) / 2, tmpNodes[i].parent.yPosition + rectLength],
           stroke: "blue",
-          strokeWidth: (0.1 * _radius),
+          strokeWidth: 2 * this.scale,
           lineJoin: 'round',
         });
         layer.add(line);

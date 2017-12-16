@@ -16,10 +16,9 @@
 function BriandaisView(_model) {
   this.model = _model;
   this.scale = 1;
-  this.rectLength = 30 * this.scale;
 }
 
-BriandaisView.prototype.setDimensions = function(){
+BriandaisView.prototype.setDimensions = function() {
   var container = $(this.stage.attrs.container);
   this.stage.setWidth(container.prop("scrollWidth") - 10);
   this.stage.setHeight(container.prop("scrollHeight") - 50);
@@ -41,101 +40,34 @@ BriandaisView.prototype.initStage = function(cont) {
 
 BriandaisView.prototype.zoomIn = function() {
   if (this.scale < 2.5) this.scale = this.scale + 0.1;
-  this.rectLength = 30 * this.scale;
   this.draw();
 };
 
 BriandaisView.prototype.zoomOut = function() {
   if (this.scale > 0.5) this.scale = this.scale - 0.1;
-  this.rectLength = 30 * this.scale;
   this.draw();
 };
 
-BriandaisView.prototype._getKinectRect = function(node, key, charIndex) {
-
-  var color;
-
-  if(node.chars[key].color == tree.color3){
-    color = tree.color3;
-  }
-  else if(node.chars[key].isWord){
-    color = tree.color1;
-  }
-  else{
-    color = tree.color2;
-  }
-
-  return new Kinetic.Rect({
-    x: charIndex * this.rectLength,
-    y: 0,
-    height: this.rectLength,
-    width: this.rectLength,
-    fill: color,
-    strokeWidth: 2 * this.scale,
-    stroke: 'blue'
-  });
-
-}
-
-BriandaisView.prototype._getKinectText = function(rect, char) {
-  return new Kinetic.Text({
-    x: rect.getX() - 35 * this.scale,
-    y: rect.getY() + 8 * this.scale,
-    text: char,
-    fontSize: 15 * this.scale,
-    fontFamily: 'Calibri',
-    fill: 'black',
-    width: 100 * this.scale,
-    align: 'center'
-  });
-}
-
 BriandaisView.prototype.draw = function() {
 
-  // fill tmpNodes, calculate maxlevel and nodes per level (npl)
   var tmpNodes = [];
-  var npl = [];
-  var fontWidth = 8 * this.scale;
-  var maxlevel = 0;
-  var ends = 0;
-
-  function recursiveTraversalLevel(node, level) {
-
-    tmpNodes.push(node);
-
-    if (npl[level]) {
-      ++npl[level];
-    } else {
-      npl[level] = 1;
-    }
-
-    ++level;
-
-    if (!Object.keys(node.chars).length) {
-      if (level > maxlevel) {
-        maxlevel = level;
-      }
-      ++ends;
-      return;
-    }
-
-    for (var key in node.chars) {
-      recursiveTraversalLevel(node.chars[key], level);
-    }
-  }
+  var circum = 30 * this.scale;
+  var arrowLength = 18 * this.scale;
+  var roofHeight = -5 * this.scale;
+  var rectPadding = 5 * this.scale;
 
   // calculate x and y position of every node
-  function recursiveTraversalPosition(node, childShift, rectLength) {
+  function recursiveTraversalPosition(node, childShift) {
 
     tmpNodes.push(node); //Remove this after discussd with professor if exact width and height calculation is necessary
 
     //Only root node is supposed to have no parent
     if (!node.parent) {
-      node.xPosition = rectLength;
-      node.yPosition = rectLength * 1.5;
+      node.xPosition = circum;
+      node.yPosition = circum * 1.5;
     } else {
       node.xPosition = node.parent.xPosition;
-      node.yPosition = node.parent.yPosition + rectLength * 2;
+      node.yPosition = node.parent.yPosition + circum * 2;
     }
 
     node.xPosition += childShift;
@@ -145,89 +77,135 @@ BriandaisView.prototype.draw = function() {
 
     for (var key in node.chars) {
       if (!firstChar) {
-        shift += rectLength * Object.keys(node.chars).length / 2;
+        shift += circum * Object.keys(node.chars).length / 2 + arrowLength;
       }
 
       firstChar = false;
 
-      shift += recursiveTraversalPosition(node.chars[key], shift * 2, rectLength);
+      if (Object.keys(node.chars[key].chars).length) {
+        shift += recursiveTraversalPosition(node.chars[key], shift * 2);
+      }
     }
 
     node.xPosition += shift;
-
     return shift;
   }
 
-  /*if (this.model.root)
-    recursiveTraversalLevel(this.model.root, 0);
-
-  // calculate width
-  var maxNpl = 0;
-  for (var x = 0, len = npl.length; x < len; x++) {
-    if (npl[x] > maxNpl) {
-      maxNpl = npl[x];
-    }
-  }
-
-  // define vals for drawing
-  var w = (this.rectLength * 3 + this.rectLength * 4 * ends) * this.scale;
-  var h = 500;
-  if (maxlevel > 7) {
-    h = 300 + (maxlevel - 4) * 3 * this.rectLength;
-  }
-  if (this.scale > 1.1) {
-    h *= this.scale;
-  }
-  if (w < 1000) {
-    w = 1000;
-  }
-
-  this.stage.setHeight();
-  this.stage.setWidth($('#container1').prop("scrollWidth"));*/
   this.stage.removeChildren();
 
   var layer = new Kinetic.Layer();
 
   if (this.model.root)
-    recursiveTraversalPosition(this.model.root, 0, this.rectLength);
+    recursiveTraversalPosition(this.model.root, 0);
 
   // draw nodes from tmpNodes
   for (var i = 0, len = tmpNodes.length; i < len; ++i) {
 
-      var group = new Kinetic.Group({
-        x: tmpNodes[i].xPosition,
-        y: tmpNodes[i].yPosition
+    var group = new Kinetic.Group({
+      x: tmpNodes[i].xPosition,
+      y: tmpNodes[i].yPosition,
+      fill: 'red'
+    });
+
+    layer.add(group);
+
+    var charIndex = 0;
+    for (var key in tmpNodes[i].chars) {
+
+      //var rect = this._getKinectRect(tmpNodes[i], key, charIndex);
+
+      var color = tree.color2;
+
+      if (tmpNodes[i].chars[key].color == tree.color3) {
+        color = tree.color3;
+      } else if (tmpNodes[i].chars[key].isWord) {
+        color = tree.color1;
+      }
+
+      var circle = new Kinetic.Circle({
+        x: charIndex * (circum + (charIndex > 0 ? arrowLength : 0)) + circum / 2,
+        y: circum / 2,
+        radius: circum / 2,
+        fill: color,
+        strokeWidth: 2 * this.scale,
+        stroke: 'blue'
       });
 
-      layer.add(group);
+      group.add(circle);
 
-      var charIndex = 1;
-      for (var key in tmpNodes[i].chars) {
-        var rect = this._getKinectRect(tmpNodes[i], key, charIndex);
-        group.add(rect);
-        group.add(this._getKinectText(rect, key));
-        ++charIndex;
+      group.add(new Kinetic.Text({
+        x: circle.getX() - circle.getRadius(),
+        y: circle.getY() - 8,
+        text: key,
+        fontSize: 15 * this.scale,
+        fontFamily: 'Calibri',
+        fill: 'black',
+        width: circum,
+        align: 'center'
+      }));
+
+      //Arrow
+      if (charIndex > 0) {
+
+        var fromX = circle.getX() - circum / 2 - arrowLength + 2;
+        var fromY = circle.getY();
+        var toX = circle.getX() - circum / 2 - 2;
+        var toY = circle.getY();
+        var headlen = 8 * this.scale;
+        var angle = Math.atan2(toY - fromY, toX - fromX);
+
+        group.add(new Kinetic.Line({
+          stroke: 'blue',
+          points: [fromX, fromY, toX, toY, toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6), toX, toY, toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6)],
+          strokeWidth: 1 * this.scale,
+          lineJoin: 'bevel',
+        }));
       }
 
-      // draw line (if node not root)
-      if (tmpNodes[i].parent && Object.keys(tmpNodes[i].chars).length) {
+      ++charIndex;
+    }
 
-        var parentIndex = 1;
-        for (var key in tmpNodes[i].parent.chars) {
-          if (tmpNodes[i].parent.chars[key] === tmpNodes[i]) {
-            break;
-          }
-          ++parentIndex;
+    var roof = new Kinetic.Line({
+      stroke: 'blue',
+      points: [0, roofHeight, charIndex * circum + (charIndex - 1) * arrowLength, roofHeight],
+      strokeWidth: 1.5 * this.scale,
+      lineJoin: 'bevel',
+    })
+
+/*
+    var roof = new Kinetic.Rect({
+      stroke: 'blue',
+      x: -rectPadding,
+      y:roofHeight,
+      height:circum + rectPadding * 2,
+      width:charIndex * circum + (charIndex - 1) * arrowLength + rectPadding * 2,
+      //points: [0, roofHeight, charIndex * circum + (charIndex - 1) * arrowLength, roofHeight],
+      strokeWidth: 1 * this.scale,
+      lineJoin: 'round',
+    })
+    */
+
+    group.add(roof);
+
+    // draw line (if node not root)
+    if (tmpNodes[i].parent && Object.keys(tmpNodes[i].chars).length) {
+
+      var parentIndex = 0;
+      for (var key in tmpNodes[i].parent.chars) {
+        if (tmpNodes[i].parent.chars[key] === tmpNodes[i]) {
+          break;
         }
-
-        var line = new Kinetic.Line({
-          points: [group.getX() + (this.rectLength * Object.keys(tmpNodes[i].chars).length / 2) + this.rectLength, group.getY(), tmpNodes[i].parent.xPosition + (this.rectLength * parentIndex) + (this.rectLength / 2), tmpNodes[i].parent.yPosition + this.rectLength],
-          stroke: "blue",
-          strokeWidth: 2 * this.scale,
-          lineJoin: 'round',
-        });
-        layer.add(line);
+        ++parentIndex;
       }
+
+      layer.add(new Kinetic.Line({
+        points: [tmpNodes[i].xPosition + roof.getPoints()[2] / 2, tmpNodes[i].yPosition + roof.getPoints()[3], tmpNodes[i].parent.xPosition + parentIndex * (circum + (parentIndex > 0 ? arrowLength : 0)) + circum / 2, tmpNodes[i].parent.yPosition + circum],
+        //points: [tmpNodes[i].xPosition + roof.getWidth() / 2, tmpNodes[i].yPosition + roofHeight, tmpNodes[i].parent.xPosition + parentIndex * (circum + (parentIndex > 0 ? arrowLength : 0)) + circum / 2, tmpNodes[i].parent.yPosition + circum],
+        stroke: "blue",
+        strokeWidth: 1.5 * this.scale,
+        lineJoin: 'round',
+      }));
+    }
   }
 
   this.stage.add(layer);

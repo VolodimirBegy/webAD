@@ -14,13 +14,11 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 */
 
 
-function BriandaisNode(parent, isWord) {
-  this.chars = {};
+function BriandaisNode(parent, isWord, chars) {
+  this.chars = chars || {};
   this.parent = parent;
   this.isWord = isWord || false;
-  this.color = undefined;
-  this.xPosition = 0;
-  this.yPosition = 0;
+  trieUtils.setCommonNodeMembers(this);
 }
 
 Briandais._getMatchingValue = function(node, word) {
@@ -161,19 +159,9 @@ BriandaisNode.prototype.findWords = function() {
 };
 
 function Briandais() {
-
-  this.view = new BriandaisView(this);
-  this.db = [];
-  this.actStateID = -1;
   this.root = new BriandaisNode();
-
-  this.speed = 5;
-
-  trieUtils.setDefaultColors(this);
-
-  this.running = false;
-  this.stopped = false;
-  this.continueAnimation = false;
+  this.view = new BriandaisView(this);
+  trieUtils.setCommonTrieMembers(this);
 }
 
 Briandais.prototype.findWords = function(tree) {

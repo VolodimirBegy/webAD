@@ -20,9 +20,7 @@ function PatriciaNode(value, parent, isWord, children) {
   this.parent = parent;
   this.children = children || [];
   this.isWord = isWord || false;
-  this.color = undefined;
-  this.xPosition = 0;
-  this.yPosition = 0;
+  trieUtils.setCommonNodeMembers(this);
 }
 
 PatriciaNode.prototype.insert = function(word) {
@@ -202,18 +200,8 @@ PatriciaNode.prototype.findWords = function() {
 
 function Patricia() {
   this.view = new PatriciaView(this);
-  this.db = [];
-  this.actStateID = -1;
-
   this.root = new PatriciaNode();
-
-  this.speed = 5;
-
-  trieUtils.setDefaultColors(this);
-
-  this.running = false;
-  this.stopped = false;
-  this.continueAnimation = false;
+  trieUtils.setCommonTrieMembers(this);
 }
 
 //Check if any children's first character matches with the remaining word's first character, if yes, this is the way to go down the trie

@@ -23,15 +23,28 @@ trieUtils.init = function(id, trie) {
   trie.saveInDB();
 };
 
-//Set default colors based on color inputs data-default attribute
-trieUtils.setDefaultColors = function(trie) {
+//Set common node members
+trieUtils.setCommonTrieMembers = function(trie) {
 
   trie = trie || tree;
+
+  trie.db = [];
+  trie.actStateID = -1;
+  trie.speed = 5;
+  trie.running = false;
+  trie.stopped = false;
+  trie.continueAnimation = false;
 
   $('input.color[type=color]').each(function() {
     trie[$(this).attr('data-ref')] = $(this).attr('data-default');
   });
 };
+
+trieUtils.setCommonNodeMembers = function(node){
+  node.color = undefined;
+  node.xPosition = 0;
+  node.yPosition = 0;
+}
 
 trieUtils.prev = function(trie) {
 
