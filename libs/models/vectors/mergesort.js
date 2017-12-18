@@ -11,8 +11,10 @@ function Element(value){
 
 function Vector(){
 	this.view=new VectorView(this);
-	this.db=[];
-	this.actStateID=-1;
+	if(this.db == null){
+		this.db=[];
+		this.actStateID=-1;
+	}
 	this.elements=[];
 	
 	this.seperatedElements=[];
@@ -31,14 +33,16 @@ function Vector(){
 	this.newPointer=0;
 	
 	this.lastPos = -1;
-	
+	//Helper for saving when the status = 0
+	this.savedStatus = false;
 }
 
 Vector.prototype.init=function(){
 	this.elements=[];
-	this.db=[];
-	this.actStateID=-1;
-
+	if(this.db == null){
+		this.db=[];
+		this.actStateID=-1;
+	}
 	this.col1="#00FF80";
 	//this.col2="#00FFFF";
 	this.col3="#FF0000";
@@ -64,12 +68,14 @@ Vector.prototype.init=function(){
 	
 	this.paused=true;
 	this.finished=false;
-	if(this.actStateID!=-1)
-		this.saveInDB();
+	this.savedStatus = false;
+	//if(this.actStateID!=-1)
+	//	this.saveInDB();
 }
 
 Vector.prototype.saveInDB=function(){
-	if(this.status > 0 || this.db.length <= 0){
+	if(this.status > 0 || !this.savedStatus){
+		this.savedStatus = true;
 		var count=this.db.length-1;
 	 	if(count!=this.actStateID){
 	 		this.db.splice(this.actStateID+1,count-this.actStateID);
@@ -145,6 +151,7 @@ Vector.prototype.copy=function(){
 	
 	newVector.status = this.status;
 	newVector.doesSort=this.doesSort;
+	newVector.savedStatus = this.savedStatus;
 	if(this.doesSort){
 		newVector.pointer1=this.pointer1;
 		newVector.pointer2=this.pointer2;
@@ -201,6 +208,7 @@ Vector.prototype.replaceThis=function(toCopy){
 	this.status = toCopy.status;
 	
 	this.doesSort=toCopy.doesSort;
+	this.savedStatus = toCopy.savedStatus;
 	if(toCopy.doesSort){
 		this.pointer1=toCopy.pointer1;
 		this.pointer2=toCopy.pointer2;
@@ -311,7 +319,6 @@ Vector.prototype.setRandomElements=function(){
 		 tempVal=parseInt(Math.random()*40,10);
 		 tempElements.push(new Element(tempVal));
 	 }
-
 	 this.init();
 	 this.elements=tempElements;
 	this.setColorsMergeSort();
@@ -416,6 +423,7 @@ Vector.prototype.mergeSort=function(){
 							if(oneCounter == helpSeperated.length){
 								//Wir müssen den Status erhöhen
 								status ++;
+								this.savedStatus = false;
 								vector.lastPos = -1;
 							}
 							
@@ -423,6 +431,7 @@ Vector.prototype.mergeSort=function(){
 						else{
 							//Wir müssen den Status erhöhen
 							status ++;
+							this.savedStatus = false;
 							vector.lastPos = -1;
 						}
 						
@@ -609,9 +618,9 @@ Vector.prototype.getElementsByPrompt=function(){
 	 if(_in){
 		 this.init();
 		 this.elements=tempElements;
-		this.setColorsMergeSort();
-		this.saveInDB();
-		this.draw();
+		 this.setColorsMergeSort();
+		 this.saveInDB();
+		 this.draw();
 		 this.mergeSort();
 		 return true;
 	 }
