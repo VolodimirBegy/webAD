@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
-  <title>B+-tree in webAD</title>
+  <title>B+ tree in webAD</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -28,12 +28,15 @@
 
 	var tree = undefined;
 	var order = 2;
-	var speed = 3;
+	var speed = 2;
 	var limit = 5;
+	var horDist=30;
+	var verDist=140;
+	var colorCode="#FFFF99";
 
 	function randomTree(){
 		var cont = $('#container1')[0];	
-		tree=new BPlusTree(order, speed, limit, cont);
+		tree=new BPlusTree(order, speed, limit, cont, horDist, verDist, colorCode);
 		tree.randomTree();
 	}
 	
@@ -76,20 +79,40 @@
 
 
 
- 	function changeOrder() {
+ 	function changeValues() {
 
 		var nOrd = $("#order");
 		order= parseInt(nOrd.val());
 
 		var nSpeed = $("#speed");  
 		var helpSp=parseInt(nSpeed.val());
-		speed=11-helpSp;
+
+		if(helpSp==1) speed=4;
+		else if(helpSp==2) speed=3.5;
+		else if(helpSp==3) speed=3;
+		else if(helpSp==4) speed=2.5;
+		else if(helpSp==5) speed=2;
+		else if(helpSp==6) speed=1.5;
+		else if(helpSp==7) speed=1;
+		else if(helpSp==8) speed=0.75;
+		else if(helpSp==9) speed=0.5;
+		else if(helpSp==10) speed=0.25;
 
 		var nLimit = $("#limit");  
 		limit=parseInt(nLimit.val());
 
+		var hdist = $("#horDist");  
+		horDist=parseInt(hdist.val());
+
+		var vdist = $("#verDist");  
+		verDist=parseInt(vdist.val());
+
+		var col = $("#color");  
+		colorCode=col.val();
+
 		if(tree!=undefined){
-			tree.setSpeed(speed);
+			tree.setValues(speed, horDist, verDist, colorCode);
+			tree.draw(undefined, -1, -1);
 		}
 
    	}
@@ -160,11 +183,16 @@
 		Select tree order: 
 		<input type="number" name="order" style="width:40px" id="order" min="1" max="10" step="1" value="2"><br>
 		Select animation speed: 
-		<input type="number" name="speed" style="width:40px" id="speed" min="1" max="10" step="1" value="8"><br>
+		<input type="number" name="speed" style="width:40px" id="speed" min="1" max="10" step="1" value="5"><br>
 		Select number of inserted values: 
 		<input type="number" name="limit" style="width:40px" id="limit" min="1" max="200" step="1" value="5"><br>
-
-		<input type="button" value="Apply changes" id="change" onclick="changeOrder();javascript:_class('config', 'hide');return false;">
+		Select horizontal distance: 
+		<input type="number" name="horDist" style="width:50px" id="horDist" min="10" max="200" step="10" value="30"><br>
+		Select vertical distance: 
+		<input type="number" name="verDist" style="width:50px" id="verDist" min="10" max="400" step="10" value="140"><br>
+		Select color: 
+		<input type="color" name="color" style="width:60px" id="color" value="#ffff99"><br>
+		<input type="button" value="Apply changes" id="change" onclick="changeValues();javascript:_class('config', 'hide');return false;">
 
 
 	</div>
