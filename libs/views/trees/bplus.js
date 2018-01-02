@@ -1,8 +1,7 @@
 
-
 function BPlusTreeView(mod, cont){
-	this.model=mod;
 	this.scale=1;
+	this.model=mod;
 	this.stage = new Kinetic.Stage({
   		container: cont,
   		draggable: true,
@@ -23,15 +22,18 @@ BPlusTreeView.prototype.zoomOut=function(){
 }
 
 BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
-
-	var nodeWidth=100*this.model.order*this.scale; // Knotenbreite
+	
+	var pointerSpace =10*this.scale;
+	var cellWidth= 50*this.scale;
+	var nodeWidth=2*this.model.order*cellWidth + pointerSpace; // Knotenbreite
 	var nodeHeight = 20*this.scale; // Knotenhoehe
-	var vertDist=200*this.scale; // vertikaler Abstand zwischen den Ebenen	
-	var horDist = nodeWidth + 50*this.scale;// 250*this.scale; Distanz von 40 px ist gut (war so urspruenglich)
+	var vertDist=this.model.vdist*this.scale; // vertikaler Abstand zwischen den Ebenen	
+	var horDist = this.model.hdist*this.scale; // horizontaler Abstand zwischen den Knoten
 	var startPosX = 140*this.scale;
+	var startPosY = 140*this.scale;
 	var layer = new Kinetic.Layer();
-	var moveSpeed=parseInt(this.model.speed);
-
+	var clr = "black";
+	var moveSpeed=this.model.speed;
 	var actVal=parseInt(actualValue);
 	var op=parseInt(operation); // 1 = add, 2 = delete, 3 = search, 4=double value
 	
@@ -48,20 +50,20 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 		i++;
 	}
 
-	var level=2, oldLevel=1, childCount=0, s=0, a, b, c;
+	var level=0, oldLevel=0, childCount=0, s=0, a, b, c;
 	var middleChild=undefined, middleChildLeft=undefined, middleChildRight=undefined;
 
 	for(i=0; i<tmpNodes.length; i++){
 
-		level=1;
+		level=0;
 		helpNode=tmpNodes[i]; // Ebene feststellen
 		while(helpNode.parent!=undefined){
 			helpNode=helpNode.parent;
 			level++;
 		}
 		if(level>oldLevel) s=0;
-		tmpNodes[i].xPosition= startPosX + horDist*s;
-		tmpNodes[i].yPosition=vertDist*level;
+		tmpNodes[i].xPosition= startPosX + (nodeWidth + horDist)*s;
+		tmpNodes[i].yPosition=startPosY + (vertDist+nodeHeight)*level;
 		s++;
 		oldLevel=level;
 	}
@@ -77,20 +79,13 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 			}else{
 				middleChildLeft=tmpNodes[i].pointers[childCount/2-1]; // mittleres Kind ermitteln
 				middleChildRight=tmpNodes[i].pointers[childCount/2];
-
 				a=middleChildLeft.xPosition + nodeWidth;
 				b=middleChildRight.xPosition;
 				c=(b-a)*0.5;
-					
 				tmpNodes[i].xPosition= a + c - nodeWidth * 0.5;
 			}
 		}
 	}
-
-	
-
-
-
 
 	for(var i=0; i<tmpNodes.length; i++){ // alle Knoten durchgehen
 		if(tmpNodes[i]!=undefined){
@@ -98,24 +93,23 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 			var nodeBox = new Kinetic.Rect({ // das Rechteck fuer den ganzen Knoten
 				x: tmpNodes[i].xPosition,
 				y: tmpNodes[i].yPosition,
-				width: nodeWidth + 10*this.scale, // Breite des Knotens
+				width: nodeWidth, // Breite des Knotens
 			     height: nodeHeight,
-				fill: tmpNodes[i].color,
+				fill: this.model.color,
 				stroke: 'black',
 				strokeWidth: 2*this.scale,
 				
 			});
 			layer.add(nodeBox);
-
 		
 			for(var j=0; j<this.model.order*2; j++){ // jetzt die Zellen des Blattes
 					
 				var cell = new Kinetic.Rect({ // Hier werden die Zellen hinzugefuegt
-					x: tmpNodes[i].xPosition + nodeWidth/(this.model.order*2)*j + 10*this.scale, // punkte, wo die Zellen beginnen
+					x: tmpNodes[i].xPosition + cellWidth*j + pointerSpace, // Punkte, wo die Zellen beginnen
 					y: tmpNodes[i].yPosition,
-					width: nodeWidth/(this.model.order*2.5), // breite der zellen
+					width: cellWidth - pointerSpace, // breite der zellen
 				     height: nodeHeight,
-					fill: tmpNodes[i].color,
+					fill: this.model.color,
 					stroke: 'black',
 					strokeWidth: 2*this.scale, // liniendicke
 				});
@@ -123,23 +117,21 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 
 				if(tmpNodes[i].keys[j]!=undefined){
 
-					var content = tmpNodes[i].keys[j];	
-					var color = "black";
-
+					clr = "black";
 					if(tmpNodes[i].keys[j]==actVal && actNode == undefined){ 
-						if(op==1) color="green"; // neu hinzugefuegter Wert ist gruen
-						else if(op==3) color="green";
-						else if(op==4) color="red";
+						if(op==1) clr="green"; // neu hinzugefuegter Wert ist gruen
+						else if(op==3) clr="green";
+						else if(op==4) clr="red";
 					}
 				
 					var val = new Kinetic.Text({
 						x: cell.getX()+3*this.scale,
 						y: cell.getY()+3*this.scale,
-						text: content,
+						text: tmpNodes[i].keys[j],
 						fontSize: 15*this.scale,
 						fontFamily: 'Calibri',
-						fill: color,
-						width: 50+(0.6*nodeWidth),
+						fill: clr,
+						width: cellWidth,
 					});
 					layer.add(val);
 				}	
@@ -152,9 +144,9 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 				for(j=0; j<tmpNodes[i].parent.pointers.length; j++){
 					if(tmpNodes[i].parent.pointers[j]==tmpNodes[i]) break; // ermitteln, welche Nummer der Zeiger vom Elternknoten hat
 				}
-				parX = parX + (nodeWidth/(this.model.order*2))*j + 5; // jetzt steht der Startpunkt fest	
+				parX = parX + cellWidth*j + 5; // jetzt steht der Startpunkt fest	
 				var line = new Kinetic.Line({
-					points: [tmpNodes[i].xPosition + nodeWidth/2 + 5, tmpNodes[i].yPosition, parX, tmpNodes[i].parent.yPosition + nodeHeight],
+					points: [tmpNodes[i].xPosition + cellWidth*this.model.order + 5, tmpNodes[i].yPosition, parX, tmpNodes[i].parent.yPosition + nodeHeight],
 					stroke: 'black',
 					strokeWidth: 2*this.scale,
 					lineJoin: 'round',
@@ -164,9 +156,7 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 		}
 	}
 
-
-	// Die Box mit dem Protokoll hinzufuegen
-	var boxHeight=(this.model.history.length * 20 + 5)*this.scale;
+	var boxHeight=(this.model.history.length * 20 + 5)*this.scale; // Die Box mit dem Protokoll hinzufuegen
 	var distBottom=100*this.scale;
 
 	var protocolBox = new Kinetic.Rect({ 
@@ -182,8 +172,8 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 
 	var val;
 	var latestVal;
-	var color="black";
 	var hist, histOp, histVal;
+	clr="black";
 
 	for(i=0; i<this.model.history.length; i++){ // Die Zeilen der Protokoll-Box. Hier wird auf die Geschichte zugegriffen
 
@@ -191,8 +181,8 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 		histOp=hist.charAt(0);
 		histVal=hist.substr(2);
 
-		if(histOp=='r') color = "red";
-		else if(histOp=='a') color = "green";
+		if(histOp=='r') clr = "red";
+		else if(histOp=='a') clr = "green";
 
 		val = new Kinetic.Text({
 			x: 25*this.scale,
@@ -200,41 +190,36 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 			text: i+1 + ". " + histVal,
 			fontSize: 15*this.scale,
 			fontFamily: 'Calibri',
-			fill: color,
+			fill: clr,
 			width: 90*this.scale,
 		});
 		layer.add(val);
 	}
 			
-
-	var height=(vertDist+nodeHeight)*level;
+	var height=startPosY + (vertDist+2*nodeHeight)*(level+1);
 	if(height<(boxHeight+distBottom)) height=boxHeight+distBottom;
-
-	this.stage.setWidth(2*(startPosX*2+s*nodeWidth+10)); // Breite und Hoehe der Flaeche festlegen
+	this.stage.setWidth(startPosX + horDist + s*(nodeWidth+horDist)); // Breite und Hoehe der Flaeche festlegen
 	this.stage.setHeight(height);
 	this.stage.removeChildren();
 	this.stage.add(layer);	
 
-
 	if(actNode!=undefined){ // wandernder Kreis bei erster Zeichnung
 
-		color="black";
-		if(op==1) color="#66ff33"; // hinzufuegen
-		else if(op==2) color="#ff6666"; // loeschen
-		else if(op==3) color="#00ccff"; // suchen
+		clr="black";
+		if(op==1) clr="#66ff33"; // hinzufuegen
+		else if(op==2) clr="#ff6666"; // loeschen
+		else if(op==3) clr="#00ccff"; // suchen
 
 		var nValxPos=-15;
 		if(actVal<10) nValxPos=-5;
 		else if(actVal<100) nValxPos=-10;
 		
-
 		var circle = new Kinetic.Circle({
 			radius: 20*this.scale,
 			stroke: 'black',
 			strokeWidth: 2*this.scale,
-			fill: color,
+			fill: clr,
 		});
-
 
 		var nVal = new Kinetic.Text({
 			x: nValxPos*this.scale,
@@ -271,11 +256,8 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 				break;
 			}
 		}
-
 		i=0;	
-	
 		function moveCircle(){
-		
 			var tween = new Kinetic.Tween({
 				node: ball,
 				x: visitedNodes[i].xPosition + nodeWidth/2,
@@ -284,26 +266,15 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 				onFinish: function(){
 					i++;
 					if(visitedNodes[i]!=undefined){
-
 						setTimeout(function(){ 
 							moveCircle();
 						}, 1000);
 					}
 				}
 			});
-
 			tween.play();
 		}
-
 		if(tmpNodes.length>1) moveCircle();
-
 	}
-
 }
-
-
-
-
-
-
 
