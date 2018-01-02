@@ -1,18 +1,20 @@
 
 function Node(){ // Knoten
-	this.color="#FFFF99"; // blassgelb
 	this.keys=[]; 
 	this.pointers=[];
 	this.isLeaf=true; 
 	this.parent=undefined; 
 }
 
-function BPlusTree(ord, spe, lim, cont){
+function BPlusTree(ord, spe, lim, cont, hd, vd, colCode){
 	this.view=new BPlusTreeView(this, cont);
 	this.root=undefined;
 	this.order=ord;
 	this.speed=spe;
 	this.limit=lim;
+	this.hdist=hd;
+	this.vdist=vd;
+	this.color=colCode;
 	this.history=[];
 	this.remOps=[];
 	this.runningOp=false;
@@ -369,8 +371,11 @@ BPlusTree.prototype.draw=function(actNode, val, op){
 }
 
 
-BPlusTree.prototype.setSpeed=function(nsp){
+BPlusTree.prototype.setValues=function(nsp, nhd, nvd, ncol){
 	this.speed=nsp;
+	this.hdist=nhd;
+	this.vdist=nvd;
+	this.color=ncol;
 }
 
 
