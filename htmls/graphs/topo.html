@@ -761,18 +761,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 <!-- for the create matrix: -->
 <div id="createMatrix" class="popup hide"><div class="closer" onclick="javascript:_class('createMatrix', 'hide')"></div><a href="javascript:_class('createMatrix', 'hide')" class="close">X</a>
@@ -780,7 +787,7 @@
 		<div id="containerMatrix"></div>
 		<div class="rul">
 			<a href="#" class="z2" style="width:7%;height:50%;" onclick="zoomOutMatrix();return false;"></a>
-			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>	
+			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>
 		</div>
 		Initial Node:<input type="text" id="startNode" style="width:20px"><br><br>
        	<a href="#" id="createOk" style='font-size:25px;text-decoration: none;color:red;background:lime;box-shadow:inset 0px 2px 10px white, 0 0 5px silver' onclick="createOk();">Create</a>

@@ -5,13 +5,13 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
   <script src="../../libs/views/dictionaries/biseh.js"></script>
@@ -23,30 +23,30 @@
 	var biseh = undefined;
 	// From Extendible Hashing Modul
 	function init(){
-		
+
 		biseh = new Biseh();
 		var c1 = document.getElementById("container1");
 		var c2 = document.getElementById("containerElements");
 		var pBtn = $("#p");
 		biseh.view.initStage(c1,c2,pBtn);
-				
+
 	}
-		
+
 	function example(){
 		biseh.example();
 	}
 
- 
+
 	function clearTimes(){
 		//[30]
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
-    		window.clearTimeout(pids); 
+    		window.clearTimeout(pids);
 		}
-		
+
 	}
-	
+
 	function create(){
 	    if(!biseh.working && !biseh.queueWorks) {
             clearTimes();
@@ -54,7 +54,7 @@
         } else alert("Biseh is working!");
 
 	}
-	
+
 	function add(){
         if(!biseh.working && !biseh.queueWorks){
 			clearTimes();
@@ -62,35 +62,35 @@
         } else alert("Biseh is working!");
 
 	}
-	
+
 	function search(){
 		if(!biseh.working && !biseh.queueWorks){
 			clearTimes();
             biseh.search();
 		} else alert("Biseh is working!");
 	}
-	
+
 	function remove(){
 		if(!biseh.working && !biseh.queueWorks){
 			clearTimes();
             biseh.remove();
 		} else alert("Biseh is working!");
 	}
-	
+
 	function pre(){
 		if(!biseh.working && !biseh.queueWorks){
 			clearTimes();
             biseh.prev();
 		} else alert("Biseh is working!");
 	}
-	
+
 	function next(){
 		if(!biseh.working && !biseh.queueWorks){
 			clearTimes();
             biseh.next();
 		} else alert("Biseh is working!");
 	}
-	
+
 	function play(){
             if ( biseh.queueWorks || biseh.working && biseh.speed !== 0) {
 
@@ -117,7 +117,7 @@
             }
 
 
-		
+
 	}
 
 	function first(){
@@ -126,18 +126,18 @@
             biseh.firstState();
 		}
 	}
-	
+
 	function last(){
 		if(!biseh.working && !biseh.queueWorks){
 				clearTimes();
 				biseh.lastState();
 		}
 	}
-	
+
 	function zoomIn(){
         biseh.view.zoomIn();
 	}
-	
+
 	function zoomOut(){
         biseh.view.zoomOut();
 	}
@@ -145,19 +145,19 @@
 	function speed(){
 
 		if(biseh!==undefined){
-			
+
 			var sp = $("#speed");
 			var tmp = parseInt(sp.val());
-			
+
 			if(  tmp >= 0 || 6 <= tmp){
                 biseh.speed=tmp;
 				return;
-			} 
-			
+			}
+
 		}
 	}
 
-	
+
 </script>
 
 <body id="body" class="page" onload="init();example();return false;">
@@ -184,12 +184,12 @@
 		<input type="button" value="Create" id="create" onclick="create();return false;">
 		<input type="button" value="Add Value" id="add" onclick="add();return false;">
 		<input type="button" value="Remove Value" id="remove" onclick="remove();return false;">
-		<input type="button" value="Search for Value" id="search" onclick="search();return false;">	
+		<input type="button" value="Search for Value" id="search" onclick="search();return false;">
 		<input type="button" value="Display Values" id="display" onclick="$('#containerWrapperE').toggle();return false">
 		<div id="containerWrapperE" style="margin:5px; display:none;">
-			<div id="containerElements" style="background:white; color:black; text-align:left;max-height: 150px;overflow: scroll;">	
+			<div id="containerElements" style="background:white; color:black; text-align:left;max-height: 150px;overflow: scroll;">
 			</div>
-		</div>	
+		</div>
 	</div>
 	<div id="container1"></div>
 </article>
@@ -229,7 +229,7 @@
 	Animation speed:
   	<input type="number" name="speed" style="width:40px" id="speed" min="0" max="6" step="1" value=3 onchange="speed();return false;" >
   	<p>
-  		Note: Larger numbers slow down and zero pauses the animation. 
+  		Note: Larger numbers slow down and zero pauses the animation.
   	</p>
 	</div>
 </div>
@@ -289,18 +289,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

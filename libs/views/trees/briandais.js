@@ -75,15 +75,15 @@ BriandaisView.prototype.draw = function() {
     var shift = 0;
     var firstChar = true;
 
-    for (var key in node.chars) {
+    for (var key in node.children) {
       if (!firstChar) {
-        shift += circum * Object.keys(node.chars).length / 2 + arrowLength;
+        shift += circum * Object.keys(node.children).length / 2 + arrowLength;
       }
 
       firstChar = false;
 
-      if (Object.keys(node.chars[key].chars).length) {
-        shift += recursiveTraversalPosition(node.chars[key], shift * 2);
+      if (Object.keys(node.children[key].children).length) {
+        shift += recursiveTraversalPosition(node.children[key], shift * 2);
       }
     }
 
@@ -110,15 +110,15 @@ BriandaisView.prototype.draw = function() {
     layer.add(group);
 
     var charIndex = 0;
-    for (var key in tmpNodes[i].chars) {
+    for (var key in tmpNodes[i].children) {
 
       //var rect = this._getKinectRect(tmpNodes[i], key, charIndex);
 
       var color = tree.color2;
 
-      if (tmpNodes[i].chars[key].color == tree.color3) {
+      if (tmpNodes[i].children[key].color == tree.color3) {
         color = tree.color3;
-      } else if (tmpNodes[i].chars[key].isWord) {
+      } else if (tmpNodes[i].children[key].isWord) {
         color = tree.color1;
       }
 
@@ -188,11 +188,11 @@ BriandaisView.prototype.draw = function() {
     group.add(roof);
 
     // draw line (if node not root)
-    if (tmpNodes[i].parent && Object.keys(tmpNodes[i].chars).length) {
+    if (tmpNodes[i].parent && Object.keys(tmpNodes[i].children).length) {
 
       var parentIndex = 0;
-      for (var key in tmpNodes[i].parent.chars) {
-        if (tmpNodes[i].parent.chars[key] === tmpNodes[i]) {
+      for (var key in tmpNodes[i].parent.children) {
+        if (tmpNodes[i].parent.children[key] === tmpNodes[i]) {
           break;
         }
         ++parentIndex;

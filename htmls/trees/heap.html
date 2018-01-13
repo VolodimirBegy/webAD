@@ -5,13 +5,13 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
   <script src="../../libs/views/trees/heap.js"></script>
@@ -20,28 +20,28 @@
 
 <script>
 		var heap = undefined;
-		
+
 		function init(){
 			var c1 = document.getElementById("container1");
 			heap=new Heap();
 			heap.init();
 			heap.view.initStage(c1);
 		}
-		
+
 		function example(){
 			heap.example();
 		}
-	
+
 		function clearTimes(){
 			//[30]
 			var pids = window.setTimeout(function() {}, 0);
 
 			while (pids--) {
-	    		window.clearTimeout(pids); 
+	    		window.clearTimeout(pids);
 			}
-			
+
 		}
-	
+
 	function add(){
 		if(!heap.working){
 			heap.add();
@@ -49,16 +49,16 @@
 			elem.addClass("p1");
 		}
 	}
-	
+
 	function rem(){
 		if(!heap.working){
 			heap.removeMinimum();
 			var elem = $("#p");
 			elem.addClass("p1");
 		}
-		
+
 	}
-	
+
 	function un_pause(){
 		if(heap!=undefined && heap.timer!=undefined && heap.working){
 	     	var elem = $("#p");
@@ -70,16 +70,16 @@
 				heap.timer.resume();
 				elem.addClass("p1");
 			}
-				
+
 		}
 	}
-	
+
 	function random(){
 		if(!heap.working){
 			heap.random();
 		}
 	}
-	
+
 	function pre(){
 		if(!heap.working){
 			heap.prev();
@@ -87,7 +87,7 @@
 			elem.removeClass("p1");
 		}
 	}
-	
+
 	function next(){
 		if(!heap.working){
 			heap.next();
@@ -95,7 +95,7 @@
 			elem.removeClass("p1");
 		}
 	}
-	
+
 	function first(){
 		if(!heap.working){
 			heap.firstState();
@@ -103,7 +103,7 @@
 			elem.removeClass("p1");
 		}
 	}
-	
+
 	function last(){
 		if(!heap.working){
 			heap.lastState();
@@ -111,11 +111,11 @@
 			elem.removeClass("p1");
 		}
 	}
-	
+
 	function zoomIn(){
      	heap.view.zoomIn();
 	}
-	
+
 	function zoomOut(){
      	heap.view.zoomOut();
 	}
@@ -163,14 +163,14 @@
 	<div class="pole"><h2>Info</h2>
 	A binary heap is a heap data structure created using a binary tree. It can be seen as a binary tree with two additional constraints:
 	<br><br><li>Shape property</li>
-	A binary heap is a complete binary tree; that is, all levels of the tree, except possibly the last one (deepest) are fully filled, and, if the last level of 
+	A binary heap is a complete binary tree; that is, all levels of the tree, except possibly the last one (deepest) are fully filled, and, if the last level of
 	the tree is not complete, the nodes of that level are filled from left to right.
 	<br><br><li>Heap property</li>
 	All nodes are either greater than or equal to or less than or equal to each of its children, according to a comparison predicate defined for the heap.
-	Heaps with a mathematical "greater than or equal to" (≥) comparison predicate are called max-heaps; those with a mathematical "less than or equal to" (≤) 
+	Heaps with a mathematical "greater than or equal to" (≥) comparison predicate are called max-heaps; those with a mathematical "less than or equal to" (≤)
 	comparison predicate are called min-heaps. Min-heaps are often used to implement priority queues.
-	<br>Since the ordering of siblings in a heap is not specified by the heap property, a single node's two children can be freely interchanged unless doing so 
-	violates the shape property (compare with treap). Note, however, that in the common array-based heap, simply swapping the children might also necessitate moving 
+	<br>Since the ordering of siblings in a heap is not specified by the heap property, a single node's two children can be freely interchanged unless doing so
+	violates the shape property (compare with treap). Note, however, that in the common array-based heap, simply swapping the children might also necessitate moving
 	the children's sub-tree nodes to retain the heap property.
 	<br>The binary heap is a special case of the d-ary heap in which d = 2.
 	<img src="../../images/minheap.png" alt="bstimage">[28]
@@ -238,18 +238,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

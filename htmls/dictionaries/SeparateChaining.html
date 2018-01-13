@@ -5,13 +5,13 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
   <script src="../../libs/views/dictionaries/separateChaining.js"></script>
@@ -19,15 +19,15 @@
 </head>
 
 <script>
-	
+
 	var sc = undefined;
-	
+
 	function init() {
 		sc = new SepChain();
 		var c1 = document.getElementById("container1");
 		sc.view.initStage(c1);
 	}
-	
+
 	function dynamic() {
 		sc.dynamic = document.getElementById('dynamic').checked;
 	}
@@ -36,20 +36,20 @@
 		sc.init(9);
 		sc.draw();
 	}
-	
+
 	function clearTimes() {
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
-    		window.clearTimeout(pids); 
+    		window.clearTimeout(pids);
 		}
 	}
-	
+
 	function create() {
 		if(!sc.working) {
 			clearTimes();
 			var size = prompt("How big should the table be?");
-			if(!isNaN(size) && size != null) {	
+			if(!isNaN(size) && size != null) {
 				sc.reinit(size);
 				sc.draw();
 			}
@@ -74,7 +74,7 @@
 			}
 		}
 	}
-	
+
 	function rem() {
 		if(!sc.working) {
 			clearTimes();
@@ -91,32 +91,32 @@
 			sc.prev();
 		}
 	}
-	
+
 	function next() {
 		if(!sc.working) {
 			clearTimes();
 			sc.next();
 		}
 	}
-	
+
 	function first() {
 		if(!sc.working) {
 			clearTimes();
 			sc.firstState();
 		}
 	}
-	
+
 	function last() {
 		if(!sc.working) {
 			clearTimes();
 			sc.lastState();
 		}
 	}
-	
+
 	function zoomIn() {
      	sc.view.zoomIn();
 	}
-	
+
 	function zoomOut() {
      	sc.view.zoomOut();
 	}
@@ -177,7 +177,7 @@
 	<br><br>
 	The elements are distributed in the hash table accoring to a modulo (%) operation between an element and the table size.
 	<br><br>
-	The collision resolution allocates colliding elements into an array of buckets. In case of a dynamic hash table, a treshold fill factor of 70% shall not be exceeded. If however this is the case, the table doubles in size and reallocates the elements. 
+	The collision resolution allocates colliding elements into an array of buckets. In case of a dynamic hash table, a treshold fill factor of 70% shall not be exceeded. If however this is the case, the table doubles in size and reallocates the elements.
 	<br><br>
 	<a href="https://en.wikipedia.org/wiki/Hash_table#Separate_chaining" target="_blank">https://en.wikipedia.org/wiki/Hash_table#Separate_chaining</a>
 	</div>
@@ -247,18 +247,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

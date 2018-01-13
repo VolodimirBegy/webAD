@@ -5,13 +5,13 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
   <script src="../../libs/views/trees/traversalView.js"></script>
@@ -19,27 +19,27 @@
 </head>
 
 <script>
-		
+
 		var tree=undefined;
-		
+
 		function init(){
 			var c1 = document.getElementById("container1");
 			tree = new BinTree();
 			tree.view.initStage(c1);
 		}
-		
+
 		function example(){
 			tree.example();
 		}
-	
+
 		function clearTimes(){
 			var pids = window.setTimeout(function() {}, 0);
 
 			while (pids--) {
-	    		window.clearTimeout(pids); 
+	    		window.clearTimeout(pids);
 			}
 		}
-	
+
 	function preorder(){
 		if (running == "") {
 			var btn = document.getElementById("preorder");
@@ -53,7 +53,7 @@
 			tree.preorder(btn, oldColor);
 		}
 	}
-	
+
 	function postorder(){
 		if (running == "") {
 			var btn = document.getElementById("postorder");
@@ -66,9 +66,9 @@
 			}
 			tree.postorder(btn, oldColor);
 		}
-		
+
 	}
-	
+
 	function inorder(){
 		if (running == "") {
 			var btn = document.getElementById("inorder");
@@ -80,9 +80,9 @@
 				elem.addClass("p1");
 			}
 			tree.inorder(btn, oldColor);
-		}	
+		}
 	}
-	
+
 	function createExp(){
 		document.getElementById("preorder").style.backgroundColor = document.getElementById("random").style.backgroundColor;
 		document.getElementById("postorder").style.backgroundColor = document.getElementById("random").style.backgroundColor;
@@ -90,7 +90,7 @@
 		clearTimes();
 		tree.createExp();
 	}
-	
+
 	function random(){
 		document.getElementById("preorder").style.backgroundColor = document.getElementById("random").style.backgroundColor;
 		document.getElementById("postorder").style.backgroundColor = document.getElementById("random").style.backgroundColor;
@@ -98,7 +98,7 @@
 		clearTimes();
 		tree.random();
 	}
-	
+
 	function speed(){
 		if(tree!=undefined){
 			var sp = $("#speed");
@@ -110,7 +110,7 @@
 			resetFields();
 		}
 	}
-	
+
 	function numberRandom(){
 		if(tree!=undefined){
 			var sp = $("#numberRandom");
@@ -122,7 +122,7 @@
 			resetFields();
 		}
 	}
-	
+
 	function un_pause(){
 		if(tree != undefined){
       		var elem = $("#p");
@@ -146,46 +146,46 @@
 						marker = marker + 1;
 						hj = hj + 1;
 					}
-					tree.postorder(btn, oldColor); 
+					tree.postorder(btn, oldColor);
 					elem.addClass("p1");
 				}
 				if (running == "in" ) {
 					var btn = document.getElementById("inorder");
 					var oldColor = document.getElementById("random").style.backgroundColor;
-					if (lastStep == "two" || lastStep == "four") 
+					if (lastStep == "two" || lastStep == "four")
 						marker = marker + 1;
-					if (lastStep == "four") 
+					if (lastStep == "four")
 						hj = hj + 1;
-					tree.inorder(); 
+					tree.inorder();
 					elem.addClass("p1");
 				}
 			}
 		}
 		else
 			alert("No tree created!");
-	} 
-	
+	}
+
 	function lockoutSubmit(button) {
 		button.style.visibility = "hidden";
 		button.color = "blue";
-		
+
 		setTimeout(function(){
 			button.style.visibility = "visible";
 		}, 1000+tree.speed)
 }
-	
+
 	function pre(){
 	//	clearTimes();
 	//	tree.prev();
 	}
-	
+
 	function next(){
 		if (tree.speed == 0 && lastStep != "") {
 			if (running == "pre") {
 				var btn = document.getElementById("preorder");
 				var oldColor = document.getElementById("random").style.backgroundColor;
 				tree.preorder(btn, oldColor);
-			}	
+			}
 			if (running == "post") {
 				var btn = document.getElementById("postorder");
 				var oldColor = document.getElementById("random").style.backgroundColor;
@@ -196,23 +196,23 @@
 				var oldColor = document.getElementById("random").style.backgroundColor;
 				tree.inorder(btn, oldColor);
 			}
-		}		
+		}
 	}
-	
+
 	function first(){
 	//	clearTimes();
 	//	tree.firstState();
 	}
-	
+
 	function last(){
 	//	clearTimes();
 	//	tree.lastState();
 	}
-	
+
 	function zoomIn(){
      	tree.view.zoomIn();
 	}
-	
+
 	function zoomOut(){
      	tree.view.zoomOut();
 	}
@@ -241,11 +241,11 @@
 	<div id="menu" class="open">
 		<a href="javascript:_class('menu', 'open')">Traversal</a>
         <input type="button" value="Generate Random Numeric" id="random" onclick="random();return false;">
-		<input type="button" value="Create Expression" id="createExp" onclick="createExp() ;return false;">	
-		<input type="button" value="Preorder Traversal" id="preorder" onclick="preorder(this);return false;">	
-		<input type="button" value="Postorder Traversal" id="postorder" onclick="postorder() ;return false;">	
-		<input type="button" value="Inorder Traversal" id="inorder" onclick="inorder() ;return false;">	
-	</div>	
+		<input type="button" value="Create Expression" id="createExp" onclick="createExp() ;return false;">
+		<input type="button" value="Preorder Traversal" id="preorder" onclick="preorder(this);return false;">
+		<input type="button" value="Postorder Traversal" id="postorder" onclick="postorder() ;return false;">
+		<input type="button" value="Inorder Traversal" id="inorder" onclick="inorder() ;return false;">
+	</div>
 	<div id="container1"></div>
 </article>
 <footer>
@@ -262,7 +262,7 @@
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
-	Legend: 
+	Legend:
 	<br>
 	<li>A grey node is an unvisited node.</li>
 	<li>A blue node is a visited node.</li>
@@ -370,18 +370,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

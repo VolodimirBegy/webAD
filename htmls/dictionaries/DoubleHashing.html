@@ -5,13 +5,13 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
   <script src="../../libs/views/dictionaries/default.js"></script>
@@ -19,98 +19,98 @@
 </head>
 
 <script>
-	
+
 	var ht = undefined;
-	
+
 	function init(){
 		ht=new DoubleHashing();
 		var c1 = document.getElementById("container1");
-		ht.view.initStage(c1);	
+		ht.view.initStage(c1);
 		ht.draw();
 	}
-	
+
 	function example(){
 		ht.example();
 	}
-	
+
 	function _extendible(){
 		init();
 		ht._static=!document.getElementById('_extendible').checked;
 	}
-	
+
 	function clearTimes(){
 		//[30]
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
-    		window.clearTimeout(pids); 
+    		window.clearTimeout(pids);
 		}
 		for(var i=0;i<ht.rows.length;i++){
 			ht.rows[i].color="black";
 		}
 		//ht.draw(c1);
 	}
-	
+
 	function create(){
 		if(!ht.working){
 			clearTimes();
 			ht.init();
 		}
 	}
-	
+
 	function add(){
 		if(!ht.working){
 			clearTimes();
 			ht.add(undefined,undefined);
 		}
 	}
-	
+
 	function search(){
 		if(!ht.working){
 			clearTimes();
 			ht.search();
 		}
 	}
-	
+
 	function rem(){
 		if(!ht.working){
 			clearTimes();
 			ht.remove();
 		}
 	}
-	
+
 	function pre(){
 		if(!ht.working){
 			clearTimes();
 			ht.prev();
 		}
 	}
-	
+
 	function next(){
 		if(!ht.working){
 			clearTimes();
 			ht.next();
 		}
 	}
-	
+
 	function first(){
 		if(!ht.working){
 			clearTimes();
 			ht.firstState();
 		}
 	}
-	
+
 	function last(){
 		if(!ht.working){
 			clearTimes();
 			ht.lastState();
 		}
 	}
-	
+
 	function zoomIn(){
      	ht.view.zoomIn();
 	}
-	
+
 	function zoomOut(){
      	ht.view.zoomOut();
 	}
@@ -164,10 +164,10 @@
 	<br>
 	Collided and deleted buckets are marked purple, they need to be included in the collision path
 	<br><br>
-	Double hashing is a computer programming technique used in hash tables to resolve hash collisions, cases when two different values to be searched for produce the same hash key. 
+	Double hashing is a computer programming technique used in hash tables to resolve hash collisions, cases when two different values to be searched for produce the same hash key.
 	It is a popular collision-resolution technique in open-addressed hash tables. Double hashing is implemented in many popular libraries.
-    <br>Like linear probing, it uses one hash value as a starting point and then repeatedly steps forward an interval until the desired value is located, an empty location is reached, 
- 	or the entire table has been searched; but this interval is decided using a second, independent hash function (hence the name double hashing). Unlike linear probing and quadratic probing, 
+    <br>Like linear probing, it uses one hash value as a starting point and then repeatedly steps forward an interval until the desired value is located, an empty location is reached,
+ 	or the entire table has been searched; but this interval is decided using a second, independent hash function (hence the name double hashing). Unlike linear probing and quadratic probing,
  	the interval depends on the data, so that even values mapping to the same location have different bucket sequences; this minimizes repeated collisions and the effects of clustering.[19]
 	<br><br>
 	<div>[19]: <a href="https://en.wikipedia.org/wiki/Double_hashing" target="_blank">https://en.wikipedia.org/wiki/Double_hashing</a></div>
@@ -235,18 +235,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

@@ -5,13 +5,13 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
   <script src="../../libs/views/dictionaries/extendibleHashing.js"></script>
@@ -21,75 +21,75 @@
 
 <script>
 	var eh_instance = undefined;
-	
+
 
 	function init(){
-		
+
 		eh_instance=new ExtendibleHashing();
 		var c1 = document.getElementById("container1");
 		var c2 = document.getElementById("containerElements");
 		var pBtn = $("#p");
-		eh_instance.view.initStage(c1,c2,pBtn);	
-				
+		eh_instance.view.initStage(c1,c2,pBtn);
+
 	}
-		
+
 	function example(){
 		eh_instance.example();
 	}
 
- 
+
 	function clearTimes(){
 		//[30]
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
-    		window.clearTimeout(pids); 
+    		window.clearTimeout(pids);
 		}
-		
+
 	}
-	
-	function create(){		
+
+	function create(){
 		if(!eh_instance.working){
 			clearTimes();
 			eh_instance.init();
-		}		
+		}
 	}
-	
+
 	function add(){
 		if(!eh_instance.working){
 			clearTimes();
 			eh_instance.prepareNextConsistentStateAndInvokeTask("add");
 		}
 	}
-	
+
 	function search(){
 		if(!eh_instance.working){
 			clearTimes();
 			eh_instance.prepareNextConsistentStateAndInvokeTask("search");
 		}
 	}
-	
+
 	function rem(){
 		if(!eh_instance.working){
 			clearTimes();
 			eh_instance.prepareNextConsistentStateAndInvokeTask("remove");
 		}
 	}
-	
+
 	function pre(){
 		if(!eh_instance.working){
 			clearTimes();
 			eh_instance.prev();
 		}
 	}
-	
+
 	function next(){
 		if(!eh_instance.working){
 			clearTimes();
 			eh_instance.next();
 		}
 	}
-	
+
 	function play(){
 
 		// Pause when active and speed not equal to zero!
@@ -101,26 +101,26 @@
 			return;
 		}
 
-		// Play when inactive 
+		// Play when inactive
 		if( !eh_instance.working){
 
-			eh_instance.working=true; // will be automatically unset	
-			clearTimes();	
+			eh_instance.working=true; // will be automatically unset
+			clearTimes();
 
 			var sp = $("#speed");
 			var speed = 3;
-			
-			if(parseInt(sp.val()) > 0) 
+
+			if(parseInt(sp.val()) > 0)
 				speed = parseInt(sp.val()); // If user set the speed in config before pressing play
 			else
 				sp.val(speed); // Update spinner with an alternative speed.
-	
+
 			eh_instance.continueTask(speed);
-			
+
 			return;
 		}
 
-		
+
 	}
 
 	function first(){
@@ -129,18 +129,18 @@
 				eh_instance.firstState();
 		}
 	}
-	
+
 	function last(){
 		if(!eh_instance.working){
 				clearTimes();
 				eh_instance.lastState();
 		}
 	}
-	
+
 	function zoomIn(){
      	eh_instance.view.zoomIn();
 	}
-	
+
 	function zoomOut(){
      	eh_instance.view.zoomOut();
 	}
@@ -148,19 +148,19 @@
 	function speed(){
 
 		if(eh_instance!==undefined){
-			
+
 			var sp = $("#speed");
 			var tmp = parseInt(sp.val());
-			
-			if(  tmp >= 0 || 6 <= tmp){ 
+
+			if(  tmp >= 0 || 6 <= tmp){
 				eh_instance.speed=tmp;
 				return;
-			} 
-			
+			}
+
 		}
 	}
 
-	
+
 </script>
 
 <body id="body" class="page" onload="init();example();return false;">
@@ -187,12 +187,12 @@
 		<input type="button" value="Create" id="create" onclick="create();return false;">
 		<input type="button" value="Add Value" id="add" onclick="add();return false;">
 		<input type="button" value="Remove Value" id="remove" onclick="rem();return false;">
-		<input type="button" value="Search for Value" id="search" onclick="search();return false;">	
+		<input type="button" value="Search for Value" id="search" onclick="search();return false;">
 		<input type="button" value="Display Values" id="display" onclick="$('#containerWrapperE').toggle();return false">
 		<div id="containerWrapperE" style="margin:5px; display:none;">
-			<div id="containerElements" style="background:white; color:black; text-align:left;max-height: 150px;overflow: scroll;">	
+			<div id="containerElements" style="background:white; color:black; text-align:left;max-height: 150px;overflow: scroll;">
 			</div>
-		</div>	
+		</div>
 	</div>
 	<div id="container1"></div>
 </article>
@@ -218,11 +218,11 @@
 			<li>k: local depth</li>
 		</ul>
 		Note: Setting the speed to zero or pressing pause causes the animation to halt. If you invoke an operation in a paused state the animation will <b>not</b> continue, unless you resume with the play button. You can resume from <i>any</i> state.
-		
+
 		<h3>Basics</h3>
 		<p>Extendible Hashing uses a hash function that computes the binary representation of an arbitrary key and an array, serving as a directory, where each entry maps to exactly one bucket. The computed hash maps to exactly one entry in the array, whereby the bucket is determined.
 		</p>
-		<p> 
+		<p>
 		The hash function also uses a bitmask to blend out unnecessary bits. This however depends entirely on the size of the array, which is defined as 2<sup>d</sup>, with <i>d</i> being the <i>global depth</i>. So the hash consists only of d bits. This implementation uses the least-significant bits.
 		</p>
 		<p>
@@ -236,7 +236,7 @@
 		<b>If  k < d : split the bucket</b> </br></br>
 		<b>If  k = d :	double the array size</b> </br></br>
 		</p>
-		
+
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
@@ -244,7 +244,7 @@
 	Animation speed:
   	<input type="number" name="speed" style="width:40px" id="speed" min="0" max="6" step="1" value=3 onchange="speed();return false;" >
   	<p>
-  		Note: Larger numbers slow down and zero pauses the animation. 
+  		Note: Larger numbers slow down and zero pauses the animation.
   	</p>
 	</div>
 </div>
@@ -305,18 +305,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

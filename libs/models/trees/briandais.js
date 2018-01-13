@@ -14,8 +14,8 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 */
 
 
-function BriandaisNode(parent, isWord, chars) {
-  this.chars = chars || {};
+function BriandaisNode(parent, isWord, children) {
+  this.children = children || {};
   this.parent = parent;
   this.isWord = isWord || false;
   trieUtils.setCommonNodeMembers(this);
@@ -25,7 +25,7 @@ Briandais._getMatchingValue = function(node, word) {
 
   //this way this function can be used for strings and chars
   var char = (word.length == 1) ? word : word.charAt(0);
-  return node.chars[char];
+  return node.children[char];
 };
 
 BriandaisNode.prototype.insert = function(word) {
@@ -46,8 +46,8 @@ BriandaisNode.prototype.insert = function(word) {
   }
   //Case 3 - here is NO node with that char so we insert char as node and repeat
   else if (word.length > 0) {
-    this.chars[char] = new BriandaisNode(this, (word.length == 1));
-    return this.chars[char].insert(word.substring(1));
+    this.children[char] = new BriandaisNode(this, (word.length == 1));
+    return this.children[char].insert(word.substring(1));
   }
   //Case 4 - We reached the end of "word"
   return this;
@@ -66,12 +66,12 @@ BriandaisNode.prototype.removeWord = function(word) {
       parent = node.parent;
 
       //Delete this node from parent if it has no chars
-      if (!Object.keys(node.chars).length) {
-        delete parent.chars[word.charAt(x)];
+      if (!Object.keys(node.children).length) {
+        delete parent.children[word.charAt(x)];
       }
 
       //If parents has more chars or is a word stop here
-      if (Object.keys(parent.chars).length || parent.isWord) {
+      if (Object.keys(parent.children).length || parent.isWord) {
         break;
       }
 
@@ -132,8 +132,8 @@ BriandaisNode.prototype.findWords = function() {
   var fullPrefix = '';
   while (actParent) {
 
-    for (var key in actParent.chars) {
-      if (actParent.chars[key] === actNode) {
+    for (var key in actParent.children) {
+      if (actParent.children[key] === actNode) {
         fullPrefix = key + fullPrefix;
         break;
       }
@@ -148,8 +148,8 @@ BriandaisNode.prototype.findWords = function() {
       words.push(word);
     }
 
-    for (var key in node.chars) {
-      recursiveTraversal(node.chars[key], word + key);
+    for (var key in node.children) {
+      recursiveTraversal(node.children[key], word + key);
     }
   }
 
@@ -278,7 +278,7 @@ Briandais.prototype.add = function(word) {
       else if (word.length > 0) {
 
         var newNode = new BriandaisNode(actNode, (word.length == 1));
-        actNode.chars[char] = newNode;
+        actNode.children[char] = newNode;
 
         word = word.substring(1);
         actNode.color = tree.color2;
@@ -534,12 +534,12 @@ Briandais.prototype.remove = function(word) {
           if (parent) {
 
             //Delete this node from parent if it has no chars
-            if (!Object.keys(actNode.chars).length) {
-              delete parent.chars[char];
+            if (!Object.keys(actNode.children).length) {
+              delete parent.children[char];
             }
 
             //If parents has more chars or is a word stop here
-            if (Object.keys(parent.chars).length || parent.isWord) {
+            if (Object.keys(parent.children).length || parent.isWord) {
               actNode.color = tree.color2;
               return doEndLoop(parent);
             }

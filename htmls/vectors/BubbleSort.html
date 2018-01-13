@@ -5,14 +5,14 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
   <script src="../../libs/externalLibs/annyang.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
   <script src="../../libs/views/vectors/default.js"></script>
@@ -23,7 +23,7 @@
 
 	if (annyang) {
 	  annyang.debug(true);
-	  
+
 	  var commands = {
 	    'sort': vsort,
 	    'stop': vstop,
@@ -35,7 +35,7 @@
 
 	  annyang.start();
 	}
-	
+
 	function vsort(){
 		var elem = $("#p");
 		if(!elem.hasClass("p1")){
@@ -52,7 +52,7 @@
 			 window.speechSynthesis.speak(msg);
 		}
 	}
-	
+
 	function vstop(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -69,7 +69,7 @@
 			 window.speechSynthesis.speak(msg);
 		}
 	}
-	
+
 	function vslow(){
 		if(vec!=undefined && vec.size()>0){
 			$('#speed').val("10");
@@ -77,7 +77,7 @@
 			vec.saveInDB();
 		}
 	}
-	
+
 	function vfast(){
 		if(vec!=undefined && vec.size()>0){
 			$('#speed').val("1");
@@ -95,18 +95,18 @@
 		vec.example();
 		resetFields();
 	}
-	
+
 	function resetFields(){
 		$("#col1").val(vec.col1);
 		$("#col2").val(vec.col2);
 		$("#col3").val(vec.col3);
 		$("#col4").val(vec.col4);
-		
+
 		var sp = $("#speed");
 		sp.val(vec.speed);
 	}
-	
-	
+
+
 	function speed(){
 		if(vec!=undefined && vec.size()>0){
 			var sp = $("#speed");
@@ -118,8 +118,8 @@
 			resetFields();
 		}
 	}
-		
-	
+
+
 	function col1(){
 		if(vec!=undefined && vec.size()>0){
 			var col1 = $("#col1");
@@ -133,7 +133,7 @@
 			resetFields();
 		}
 	}
-	
+
 	function col2(){
 		if(vec!=undefined && vec.size()>0){
 			var col2 = $("#col2");
@@ -147,7 +147,7 @@
 			resetFields();
 		}
 	}
-	
+
 	function col3(){
 		if(vec!=undefined && vec.size()>0){
 			var col3 = $("#col3");
@@ -161,7 +161,7 @@
 			resetFields();
 		}
 	}
-	
+
 	function col4(){
 		if(vec!=undefined && vec.size()>0){
 			var col4 = $("#col4");
@@ -175,7 +175,7 @@
 			resetFields();
 		}
 	}
-	
+
 	function clearTimes(){
 		var elem = $("#p");
 		elem.removeClass("p1");
@@ -185,53 +185,53 @@
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
-    		window.clearTimeout(pids); 
+    		window.clearTimeout(pids);
 		}
 	}
 
 	function create(){
 		clearTimes();
-		
+
 		if(vec.getElementsByPrompt() && vec.size()>1){
 			var elem = $("#p");
 			elem.addClass("p1");
 			resetFields();
 		}
-	}	
+	}
 
 	function rand(){
 		clearTimes();
-		
+
 		vec.setRandomElements();
 		var elem = $("#p");
 		elem.addClass("p1");
 		resetFields();
 	}
-	
+
 	function pre(){
 		clearTimes();
 		vec.prev();
 		resetFields();
 	}
-	
+
 	function next(){
 		clearTimes();
 		vec.next();
 		resetFields();
 	}
-	
+
 	function first(){
 		clearTimes();
 		vec.firstState();
 		resetFields();
 	}
-	
+
 	function last(){
 		clearTimes();
 		vec.lastState();
 		resetFields();
 	}
-	
+
 	function un_pause(){
 		if(vec!=undefined && vec.size()>0){
 			if(!vec.finished){
@@ -241,7 +241,7 @@
 				}
 				else{
 					vec.paused=false;
-					vec.bubbleSort(); 
+					vec.bubbleSort();
 					elem.addClass("p1");
 				}
 			}
@@ -249,11 +249,11 @@
 		else
 			alert("No vector created!");
 	}
-	
+
 	function zoomIn(){
      	vec.view.zoomIn();
 	}
-	
+
 	function zoomOut(){
      	vec.view.zoomOut();
 	}
@@ -393,18 +393,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

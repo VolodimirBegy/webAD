@@ -5,14 +5,14 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
     <!--<script src="../../libs/externalLibs/jquery.confirm-master/jquery.confirm.js"></script>-->
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
   <script src="./weightedUndirectedMatrix.js"></script>
 
@@ -21,10 +21,10 @@
 </head>
 
 <script>
-	
+
 	var _matrix=undefined;
 	var graph=undefined;
-	
+
 	function _create(){
 		if(graph!=undefined){
 			clearTimes();
@@ -33,40 +33,40 @@
 			if(graph.view.layer!=undefined)
 				graph.view.layer.remove();
 		}
-		
+
 		graph=new WeightedUndirectedGraph();
-		
+
 		if(_matrix!=undefined && _matrix.stageMin!=undefined){
 			_matrix.stageMin.removeChildren();
 			_matrix=undefined;
 		}
 	}
-	
+
 	function add(){
 		if(graph!=undefined){
 			if(graph.A==undefined){
 				var amount=graph.costMatrix.length;
 				var newamount=0;
 				var check=confirm("Insert new nodes? (Matrix contains "+amount+" nodes now)");
-				
+
 				if(check){
 					newamount=parseInt(prompt("Amount of new nodes:"));
 					if(isNaN(newamount)||newamount<0)return;
 				}
 				//for mini
 				var oldM=_matrix.miniMatrix.slice();
-				
+
 				_matrix=new WeightedUndirectedMatrix(amount);
-				
+
 				_matrix.matrix=graph.costMatrix;
 				_matrix.extendBy(newamount,graph.costMatrix);
-				
+
 				var cm = $('#containerMatrix')[0];
 				var cmMin = $('#containerMatrixMini')[0];
 				_matrix.initStage(cm,cmMin);
-				
+
 				_matrix.draw();
-				
+
 				//mini
 				_matrix.miniMatrix=oldM;
 				_matrix.minNum=oldM.length;
@@ -81,24 +81,24 @@
 				window.alert("Algorithm already in progress");
 		}
 	}
-	
+
 	function clearTimes(){
         var elem = $("#p");
 		elem.removeClass("p1");
-        
+
 		//[30]
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
-    		window.clearTimeout(pids); 
+    		window.clearTimeout(pids);
 		}
 	}
-	
+
 	//[35]
 	function randInt(min, max) {
 		  return Math.floor(Math.random() * (max - min)) + min;
 	}
-	
+
 	function random(){
 		clearTimes();
 		var amount=randInt(3,10);
@@ -107,7 +107,7 @@
 			matrix[i]=new Array(amount);
 		}
 		var startNode=undefined;
-		
+
 		var fill=undefined;
 		var weight=undefined;
 		var fM=4;
@@ -124,9 +124,9 @@
 				}
 			}
 		}
-		
+
 		var nodes=[];
-		
+
 		function addConnected(index){
 			var cNode=new Node();
 			cNode.index=index;
@@ -137,7 +137,7 @@
 					cNode.connectedTo.push(newNode);
 				}
 			}
-			
+
 			nodes.push(cNode);
 
 			for(i=0;i<cNode.connectedTo.length;i++){
@@ -150,9 +150,9 @@
 					addConnected(cNode.connectedTo[i].index);
 			}
 		}
-		
+
 		addConnected(startNode);
-		
+
 		if(nodes.length!=matrix.length){
 			random();
 		}
@@ -160,7 +160,7 @@
 			var c1 = document.getElementById("container1");
 			graph.fill(matrix,startNode);
 			graph.init(c1);
-			
+
 			_matrix=new WeightedUndirectedMatrix(amount);
 			var cm = $('#containerMatrix')[0];
 			var cmMin = $('#containerMatrixMini')[0];
@@ -177,14 +177,14 @@
 			}
 		}
 	}
-	
+
 	function example(){
 		var matrix=new Array(5);
 		for(var i=0;i<5;i++){
 			matrix[i]=new Array(5);
 		}
 		var startNode=0;
-		
+
 		matrix[0][1]=12;
 		matrix[1][2]=3;
 		matrix[1][0]=12;
@@ -200,7 +200,7 @@
 		graph.fill(matrix,startNode);
 		graph.init(c1);
 		_matrix=new WeightedUndirectedMatrix(5);
-		
+
 		var cm = $('#containerMatrix')[0];
 		var cmMin = $('#containerMatrixMini')[0];
 		_matrix.initStage(cm,cmMin);
@@ -209,21 +209,21 @@
 		_matrix.minNum=5;
 		_matrix.drawMin();
 	}
-	
+
 	function create(){
 		var amount=parseInt(prompt("Amount of nodes:\nmin 2"));
 		if(isNaN(amount)||amount<2)return;
-		
+
 		//prevent deletion of mini matrix due to object overwrite
 		var oldM=undefined;
 		if(_matrix!=undefined)
 			oldM=_matrix.miniMatrix.slice();
-		
+
 		_matrix=new WeightedUndirectedMatrix(amount);
 		var cm = $('#containerMatrix')[0];
 		var cmMin = $('#containerMatrixMini')[0];
 		_matrix.initStage(cm,cmMin)
-		
+
 		_matrix.draw();
 		//mini display
 		if(oldM!=undefined){
@@ -231,13 +231,13 @@
 			_matrix.minNum=oldM.length;
 			_matrix.drawMin();
 		}
-		
+
 		var tf = $("#startNode");
 		tf.val("");
 		tf.css("background-color","white");
 		_class('createMatrix', 'hide');
 	}
-	
+
 	function createOk(){
 
 		var tf = $("#startNode");
@@ -248,9 +248,9 @@
 			window.alert("Invalid initial node. It must be between 0 and "+(_matrix.number-1));
 			return;
 		}
-		
+
 		var nodes=[];
-		
+
 		function addConnected(index){
 			var cNode=new Node();
 			cNode.index=index;
@@ -261,7 +261,7 @@
 					cNode.connectedTo.push(newNode);
 				}
 			}
-			
+
 			nodes.push(cNode);
 
 			for(i=0;i<cNode.connectedTo.length;i++){
@@ -274,9 +274,9 @@
 					addConnected(cNode.connectedTo[i].index);
 			}
 		}
-		
+
 		addConnected(startNode);
-		
+
 		/*if(nodes.length!=_matrix.matrix.length){
 			window.alert("graph not connected");*/
 		if(nodes.length<2){
@@ -305,7 +305,7 @@
 			}
 		}
 	}
-	
+
 	function prim(){
 		if(graph!=undefined){
 			clearTimes();
@@ -317,23 +317,23 @@
 			window.alert("No graph created");
 		}
 	}
-	
+
 	function zoomIn(){
 		graph.view.zoomIn();
 	}
-	
+
 	function zoomOut(){
 		graph.view.zoomOut();
 	}
-	
+
 	function zoomInMatrix(){
 		_matrix.zoomIn();
 	}
-	
+
 	function zoomOutMatrix(){
 		_matrix.zoomOut();
 	}
-    
+
     function speed() {
         if (graph != undefined) {
             var sp = $("#speed");
@@ -343,7 +343,7 @@
             resetFields();
         }
     }
-	
+
 	function un_pause(){
 		if(graph!=undefined){
       		var elem = $("#p");
@@ -357,12 +357,12 @@
                     elem.addClass("p1");
                 }
 			}
-			
+
 		}
 		else
 			alert("No graph created!");
 	}
-	
+
 	function pre(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -376,7 +376,7 @@
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
 	}
-	
+
 	function next(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -390,7 +390,7 @@
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
 	}
-	
+
 	function first(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -404,7 +404,7 @@
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
 	}
-	
+
 	function last(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -418,7 +418,7 @@
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
 	}
-	
+
 </script>
 
 <body id="body" class="page" onload="_create();example();">
@@ -537,18 +537,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 <!-- for the create matrix: -->
 <div id="createMatrix" class="popup hide"><div class="closer" onclick="javascript:_class('createMatrix', 'hide')"></div><a href="javascript:_class('createMatrix', 'hide')" class="close">X</a>
@@ -556,7 +563,7 @@
 		<div id="containerMatrix"></div>
 		<div class="rul">
 			<a href="#" class="z2" style="width:7%;height:50%;" onclick="zoomOutMatrix();return false;"></a>
-			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>	
+			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>
 		</div>
 		Initial Node:<input type="text" id="startNode" style="width:20px"><br><br>
        	<a href="#" id="createOk" style='font-size:25px;text-decoration: none;color:red;background:lime;box-shadow:inset 0px 2px 10px white, 0 0 5px silver' onclick="createOk();">Create</a>

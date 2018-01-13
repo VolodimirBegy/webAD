@@ -5,13 +5,13 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
   <script src="./unweightedUndirectedMatrix.js"></script>
   <script src="./unweightedDirectedMatrix.js"></script>
@@ -23,11 +23,11 @@
 </head>
 
 <script>
-	
+
 	var _matrix=undefined;
 	var graph=undefined;
 	var directed=false;
-	
+
 	function _create(){
 		if(graph!=undefined){
 			clearTimes();
@@ -36,7 +36,7 @@
 			if(graph.view.layer!=undefined)
 				graph.view.layer.remove();
 		}
-		
+
 		directed=document.getElementById('directed').checked;
 
 		if(!directed)
@@ -49,16 +49,16 @@
 			_matrix=undefined;
 		}
 	}
-	
+
 	function clearTimes(){
 		//[30]
 		var pids = window.setTimeout(function() {}, 0);
-	
+
 		while (pids--) {
-			window.clearTimeout(pids); 
+			window.clearTimeout(pids);
 		}
 	}
-	
+
 	function _directed(){
 		if(graph!=undefined){
 			clearTimes();
@@ -70,16 +70,16 @@
 		directed=document.getElementById('directed').checked;
 		_create();
 	}
-	
+
 	function create(){
 		var amount=parseInt(prompt("Amount of nodes:"));
 		if(isNaN(amount)||amount<0)return;
-		
+
 		//prevent deletion of mini matrix due to object overwrite
 		var oldM=undefined;
 		if(_matrix!=undefined)
 			oldM=_matrix.miniMatrix.slice();
-		
+
 		if(!directed)
 			_matrix=new UnweightedUndirectedMatrix(amount);
 		else
@@ -87,7 +87,7 @@
 		var cm = $('#containerMatrix')[0];
 		var cmMin = $('#containerMatrixMini')[0];
 		_matrix.initStage(cm,cmMin)
-		
+
 		_matrix.draw();
 		//mini display
 		if(oldM!=undefined){
@@ -95,20 +95,20 @@
 			_matrix.minNum=oldM.length;
 			_matrix.drawMin();
 		}
-		
+
 		var tf = $("#startNode");
 		tf.val("");
 		tf.css("background-color","white");
 		_class('createMatrix', 'hide');
 	}
-	
+
 	function example(){
 		var matrix=new Array(5);
 		for(var i=0;i<5;i++){
 			matrix[i]=new Array(5);
 		}
 		var startNode=0;
-		
+
 		matrix[0][1]=1;
 		matrix[1][2]=1;
 		matrix[1][0]=1;
@@ -124,7 +124,7 @@
 		graph.fill(matrix,startNode);
 		graph.init(c1);
 		_matrix=new UnweightedUndirectedMatrix(5);
-		
+
 		var cm = $('#containerMatrix')[0];
 		var cmMin = $('#containerMatrixMini')[0];
 		_matrix.initStage(cm,cmMin);
@@ -133,41 +133,41 @@
 		_matrix.minNum=5;
 		_matrix.drawMin();
 	}
-	
+
 	function add(){
 		if(graph!=undefined && graph.costMatrix!=undefined){
 			if(graph.stack==undefined){
 				var amount=graph.costMatrix.length;
 				var newamount=0;
-				
+
 				var check=confirm("Insert new nodes? (Matrix contains "+amount+" nodes now)");
-				
+
 				if(check){
 					newamount=parseInt(prompt("Amount of new nodes:"));
 					if(isNaN(newamount)||newamount<0)return;
 				}
-				
+
 				var oldM=_matrix.miniMatrix.slice();
-				
+
 				if(!directed)
 					_matrix=new UnweightedUndirectedMatrix(amount);
 				else
 					_matrix=new UnweightedDirectedMatrix(amount);
-				
+
 				_matrix.matrix=graph.costMatrix;
 				_matrix.extendBy(newamount,graph.costMatrix);
-				
+
 				var cm = $('#containerMatrix')[0];
 				var cmMin = $('#containerMatrixMini')[0];
 				_matrix.initStage(cm,cmMin);
-				
+
 				_matrix.draw();
-				
+
 				//mini
 				_matrix.miniMatrix=oldM;
 				_matrix.minNum=oldM.length;
 				_matrix.drawMin();
-				
+
 				var tf = $("#startNode");
 				tf.val(""+graph.startNode+"");
 				tf.css("background-color","white");
@@ -177,12 +177,12 @@
 				window.alert("Algorithm already in progress");
 		}
 	}
-	
+
 	//[35]
 	function randInt(min, max) {
 		  return Math.floor(Math.random() * (max - min)) + min;
 	}
-	
+
 	function random(){
 		clearTimes();
 		var amount=0;
@@ -190,13 +190,13 @@
 			amount=randInt(3,15);
 		else
 			amount=randInt(4,8);
-		
+
 		var matrix=new Array(amount);
 		for(var i=0;i<amount;i++){
 			matrix[i]=new Array(amount);
 		}
 		var startNode=undefined;
-		
+
 		var fill=undefined;
 
 		var fM=4;
@@ -215,9 +215,9 @@
 				}
 			}
 		}
-		
+
 		var nodes=[];
-		
+
 		function addConnected(index){
 			var cNode=new Node();
 			cNode.index=index;
@@ -228,7 +228,7 @@
 					cNode.connectedTo.push(newNode);
 				}
 			}
-			
+
 			nodes.push(cNode);
 
 			for(i=0;i<cNode.connectedTo.length;i++){
@@ -241,24 +241,24 @@
 					addConnected(cNode.connectedTo[i].index);
 			}
 		}
-		
+
 		addConnected(startNode);
-		
+
 		if(nodes.length!=matrix.length){
 			random();
 		}
-		else{	
+		else{
 			var c1 = document.getElementById("container1");
 			graph.fill(matrix,startNode);
 			graph.init(c1);
-			
+
 			_matrix=undefined;
-			
+
 			if(!directed)
 				_matrix=new UnweightedUndirectedMatrix(amount);
 			else
 				_matrix=new UnweightedDirectedMatrix(amount);
-			
+
 			var cm = $('#containerMatrix')[0];
 			var cmMin = $('#containerMatrixMini')[0];
 			_matrix.initStage(cm,cmMin);
@@ -268,7 +268,7 @@
 			_matrix.drawMin();
 		}
 	}
-	
+
 	function createOk(){
 		var tf = $("#startNode");
 		var startNode=parseInt(tf.val());
@@ -278,9 +278,9 @@
 			window.alert("Invalid initial node. It must be between 0 and "+(_matrix.number-1));
 			return;
 		}
-		
+
 		var nodes=[];
-		
+
 		function addConnected(index){
 			var cNode=new Node();
 			cNode.index=index;
@@ -291,7 +291,7 @@
 					cNode.connectedTo.push(newNode);
 				}
 			}
-			
+
 			nodes.push(cNode);
 
 			for(i=0;i<cNode.connectedTo.length;i++){
@@ -304,9 +304,9 @@
 					addConnected(cNode.connectedTo[i].index);
 			}
 		}
-		
+
 		addConnected(startNode);
-		
+
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
 			clearTimes();
@@ -316,7 +316,7 @@
 		var c1 = $('#container1')[0];
 		graph.fill(_matrix.matrix,startNode);
 		graph.init(c1);
-		
+
 		//mini display
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.minNum=graph.costMatrix.length;
@@ -328,11 +328,11 @@
 			elem.removeClass("p1");
 		}
 	}
-	
+
 	function zoomIn(){
 		graph.view.zoomIn();
 	}
-	
+
 	function dfs(){
 		if(graph!=undefined){
 			clearTimes();
@@ -344,19 +344,19 @@
 			window.alert("No graph created");
 		}
 	}
-	
+
 	function zoomOut(){
 		graph.view.zoomOut();
 	}
-	
+
 	function zoomInMatrix(){
 		_matrix.zoomIn();
 	}
-	
+
 	function zoomOutMatrix(){
 		_matrix.zoomOut();
 	}
-	
+
 	function un_pause(){
 		if(graph!=undefined){
       		var elem = $("#p");
@@ -365,15 +365,15 @@
 				elem.removeClass("p1");
 			}
 			else{
-				graph.dfs(); 
+				graph.dfs();
 				elem.addClass("p1");
 			}
-			
+
 		}
 		else
 			alert("No graph created!");
 	}
-	
+
 	function pre(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -387,7 +387,7 @@
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
 	}
-	
+
 	function next(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -401,7 +401,7 @@
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
 	}
-	
+
 	function first(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -415,7 +415,7 @@
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
 	}
-	
+
 	function last(){
 		var elem = $("#p");
 		if(elem.hasClass("p1")){
@@ -429,7 +429,7 @@
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
 	}
-	
+
 </script>
 
 <body id="body" class="page" onload="_create();example();">
@@ -481,10 +481,10 @@
 	<br>Order, in which the graph is processed:<br>
 	<img src="../../images/dfs.png" width="300px" alt="bsimage"><br>
 	<h3>Properties</h3>
-	The time and space analysis of DFS differs according to its application area. In theoretical computer science, DFS is typically used to traverse an entire graph, 
-	and takes time Θ(|V| + |E|), linear in the size of the graph. In these applications it also uses space O(|V|) in the worst case to store the stack of vertices 
-	on the current search path as well as the set of already-visited vertices. Thus, in this setting, the time and space bounds are the same as for breadth-first search 
-	and the choice of which of these two algorithms to use depends less on their complexity and more on the different properties of the vertex orderings the two algorithms 
+	The time and space analysis of DFS differs according to its application area. In theoretical computer science, DFS is typically used to traverse an entire graph,
+	and takes time Θ(|V| + |E|), linear in the size of the graph. In these applications it also uses space O(|V|) in the worst case to store the stack of vertices
+	on the current search path as well as the set of already-visited vertices. Thus, in this setting, the time and space bounds are the same as for breadth-first search
+	and the choice of which of these two algorithms to use depends less on their complexity and more on the different properties of the vertex orderings the two algorithms
 	produce.
 	<h3>Pseudocode</h3>
 	A non-recursive implementation of DFS:<br>
@@ -555,18 +555,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 <!-- for the create matrix: -->
 <div id="createMatrix" class="popup hide"><div class="closer" onclick="javascript:_class('createMatrix', 'hide')"></div><a href="javascript:_class('createMatrix', 'hide')" class="close">X</a>
@@ -574,7 +581,7 @@
 		<div id="containerMatrix"></div>
 		<div class="rul">
 			<a href="#" class="z2" style="width:7%;height:50%;" onclick="zoomOutMatrix();return false;"></a>
-			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>	
+			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>
 		</div>
 		Initial Node:<input type="text" id="startNode" style="width:20px"><br><br>
        	<a href="#" id="createOk" style='font-size:25px;text-decoration: none;color:red;background:lime;box-shadow:inset 0px 2px 10px white, 0 0 5px silver' onclick="createOk();">Create</a>

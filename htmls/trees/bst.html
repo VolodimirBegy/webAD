@@ -5,13 +5,13 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
+
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
+
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
   <script src="../../libs/views/trees/binaryTree.js"></script>
@@ -19,27 +19,27 @@
 </head>
 
 <script>
-		
+
 		var tree=undefined;
-		
+
 		function init(){
 			var c1 = document.getElementById("container1");
 			tree = new BinSearchTree();
 			tree.view.initStage(c1);
 		}
-		
+
 		function example(){
 			tree.example();
 		}
-	
+
 		function clearTimes(){
 			//[30]
 			var pids = window.setTimeout(function() {}, 0);
 
 			while (pids--) {
-	    		window.clearTimeout(pids); 
+	    		window.clearTimeout(pids);
 			}
-			
+
 			var tmpNodes=[];
 			if(tree.root!=undefined)
 				tmpNodes.push(tree.root);
@@ -59,57 +59,57 @@
 					}
 					oldNodes.shift();
 				}while(oldNodes.length!=0);
-				
+
 				for(var k=0;k<tmpNodes.length;k++){
 					if(tmpNodes[k]!=undefined)
 						finished=false;
 				}
 			}while(!finished);
 		}
-	
+
 	function add(){
 		tree.add();
 	}
-	
+
 	function search(){
 		tree.search();
 	}
-	
+
 	function rem(){
 		clearTimes();
 		tree.remove();
-		
+
 	}
-	
+
 	function random(){
 		clearTimes();
 		tree.random();
 	}
-	
+
 	function pre(){
 		clearTimes();
 		tree.prev();
 	}
-	
+
 	function next(){
 		clearTimes();
 		tree.next();
 	}
-	
+
 	function first(){
 		clearTimes();
 		tree.firstState();
 	}
-	
+
 	function last(){
 		clearTimes();
 		tree.lastState();
 	}
-	
+
 	function zoomIn(){
      	tree.view.zoomIn();
 	}
-	
+
 	function zoomOut(){
      	tree.view.zoomOut();
 	}
@@ -162,8 +162,8 @@
 	Binary search tree (BST), sometimes also called an ordered or sorted binary tree, is a node-based binary tree data structure <br>where each node has a comparable key (and an associated value) and satisfies the restriction
 	that the key in any node is larger than the keys in all nodes in that node's left subtree and smaller than the keys in all nodes in that node's right sub-tree. Each node has no more than two child nodes. Each child must
 	either be a leaf node or the root of another binary search tree. The left sub-tree contains only nodes with keys less than the parent node; the right sub-tree contains only nodes with keys greater than the parent node.
-	BSTs are also dynamic data structures, and the size of a BST is only limited by the amount of free memory in the operating system. The main advantage of binary search trees is that it remains ordered, which provides quicker 
-	search times than many other data structures. The common properties of binary search trees are as follows: 
+	BSTs are also dynamic data structures, and the size of a BST is only limited by the amount of free memory in the operating system. The main advantage of binary search trees is that it remains ordered, which provides quicker
+	search times than many other data structures. The common properties of binary search trees are as follows:
 	<br>
 	<li>The left subtree of a node contains only nodes with keys less than the node's key.</li>
 	<li>The right subtree of a node contains only nodes with keys greater than the node's key.</li>
@@ -237,18 +237,25 @@
         </ul>
 	</div>
 </div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus.html">B+ Tree</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-			<li><a href="../trees/trie.html">Trie</a></li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
+<div id="tre" class="popup hide">
+  <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+  <div class="pole">
+    <h2>Trees</h2>
+    <ul>
+      <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+      <li><a href="../trees/bplus.html">B+ Tree</a></li>
+      <li><a href="../trees/heap.html">Binary Heap</a></li>
+      <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+      <li><a href="../trees/trie.html">Trie</a>
+        <ul>
+          <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
+          <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
+        </ul>
+      </li>
+      <li><a href="../trees/traversal.html">Traversal</a></li>
+      <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>
