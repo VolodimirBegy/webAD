@@ -6,8 +6,8 @@ function Node(){ // Knoten
 	this.parent=undefined; 
 }
 
-function BPlusTree(ord, spe, lim, cont, hd, vd, colCode){
-	this.view=new BPlusTreeView(this, cont);
+function BPlusTree(ord, spe, lim, cont, hd, vd, colCode, contSec){
+	this.view=new BPlusTreeView(this, cont, contSec);
 	this.root=undefined;
 	this.order=ord;
 	this.speed=spe;
