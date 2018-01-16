@@ -20,7 +20,7 @@
 
 
 
-<body id="body" class="page" onload="randomTree();return false;">
+<body id="body" class="page" onload="randomTree(2);return false;">
 
 
 
@@ -31,13 +31,26 @@
 	var speed = 2;
 	var limit = 5;
 	var horDist=30;
-	var verDist=140;
+	var verDist=100;
 	var colorCode="#FFFF99";
+	var latVal=90909;
 
-	function randomTree(){
-		var cont = $('#container1')[0];	
-		tree=new BPlusTree(order, speed, limit, cont, horDist, verDist, colorCode);
-		tree.randomTree();
+	function randomTree(ord){
+
+		if(ord<0){
+			var nOrder = $("#order");
+			order=parseInt(nOrder.val());
+			var nLimit = $("#limit");  
+			limit=parseInt(nLimit.val());
+		}
+
+		if(order>0&&order<11){
+			var cont = $('#container1')[0];	
+			var protCont = document.getElementById("containerElements");
+			tree=new BPlusTree(order, speed, limit, cont, horDist, verDist, colorCode, protCont);
+			tree.randomTree();
+		}
+
 	}
 	
 	function add(mode){
@@ -81,12 +94,8 @@
 
  	function changeValues() {
 
-		var nOrd = $("#order");
-		order= parseInt(nOrd.val());
-
 		var nSpeed = $("#speed");  
 		var helpSp=parseInt(nSpeed.val());
-
 		if(helpSp==1) speed=4;
 		else if(helpSp==2) speed=3.5;
 		else if(helpSp==3) speed=3;
@@ -97,9 +106,6 @@
 		else if(helpSp==8) speed=0.75;
 		else if(helpSp==9) speed=0.5;
 		else if(helpSp==10) speed=0.25;
-
-		var nLimit = $("#limit");  
-		limit=parseInt(nLimit.val());
 
 		var hdist = $("#horDist");  
 		horDist=parseInt(hdist.val());
@@ -140,14 +146,20 @@
 <article>
 	<div id="menu" class="open">
 		<a href="javascript:_class('menu', 'open')">B+ Tree</a>
-          <input type="button" value="New Tree" id="create" onclick="randomTree();return false;">
+		<input type="button" value="New Tree" id="create" onclick="javascript:_class('config2', 'hide');return false">
 		<input type="button" value="Add random value" id="add" onclick="add(-1);return false;">
 		<input type="button" value="Add certain value" id="add" onclick="add(-2);return false;">
 		<input type="button" value="Remove random value" id="remove" onclick="rem(-1);return false;">		
 		<input type="button" value="Remove certain value" id="remove" onclick="rem(-2);return false;">	
 		<input type="button" value="Search random value" id="search" onclick="searchTree(-1);return false;">	
-		<input type="button" value="Search certain value" id="search" onclick="searchTree(-2);return false;">	</div>
-	<div id="container1"></div>
+		<input type="button" value="Search certain value" id="search" onclick="searchTree(-2);return false;">	
+		<input type="button" value="Display protocol" id="display" onclick="$('#containerWrapperE').toggle();return false">
+		<div id="containerWrapperE" style="margin:10px; display:none;">
+			<div id="containerElements" style="background:white; color:black; text-align:left;max-height: 200px;overflow: scroll;">	
+			</div>
+		</div>	
+		
+	</div><div id="container1"></div>
 </article>
 <footer>
 	<div class="rul">
@@ -176,27 +188,39 @@
 </div>
 
 
-<div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div>
-	<a href="javascript:_class('config', 'hide')" class="close">X</a>
-	<div class="pole">
-		<h2>Config</h2>
+<div id="config2" class="popup hide">
+	<div class="closer" onclick="javascript:_class('config2', 'hide')"></div>
+		<a href="javascript:_class('config2', 'hide')" class="close">X</a>
+		<div class="pole">
+		<h2>New tree</h2>
 		Select tree order: 
 		<input type="number" name="order" style="width:40px" id="order" min="1" max="10" step="1" value="2"><br>
+		Select number of inserted values: 
+		<input type="number" name="limit" style="width:40px" id="limit" min="1" max="200" step="1" value="5"><br><br>
+		<input type="button" value="Create new tree" id="change" onclick="randomTree(-1);javascript:_class('config2', 'hide');return false;">
+	</div>
+</div>
+
+<div id="config" class="popup hide">
+	<div class="closer" onclick="javascript:_class('config', 'hide')"></div>
+		<a href="javascript:_class('config', 'hide')" class="close">X</a>
+		<div class="pole">
+
+		<h2>Config</h2>
 		Select animation speed: 
 		<input type="number" name="speed" style="width:40px" id="speed" min="1" max="10" step="1" value="5"><br>
-		Select number of inserted values: 
-		<input type="number" name="limit" style="width:40px" id="limit" min="1" max="200" step="1" value="5"><br>
 		Select horizontal distance: 
 		<input type="number" name="horDist" style="width:50px" id="horDist" min="10" max="200" step="10" value="30"><br>
 		Select vertical distance: 
-		<input type="number" name="verDist" style="width:50px" id="verDist" min="10" max="400" step="10" value="140"><br>
+		<input type="number" name="verDist" style="width:50px" id="verDist" min="10" max="400" step="10" value="100"><br>
 		Select color: 
-		<input type="color" name="color" style="width:60px" id="color" value="#ffff99"><br>
+		<input type="color" name="color" style="width:60px" id="color" value="#ffff99"><br><br>
 		<input type="button" value="Apply changes" id="change" onclick="changeValues();javascript:_class('config', 'hide');return false;">
-
 
 	</div>
 </div>
+
+
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
 	<div class="pole2">
 		<h2>About</h2>
@@ -228,12 +252,12 @@
 <div id="dic" class="popup hide"><div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Dictionaries</h2>
        	<ul>
-                        <li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
-                        <li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
-                        <li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
-                        <li><a href="../dictionaries/SeparateChaining.html">SeparateChaining</a></li>
-                        <li><a href="../dictionaries/ExtendibleHashing.html">Extendible Hashing</a></li>
-                        <li><a href="../dictionaries/Biseh.html">BISEH</a></li>
+               <li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
+              	<li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
+               <li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
+               <li><a href="../dictionaries/SeparateChaining.html">SeparateChaining</a></li>
+               <li><a href="../dictionaries/ExtendibleHashing.html">Extendible Hashing</a></li>
+               <li><a href="../dictionaries/Biseh.html">BISEH</a></li>
         </ul>
 	</div>
 </div>
