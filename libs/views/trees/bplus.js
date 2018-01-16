@@ -1,7 +1,9 @@
 
-function BPlusTreeView(mod, cont){
+function BPlusTreeView(mod, cont, contSec){
 	this.scale=1;
 	this.model=mod;
+	this.elementDisplay = contSec;
+
 	this.stage = new Kinetic.Stage({
   		container: cont,
   		draggable: true,
@@ -21,7 +23,7 @@ BPlusTreeView.prototype.zoomOut=function(){
 	if(!this.model.runningOp) this.draw();
 }
 
-BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
+BPlusTreeView.prototype.draw=function(actNode, actualValue, operation, contSec){
 	
 	var pointerSpace =10*this.scale;
 	var cellWidth= 50*this.scale;
@@ -29,7 +31,7 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	var nodeHeight = 20*this.scale; // Knotenhoehe
 	var vertDist=this.model.vdist*this.scale; // vertikaler Abstand zwischen den Ebenen	
 	var horDist = this.model.hdist*this.scale; // horizontaler Abstand zwischen den Knoten
-	var startPosX = 140*this.scale;
+	var startPosX = 40*this.scale; //140
 	var startPosY = 140*this.scale;
 	var layer = new Kinetic.Layer();
 	var clr = "black";
@@ -41,6 +43,7 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	var helpNode=undefined;
 	var i=0, j=0;
 
+	
 	if(this.model.root!=undefined) tmpNodes.push(this.model.root); // Wurzel hinzufuegen
 	while(tmpNodes[i]!=undefined){ // uebrige Knoten hinzu
 		helpNode=tmpNodes[i];
@@ -158,10 +161,10 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 
 	var boxHeight=(this.model.history.length * 20 + 5)*this.scale; // Die Box mit dem Protokoll hinzufuegen
 	var distBottom=100*this.scale;
-
+/*
 	var protocolBox = new Kinetic.Rect({ 
 			x: 20*this.scale,
-			y: 50*this.scale,
+			y: 20*this.scale,
 			width: 90*this.scale, 
 		     height: boxHeight,
 			stroke: 'black',
@@ -171,8 +174,7 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 
 
 	var val;
-	var latestVal;
-	var hist, histOp, histVal;
+	var hist, histOp, histVal, elCount;
 	clr="black";
 
 	for(i=0; i<this.model.history.length; i++){ // Die Zeilen der Protokoll-Box. Hier wird auf die Geschichte zugegriffen
@@ -186,7 +188,7 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 
 		val = new Kinetic.Text({
 			x: 25*this.scale,
-			y: 55*this.scale + i * 20*this.scale,
+			y: 25*this.scale + i * 20*this.scale,
 			text: i+1 + ". " + histVal,
 			fontSize: 15*this.scale,
 			fontFamily: 'Calibri',
@@ -194,14 +196,30 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 			width: 90*this.scale,
 		});
 		layer.add(val);
-	}
+	}*/
 			
 	var height=startPosY + (vertDist+2*nodeHeight)*(level+1);
-	if(height<(boxHeight+distBottom)) height=boxHeight+distBottom;
-	this.stage.setWidth(startPosX + horDist + s*(nodeWidth+horDist)); // Breite und Hoehe der Flaeche festlegen
+	//if(height<(boxHeight+distBottom)) height=boxHeight+distBottom;
+	this.stage.setWidth(startPosX + horDist + s*(nodeWidth+horDist) + 200 * this.scale); // Breite und Hoehe der Flaeche festlegen
 	this.stage.setHeight(height);
 	this.stage.removeChildren();
 	this.stage.add(layer);	
+
+	var hist, histOp, histVal, elCount, clr="black", protValues="";
+
+	for(i=0; i<this.model.history.length; i++){
+
+		hist=this.model.history[i];
+		histVal=hist.substr(2);
+		histOp=hist.charAt(0);
+		if(histOp=='r') clr = "red";
+		else if(histOp=='a') clr = "green";
+		elCount = i+1;
+		protValues = protValues + "<div style='color:" + clr + "'>" +  elCount + ". " + histVal +"</div>";
+
+	}
+
+	this.elementDisplay.innerHTML=protValues;
 
 	if(actNode!=undefined){ // wandernder Kreis bei erster Zeichnung
 
