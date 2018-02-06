@@ -18,13 +18,11 @@ function BPlusTreeView(mod, cont, prot){
 
 BPlusTreeView.prototype.zoomIn=function(){
 	if(this.scale<3)this.scale=this.scale+0.1;
-	tree.update();
 	tree.draw(undefined, this.acVal, this.acOp);
 }
 
 BPlusTreeView.prototype.zoomOut=function(){
   	if(this.scale>0.5)this.scale=this.scale-0.1;
-	tree.update();
 	tree.draw(undefined, this.acVal, this.acOp);
 }
 
