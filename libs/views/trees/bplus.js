@@ -3,8 +3,8 @@ function BPlusTreeView(mod, cont, prot){
 	this.scale=1;
 	this.model=mod;
 	this.protDisplay = prot;
-	this.acVal;
-	this.acOp;
+	this.acVal=undefined;
+	this.acOp=undefined;
 
 
 	this.stage = new Kinetic.Stage({
@@ -18,21 +18,14 @@ function BPlusTreeView(mod, cont, prot){
 
 BPlusTreeView.prototype.zoomIn=function(){
 	if(this.scale<3)this.scale=this.scale+0.1;
-	if(!this.model.runningOp) this.draw(undefined, -1, -1);
-	else{
-		this.model.update();
-		this.draw(undefined, this.acVal, this.acOp);
-	}
-	
+	tree.update();
+	tree.draw(undefined, this.acVal, this.acOp);
 }
 
 BPlusTreeView.prototype.zoomOut=function(){
   	if(this.scale>0.5)this.scale=this.scale-0.1;
-	if(!this.model.runningOp) this.draw(undefined, -1, -1);
-	else{
-		this.model.update();
-		this.draw(undefined, this.acVal, this.acOp);
-	}
+	tree.update();
+	tree.draw(undefined, this.acVal, this.acOp);
 }
 
 BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
