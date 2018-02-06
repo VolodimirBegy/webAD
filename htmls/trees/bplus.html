@@ -33,10 +33,12 @@
 	var horDist=30;
 	var verDist=100;
 	var colorCode="#FFFF99";
-	var latVal=90909;
 	var detailed=true;
 
 	function randomTree(ord){
+
+		var pauseSymb = $("#p");
+		pauseSymb.addClass("p1");
 
 		if(ord<0){
 			var nOrder = $("#order");
@@ -95,6 +97,20 @@
      	tree.view.zoomOut();
 	}
 
+	function makePause(){
+
+		var pauseSymb = $("#p");
+		
+
+ 		if(pauseSymb.hasClass("p1")){
+			pauseSymb.removeClass("p1");
+		}else{
+			pauseSymb.addClass("p1");
+		}
+     	tree.makePause();
+	}
+
+
 
 
  	function changeValues() {
@@ -125,6 +141,7 @@
 
 		if(tree!=undefined){
 			tree.setValues(speed, horDist, verDist, colorCode);
+			tree.update();
 			tree.draw(undefined, -1, -1);
 		}
 
@@ -172,7 +189,7 @@
 	<div class="rul">
 		<a href="#" class="l2" id="first" onclick="first();return false;"></a>
 		<a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
-		<a href="#" id="p"></a>
+		<a href="#" id="p" onclick="makePause();return false;"></a>
 		<a href="#" class="r1" id="next" onclick="next();return false;"></a>
 		<a href="#" class="r2" id="last" onclick="last();return false;"></a>
 		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
