@@ -5,24 +5,16 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
   <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
   <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
   <script type="text/javascript" src="../../libs/menu.js"></script>
-
   <script src="../../libs/views/trees/bplus.js"></script>
   <script src="../../libs/models/trees/bplus.js"></script>
 </head>
 
-
-
 <body id="body" class="page" onload="randomTree(2);return false;">
-
-
 
 <script>
 
@@ -36,17 +28,14 @@
 	var detailed=true;
 
 	function randomTree(ord){
-
 		var pauseSymb = $("#p");
 		pauseSymb.addClass("p1");
-
 		if(ord<0){
 			var nOrder = $("#order");
 			order=parseInt(nOrder.val());
 			var nLimit = $("#limit");  
 			limit=parseInt(nLimit.val());
 		}
-
 		if(order>0&&order<11){
 			if(limit>0&&limit<201){
 				var cont = $('#container1')[0];	
@@ -55,7 +44,6 @@
 				tree.randomTree();
 			}
 		}
-
 	}
 	
 	function add(mode){
@@ -99,25 +87,28 @@
 
 	function makePause(){
 
-		var pauseSymb = $("#p");
-		
+		if(speed!=0){
 
- 		if(pauseSymb.hasClass("p1")){
-			pauseSymb.removeClass("p1");
+			var pauseSymb = $("#p");
+	 		if(pauseSymb.hasClass("p1")){
+				pauseSymb.removeClass("p1");
+			}else{
+				pauseSymb.addClass("p1");
+			}
+			tree.makePause();
+
 		}else{
-			pauseSymb.addClass("p1");
+			tree.makePause(); // Bei Speed=0 das Zeichen unveraendert lassen
+
 		}
-     	tree.makePause();
 	}
-
-
-
 
  	function changeValues() {
 
 		var nSpeed = $("#speed");  
 		var helpSp=parseInt(nSpeed.val());
-		if(helpSp==1) speed=10;
+		if(helpSp==0) speed=0;
+		else if(helpSp==1) speed=10;
 		else if(helpSp==2) speed=25;
 		else if(helpSp==3) speed=50;
 		else if(helpSp==4) speed=100;
@@ -130,21 +121,24 @@
 
 		var hdist = $("#horDist");  
 		horDist=parseInt(hdist.val());
-
 		var vdist = $("#verDist");  
 		verDist=parseInt(vdist.val());
-
 		var col = $("#color");  
 		colorCode=col.val();
-
 		detailed=$("#detailed").is(":checked");
 
 		if(tree!=undefined){
+			var pauseSymb = $("#p");
+			if(speed==0){	
+				if(pauseSymb.hasClass("p1")){
+					pauseSymb.removeClass("p1"); // Pause-Symbol auf Play schalten
+				}
+			}else{
+				pauseSymb.addClass("p1"); // Pause-Symbol hinzufuegen
+			}
 			tree.setValues(speed, horDist, verDist, colorCode);
-			tree.update();
 			tree.draw(undefined, -1, -1);
 		}
-
    	}
 
 </script>
@@ -207,7 +201,6 @@
 			<img src="../../images/uni.png" width="250px" alt="bsimage"></a>
 		<a href="https://github.com/VolodimirBegy/webAD" target="_blank">
 			<img src="../../images/Octocat.png" width="100px" alt="bsimage"></a>
-  
 	</div>
 </div>
 
@@ -220,9 +213,9 @@
 		<div class="pole">
 		<h2>New tree</h2>
 		Select tree order: 
-		<input type="number" name="order" style="width:40px" id="order" min="1" max="10" step="1" value="2"><br>
+		<input type="number" name="order" style="width:40px" id="order" min="0" max="10" step="1" value="2"><br>
 		Select number of inserted values: 
-		<input type="number" name="limit" style="width:40px" id="limit" min="1" max="200" step="1" value="5"><br><br>
+		<input type="number" name="limit" style="width:40px" id="limit" min="0" max="200" step="1" value="5"><br><br>
 		<input type="button" value="Create new tree" id="change" onclick="randomTree(-1);javascript:_class('config2', 'hide');return false;">
 	</div>
 </div>
@@ -233,10 +226,9 @@
 	<div class="closer" onclick="javascript:_class('config', 'hide')"></div>
 		<a href="javascript:_class('config', 'hide')" class="close">X</a>
 		<div class="pole">
-
 		<h2>Config</h2>
 		Select animation speed: 
-		<input type="number" name="speed" style="width:40px" id="speed" min="1" max="10" step="1" value="5"><br>
+		<input type="number" name="speed" style="width:40px" id="speed" min="0" max="10" step="1" value="5"><br>
 		Select horizontal distance: 
 		<input type="number" name="horDist" style="width:50px" id="horDist" min="10" max="200" step="10" value="30"><br>
 		Select vertical distance: 
@@ -246,8 +238,6 @@
 		Detailed Mode: 
 		<input type="checkbox" name="detailed" id="detailed" checked><br><br>
 		<input type="button" value="Apply changes" id="change" onclick="changeValues();javascript:_class('config', 'hide');return false;">
-		
-
 	</div>
 </div>
 
