@@ -14,15 +14,19 @@ function BPlusTreeView(cont, prot){
 
 
 BPlusTreeView.prototype.zoomIn=function(){
-	tree.hasArrived=true;
-	if(this.scale<3)this.scale=this.scale+0.1;
-	tree.draw(undefined, this.acVal, this.acOp);
+	if(this.scale<3){
+		tree.hasArrived=true;
+		this.scale=this.scale+0.1;
+		tree.draw(undefined, this.acVal, this.acOp);
+	}
 }
 
 BPlusTreeView.prototype.zoomOut=function(){ 
-	tree.hasArrived=true;
-  	if(this.scale>0.5)this.scale=this.scale-0.1;
-	tree.draw(undefined, this.acVal, this.acOp); //tree kommt nur bis hier vor!
+  	if(this.scale>0.5){
+		tree.hasArrived=true;
+		this.scale=this.scale-0.1;
+		tree.draw(undefined, this.acVal, this.acOp); 
+	}
 }
 
 BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
@@ -69,7 +73,6 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	var keyCount;
 
 	for(i=0; i<tmpNodes.length; i++){
-
 		level=0;
 		helpNode=tmpNodes[i]; // Ebene feststellen
 		keyCount=tmpNodes[i].keys.length;
@@ -81,7 +84,7 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 			s=0;
 			levelHasOf=false;
 		}
-		if(keyCount>dOrd){ levelHasOf=true;}
+		if(keyCount>dOrd) levelHasOf=true;
 		if(levelHasOf&&keyCount<=dOrd) tmpNodes[i].xPosition= startPosX + (nodeWidth + horDist)*s + cellWidth;
 		else tmpNodes[i].xPosition= startPosX + (nodeWidth + horDist)*s;
 		tmpNodes[i].yPosition=startPosY + (vertDist+nodeHeight)*level;
@@ -90,10 +93,8 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	}
 
 	for(i=tmpNodes.length-1; i>=0; i--){
-
 		childCount=tmpNodes[i].pointers.length;
 		if(childCount>0){
-
 			if(childCount%2!=0){ 
 				middleChild=tmpNodes[i].pointers[(childCount-1)/2]; // mittleres Kind ermitteln
 				tmpNodes[i].xPosition=middleChild.xPosition;
@@ -119,7 +120,6 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 				helpWidth=ofNodeWidth;
 				cellCount++;
 			}
-
 			var nodeBox = new Kinetic.Rect({ // das Rechteck fuer den ganzen Knoten
 				x: tmpNodes[i].xPosition,
 				y: tmpNodes[i].yPosition,
@@ -152,7 +152,6 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 						if(op==1||op==3||op==11) clr="green";
 						else if(op==4) clr="red";
 					}
-				
 					var val = new Kinetic.Text({
 						x: cell.getX()+3*this.scale,
 						y: cell.getY()+3*this.scale,
@@ -165,9 +164,7 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 					layer.add(val);
 				}	
 			} 
-
 			if(tmpNodes[i]!=undefined && tmpNodes[i].parent!=undefined && !tmpNodes[i].isOrphan){ // jetzt die Pfeile
-		
 				var parX=tmpNodes[i].parent.xPosition; // x-Wert des Elternknotens
 				for(j=0; j<tmpNodes[i].parent.pointers.length; j++){
 					if(tmpNodes[i].parent.pointers[j]==tmpNodes[i]) break; // ermitteln, welche Nummer der Zeiger vom Elternknoten hat
@@ -184,13 +181,28 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 		}
 	}
 
+	//Protokoll
+
+	var hist, histOp, histVal, elCount, clr="black", protValues=""; 
+	for(i=0; i<tree.history.length; i++){
+		hist=tree.history[i];
+		histVal=hist.substr(2);
+		histOp=hist.charAt(0);
+		if(histOp=='r') clr = "red";
+		else if(histOp=='a') clr = "green";
+		elCount = i+1;
+		protValues = protValues + "<div style='color:" + clr + "'>" +  elCount + ". " + histVal +"</div>";
+	}
+	this.protDisplay.innerHTML=protValues;
+
+
 	// Ruhender Kreis
 
-	if(moveSpeed==0&&actNode!=undefined){
-		tree.hasArrived=true;
+	if(actNode!=undefined){
+		if(moveSpeed==0) tree.hasArrived=true;
 
 		clr="black";
-		if(op==1||op==11) clr="#66ff33"; // hinzufuegen
+		if(op==1) clr="#66ff33"; // hinzufuegen
 		else if(op==2) clr="#ff6666"; // loeschen
 		else if(op==3) clr="#00ccff"; // suchen
 		var nValxPos=-15;
@@ -199,12 +211,6 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 
 		var cXpos=tmpNodes[0].xPosition + nodeWidth/2;
 		var cYpos=tmpNodes[0].yPosition - nodeHeight;
-
-		if(op==11){
-			cXpos=actNode.xPosition + nodeWidth/2;
-			cYpos=actNode.yPosition - nodeHeight;
-
-		}	
 
 		var circle = new Kinetic.Circle({ // Kreis
 			radius: 20*this.scale,
@@ -238,58 +244,9 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	this.stage.removeChildren();
 	this.stage.add(layer);	
 
-	//Protokoll
-
-	var hist, histOp, histVal, elCount, clr="black", protValues=""; 
-	for(i=0; i<tree.history.length; i++){
-		hist=tree.history[i];
-		histVal=hist.substr(2);
-		histOp=hist.charAt(0);
-		if(histOp=='r') clr = "red";
-		else if(histOp=='a') clr = "green";
-		elCount = i+1;
-		protValues = protValues + "<div style='color:" + clr + "'>" +  elCount + ". " + histVal +"</div>";
-	}
-	this.protDisplay.innerHTML=protValues;
-
 	// Wandernder Kreis
 
 	if(actNode!=undefined&&moveSpeed!=0){ 
-
-		clr="black";
-		if(op==1) clr="#66ff33"; // hinzufuegen
-		else if(op==2) clr="#ff6666"; // loeschen
-		else if(op==3) clr="#00ccff"; // suchen
-		var nValxPos=-15;
-		if(actVal<10) nValxPos=-5;
-		else if(actVal<100) nValxPos=-10;
-		
-		var circle = new Kinetic.Circle({ // Kreis
-			radius: 20*this.scale,
-			stroke: 'black',
-			strokeWidth: 2*this.scale,
-			fill: clr,
-			opacity: 0.5,
-		});
-		var nVal = new Kinetic.Text({ // Wert im Kreis
-			x: nValxPos*this.scale,
-			y: -5*this.scale,
-			text: actVal,
-			fontSize: 15*this.scale,
-			fontFamily: 'Calibri',
-			fill: 'black',
-		});
-		var ball = new Kinetic.Group({ // Kreis + Wert
-			x: tmpNodes[0].xPosition + nodeWidth/2,
-			y: tmpNodes[0].yPosition - nodeHeight,	
-			draggable: true
-		});
-		
-		ball.add(circle);
-		ball.add(nVal);
-		layer.add(ball);
-
-
 		if(moveSpeed!=0){
 
 			var visitedNodes=[];
@@ -300,7 +257,6 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 			var v=0, distHelp=0, distHelpX=0, distHelpY=0, helpX=0, helpY=0;
 		
 			for(i=tmpNodes.length-1; i>=0; i--){
-
 				helpNode=tmpNodes[i];
 				if(helpNode==actNode){ 
 					visitedNodes.push(helpNode); 
@@ -312,15 +268,12 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 					break;
 				}
 			}
-
 			visitedNodes.unshift(tree.root);
 
 			for(i=0; i<visitedNodes.length; i++){
-
 				helpNode=visitedNodes[i];
 				xValues.push(helpNode.xPosition + nodeWidth/2);
 				yValues.push(helpNode.yPosition - nodeHeight);
-
 				horWay=0;
 				for(v=0; v<helpNode.keys.length; v++) if(actVal<helpNode.keys[v]) break;
 				horWay=cellWidth*v+pointerSpace/2;
@@ -351,31 +304,27 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 					duration: dists[i-1]/moveSpeed,
 					onFinish: function(){
 						i++;
-
 						setTimeout(function(){
 							var inval1=setInterval(function(){
-
 								if(savedOpCount!=tree.opCount) clearInterval(inval1);
-
  								if(!tree.paused){
-
 									if(savedOpCount==tree.opCount){
 										if(xValues[i]!=undefined)  moveCircle();	
 										else tree.hasArrived=true; 
 									}
 									clearInterval(inval1);
-
 								}
 							}, 100);
-						}, pauseTime);
-						
+						}, pauseTime);	
 					}
 				});
 				tween.play();	
-
 			}
 			if(tmpNodes.length>1) moveCircle();
 		}
 	}
+
+
+
 }
 
