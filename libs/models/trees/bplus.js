@@ -111,10 +111,7 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 	var mo=parseInt(mode), val=0, index=0, i=0, origVal, origLen, nVal=true, index=0, waitTime2=3000, invalTime=100, dOrd=tree.order*2; 
 	if(mo==-2){ // -2 bedeutet: Benutzer gibt Wert ein
 		val=parseInt(prompt("Choose a value between 0 and 1000"));
-		if(isNaN(val)||val<1||val>999){
-			alert("Bad value"); 
-			return;
-		}	
+		if(isNaN(val)||val<1||val>999) return;
 	}else if(mo==-1) val=Math.floor((Math.random() * 999) + 1); // Zufallszahl generieren
 	else val=mo; // wenn der Wert mit dem Parameter uebermittelt wurde
 
@@ -335,212 +332,189 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 						actNode.keys=helpValues; // Aktueller Knoten hat jetzt einen Wert zu viel
 						if(savedOpCount==tree.opCount) tree.draw(undefined, origVal, 1); 
 						rightSibling=new Node();
-
 						rightSibling.isOrphan=true;
 						rightSibling.parent=actNode.parent;
 						actNode.rightPointer=rightSibling;
 						for(i=this.order+1; i<helpValues.length; i++) rightSibling.keys.push(helpValues[i]);
-				
 						for(i=0; i<=this.order; i++) helpValuesActNode.push(helpValues[i]);
-							val=rightSibling.keys[0]; // Wert fuer Indexknoten
-							actNode.keys=helpValuesActNode; // jetzt sind die Werte in den Blaettern aufgeteilt
+						val=rightSibling.keys[0]; // Wert fuer Indexknoten
+						actNode.keys=helpValuesActNode; // jetzt sind die Werte in den Blaettern aufgeteilt
 
-							setTimeout(function(){ // jetzt die internen Knoten
+						setTimeout(function(){ // jetzt die internen Knoten
 
-								var inval1=setInterval(function(){
+							var inval1=setInterval(function(){
 
-									if(savedOpCount!=tree.opCount) clearInterval(inval1);
-									if(!tree.paused){
-
-										if(savedOpCount==tree.opCount) tree.draw(undefined, origVal, 1); 
-										rightSibling.isOrphan=false;
-										actNode.rightPointer=undefined;
+								if(savedOpCount!=tree.opCount) clearInterval(inval1);
+								if(!tree.paused){
+									if(savedOpCount==tree.opCount) tree.draw(undefined, origVal, 1); 
+									rightSibling.isOrphan=false;
+									actNode.rightPointer=undefined;
 					 
-										function iteration(){
+									function iteration(){
 
-											oldLeft=actNode;
-											oldRight=rightSibling;
-											actNode=actNode.parent; //actNode ist jetzt Indexknoten
-											helpValues=[];
-											helpValuesActNode=[];
-											helpValues=actNode.keys;
-											helpValues.push(val); 
-											helpValues.sort(function(a, b){return a-b});
+										oldLeft=actNode;
+										oldRight=rightSibling;
+										actNode=actNode.parent; //actNode ist jetzt Indexknoten
+										helpValues=[];
+										helpValuesActNode=[];
+										helpValues=actNode.keys;
+										helpValues.push(val); 
+										helpValues.sort(function(a, b){return a-b});
 
-											actNode.keys=helpValues; // Indexknoten hat jetzt einen Wert zu viel
-											for(i=0; i<actNode.pointers.length; i++){
-												if(actNode.pointers[i]==oldLeft){
-													index=i; // Position des gespaltenen Blattes
-													break;
-												}
-											}		
-											actNode.pointers.splice(index+1, 0, oldRight); 
+										actNode.keys=helpValues; // Indexknoten hat jetzt einen Wert zu viel
+										for(i=0; i<actNode.pointers.length; i++){
+											if(actNode.pointers[i]==oldLeft){
+												index=i; // Position des gespaltenen Blattes
+												break;
+											}
+										}		
+										actNode.pointers.splice(index+1, 0, oldRight); 
 
-											setTimeout(function(){
-												var inval1komma5=setInterval(function(){
+										setTimeout(function(){
+											var inval1komma5=setInterval(function(){
+												if(savedOpCount!=tree.opCount) clearInterval(inval1komma5);
+												if(!tree.paused){
+													if(savedOpCount==tree.opCount) tree.draw(undefined, origVal, 1); 
+													actNode.pointers.splice(index+1, 1);
 
-
-													if(savedOpCount!=tree.opCount) clearInterval(inval1komma5);
-													if(!tree.paused){
-
-														if(savedOpCount==tree.opCount) tree.draw(undefined, origVal, 1); 
-														actNode.pointers.splice(index+1, 1);
-
-														rightSibling=new Node();
-														rightSibling.isOrphan=true;
-														rightSibling.parent=actNode.parent;
-														actNode.rightPointer=rightSibling;
+													rightSibling=new Node();
+													rightSibling.isOrphan=true;
+													rightSibling.parent=actNode.parent;
+													actNode.rightPointer=rightSibling;
 						
-														for(i=this.order+1; i<helpValues.length; i++) rightSibling.keys.push(helpValues[i]);
-														for(i=0; i<this.order; i++) helpValuesActNode.push(helpValues[i]);
+													for(i=this.order+1; i<helpValues.length; i++) rightSibling.keys.push(helpValues[i]);
+													for(i=0; i<this.order; i++) helpValuesActNode.push(helpValues[i]);
 
-														val=helpValues[this.order];
-														rightSibling.isLeaf=false;
-														actNode.keys=helpValuesActNode; 
-														helpValues=actNode.pointers;
-														helpValuesActNode=[];
+													val=helpValues[this.order];
+													rightSibling.isLeaf=false;
+													actNode.keys=helpValuesActNode; 
+													helpValues=actNode.pointers;
+													helpValuesActNode=[];
 
-														if(actNode.pointers[this.order]==oldLeft){
-															rightSibling.pointers.push(oldRight);
+													if(actNode.pointers[this.order]==oldLeft){
+														rightSibling.pointers.push(oldRight);
+														for(i=this.order+1; i<actNode.pointers.length; i++){
+															rightSibling.pointers.push(actNode.pointers[i]);
+															actNode.pointers[i].parent=rightSibling;	
+														}
+														for(i=0; i<=this.order; i++) helpValuesActNode.push(helpValues[i]);
+														actNode.pointers=helpValuesActNode;
+														oldRight.parent=rightSibling;
+
+													}else{
+														var left=false;
+														for(i=0; i<this.order; i++) if(actNode.pointers[i]==oldLeft) left=true; 
+														if(left){ // neues Blatt links einhaengen
+															for(i=this.order; i<actNode.pointers.length; i++){
+																rightSibling.pointers.push(actNode.pointers[i]);
+																actNode.pointers[i].parent=rightSibling;
+															}
+															for(i=0; i<this.order; i++) helpValuesActNode.push(helpValues[i]);
+															actNode.pointers=helpValuesActNode;
+															index=0;
+															for(i=0; i<actNode.pointers.length; i++){
+																if(actNode.pointers[i]==oldLeft){
+																	index=i; // Position des gespaltenen Blattes
+																	break;
+																}
+															}		
+															actNode.pointers.splice(index+1, 0, oldRight); // neues Blatt links einfuegen
+															oldRight.parent=actNode;
+														}else{
 															for(i=this.order+1; i<actNode.pointers.length; i++){
 																rightSibling.pointers.push(actNode.pointers[i]);
-																actNode.pointers[i].parent=rightSibling;	
+																actNode.pointers[i].parent=rightSibling;
 															}
 															for(i=0; i<=this.order; i++) helpValuesActNode.push(helpValues[i]);
-															actNode.pointers=helpValuesActNode;
-															oldRight.parent=rightSibling;
-
-														}else{
-
-															var left=false;
-															for(i=0; i<this.order; i++) if(actNode.pointers[i]==oldLeft) left=true; 
-
-															if(left){ // neues Blatt links einhaengen
-
-																for(i=this.order; i<actNode.pointers.length; i++){
-																	rightSibling.pointers.push(actNode.pointers[i]);
-																	actNode.pointers[i].parent=rightSibling;
+															actNode.pointers=helpValuesActNode;		
+															index=0;
+															for(i=0; i<rightSibling.pointers.length; i++){
+																if(rightSibling.pointers[i]==oldLeft){
+																	index=i;
+																	break;
 																}
-																for(i=0; i<this.order; i++) helpValuesActNode.push(helpValues[i]);
-																actNode.pointers=helpValuesActNode;
-																index=0;
-																for(i=0; i<actNode.pointers.length; i++){
-																	if(actNode.pointers[i]==oldLeft){
-																		index=i; // Position des gespaltenen Blattes
-																		break;
-																	}
-																}		
-																actNode.pointers.splice(index+1, 0, oldRight); // neues Blatt links einfuegen
-																oldRight.parent=actNode;
-
-															}else{
-
-																for(i=this.order+1; i<actNode.pointers.length; i++){
-																	rightSibling.pointers.push(actNode.pointers[i]);
-																	actNode.pointers[i].parent=rightSibling;
-																}
-																for(i=0; i<=this.order; i++) helpValuesActNode.push(helpValues[i]);
-																actNode.pointers=helpValuesActNode;		
-																index=0;
-																for(i=0; i<rightSibling.pointers.length; i++){
-																	if(rightSibling.pointers[i]==oldLeft){
-																		index=i;
-																		break;
-																	}
-																}
-																rightSibling.pointers.splice(index+1, 0, oldRight);
-																oldRight.parent=rightSibling;
 															}
+															rightSibling.pointers.splice(index+1, 0, oldRight);
+															oldRight.parent=rightSibling;
 														}
-
-														setTimeout(function(){ 
-
-															var inval2=setInterval(function(){
-
-																if(savedOpCount!=tree.opCount) clearInterval(inval2);
-																if(!tree.paused){
-
-																	if(savedOpCount==tree.opCount) tree.draw(undefined, val, 1);
+													}
+													setTimeout(function(){ 
+														var inval2=setInterval(function(){
+															if(savedOpCount!=tree.opCount) clearInterval(inval2);
+															if(!tree.paused){
+																if(savedOpCount==tree.opCount) tree.draw(undefined, val, 1);
+																rightSibling.isOrphan=false;
+																actNode.rightPointer=undefined;
+																if(actNode==tree.root){ // Wurzel spalten								
+																	var newRoot=new Node();	// neue Wurzel	
+																	newRoot.isLeaf=false;
+																	newRoot.keys.push(val);
+																	newRoot.pointers.push(actNode);
+																	newRoot.pointers.push(rightSibling);				
+																	actNode.parent=newRoot;
+																	rightSibling.parent=newRoot;
+																	tree.root=newRoot;
+																	setTimeout(function(){ 
+																		var inval3=setInterval(function(){
+																			if(savedOpCount!=tree.opCount) clearInterval(inval3);
+																			if(!tree.paused){
+																				if(savedOpCount==tree.opCount) tree.draw(undefined, val, 1); 
+																				rightSibling.isOrphan=false;
+																				actNode.rightPointer=undefined;
+																				clearInterval(inval3);
+																				if(tree.speed==0) tree.paused=true;
+																			}
+																		}, invalTime);
+																	}, waitTime2);
+																}else if(actNode.parent!=undefined&&actNode.parent.keys.length<dOrd){ 
+																	actNode.parent.keys.push(val);
+																	actNode.parent.keys.sort(function(a, b){return a-b});
+																	index=0;
+																	for(i=0; i<actNode.parent.pointers.length; i++){
+																		if(actNode.parent.pointers[i]==actNode||i==actNode.parent.pointers.length-1){
+																			index=i+1;
+																			break;
+																		}
+																	}
+																	actNode.parent.pointers.splice(index,0,rightSibling);
+																	rightSibling.parent=actNode.parent;
+																	setTimeout(function(){ 
+																		var inval4=setInterval(function(){
+																			if(savedOpCount!=tree.opCount) clearInterval(inval4);
+																			if(!tree.paused){
+																				if(savedOpCount==tree.opCount) tree.draw(undefined, val, 1); 
+																				rightSibling.isOrphan=false;
+																				actNode.rightPointer=undefined;
+																				clearInterval(inval4);
+																				if(tree.speed==0) tree.paused=true;
+																			}
+																		}, invalTime);
+																	}, waitTime2);
+																}else{
 																	rightSibling.isOrphan=false;
 																	actNode.rightPointer=undefined;
-
-																	if(actNode==tree.root){ // Wurzel spalten								
-																		var newRoot=new Node();	// neue Wurzel	
-																		newRoot.isLeaf=false;
-																		newRoot.keys.push(val);
-																		newRoot.pointers.push(actNode);
-																		newRoot.pointers.push(rightSibling);				
-																		actNode.parent=newRoot;
-																		rightSibling.parent=newRoot;
-																		tree.root=newRoot;
-																		setTimeout(function(){ 
-																			var inval3=setInterval(function(){
-
-																				if(savedOpCount!=tree.opCount) clearInterval(inval3);
-																				if(!tree.paused){
-																					if(savedOpCount==tree.opCount) tree.draw(undefined, val, 1); 
-																					rightSibling.isOrphan=false;
-																					actNode.rightPointer=undefined;
-																					clearInterval(inval3);
-																					if(tree.speed==0) tree.paused=true;
-																				}
-																			}, invalTime);
-																		}, waitTime2);
-
-																	}else if(actNode.parent!=undefined&&actNode.parent.keys.length<dOrd){ 
-
-																		actNode.parent.keys.push(val);
-																		actNode.parent.keys.sort(function(a, b){return a-b});
-								
-																		index=0;
-																		for(i=0; i<actNode.parent.pointers.length; i++){
-																			if(actNode.parent.pointers[i]==actNode||i==actNode.parent.pointers.length-1){
-																				index=i+1;
-																				break;
-																			}
-																		}
-																		actNode.parent.pointers.splice(index,0,rightSibling);
-																		rightSibling.parent=actNode.parent;
-
-																		setTimeout(function(){ 
-																			var inval4=setInterval(function(){
-																				if(savedOpCount!=tree.opCount) clearInterval(inval4);
-																				if(!tree.paused){
-																					if(savedOpCount==tree.opCount) tree.draw(undefined, val, 1); 
-																					rightSibling.isOrphan=false;
-																					actNode.rightPointer=undefined;
-																					clearInterval(inval4);
-																					if(tree.speed==0) tree.paused=true;
-																				}
-																			}, invalTime);
-																		}, waitTime2);
-																	}else{
-																		rightSibling.isOrphan=false;
-																		actNode.rightPointer=undefined;
-																		iteration();
-																	}
-																	clearInterval(inval2);
-																	if(tree.speed==0) tree.paused=true;
+																	iteration();
 																}
-															}, invalTime);
-
-														}, waitTime2);	
-														clearInterval(inval1komma5);
-														if(tree.speed==0) tree.paused=true;
-													}
-												}, invalTime);
-											}, waitTime2);	
-										}
-										iteration();
-										clearInterval(inval1);
-										if(tree.speed==0) tree.paused=true;
+																clearInterval(inval2);
+																if(tree.speed==0) tree.paused=true;
+															}
+														}, invalTime);
+													}, waitTime2);	
+													clearInterval(inval1komma5);
+													if(tree.speed==0) tree.paused=true;
+												}
+											}, invalTime);
+										}, waitTime2);	
 									}
-								}, invalTime);
-
-							}, waitTime2);	
-							clearInterval(inval0);
-							if(tree.speed==0) tree.paused=true;
-						}
+									iteration();
+									clearInterval(inval1);
+									if(tree.speed==0) tree.paused=true;
+								}
+							}, invalTime);
+						}, waitTime2);	
+						clearInterval(inval0);
+						if(tree.speed==0) tree.paused=true;
+					}
 				}, invalTime);
 			}
 		}	
@@ -552,13 +526,10 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 
 BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 
-	var mo=parseInt(mode), val=0, index=0, i=0, cc=1, origVal, origLen, nVal=true;
+	var mo=parseInt(mode), val=0, index=0, i=0, cc=1, origVal, nVal=true, dOrd=this.order*2;
 	if(mo==-2){ // -2 bedeutet: Benutzer gibt Wert ein
 		val=parseInt(prompt("Choose a value between 0 and 1000"));
-		if(isNaN(val)||val<1||val>999){ 
-			alert("Bad value");
-			return;
-		}	
+		if(isNaN(val)||val<1||val>999) return;	
 		tree.remOps=[];
 	}else if(mo==-1||mo==-3){ 
 		val=Math.floor((Math.random() * 999) + 1); // Zufallszahl generieren
@@ -612,10 +583,10 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 		if(nVal){
 			var str1 = "a-" + val.toString();		
 			tree.history.push(str1);
-			if(actNode.keys.length<this.order*2){ // im Blatt ist Platz
+			if(actNode.keys.length<dOrd){ // im Blatt ist Platz
 				actNode.keys.push(val); // Wert in das Array "keys" einfuegen
 				actNode.keys.sort(function(a, b){return a-b}); // Werte im Blatt sortieren
-			}else if(actNode.keys.length==this.order*2 && actNode==tree.root){ // Baum besteht nur aus Wurzel, Wurzel ist voll
+			}else if(actNode.keys.length==dOrd&&actNode==tree.root){ // Baum besteht nur aus Wurzel, Wurzel ist voll
 
 				var rightSibling=new Node(); // rechtes Kind
 				var values=actNode.keys;
@@ -627,7 +598,7 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 				actNode.keys=valuesLeftSibling; // Wurzel erhaelt die Werte fuer den linken Knoten
 
 				var valuesRightSibling=[];
-				for(var i=this.order+1; i<=this.order*2; i++) valuesRightSibling.push(values[i]);
+				for(i=this.order+1; i<=dOrd; i++) valuesRightSibling.push(values[i]);
 				rightSibling.keys=valuesRightSibling;
 
 				var newRoot=new Node(); // neue Wurzel
@@ -639,7 +610,7 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 				rightSibling.parent=newRoot;
 				tree.root=newRoot;
 
-			}else if(actNode.keys.length==this.order*2&&actNode.parent!=undefined&&actNode.parent.keys.length<this.order*2){ // Blatt voll
+			}else if(actNode.keys.length==dOrd&&actNode.parent!=undefined&&actNode.parent.keys.length<dOrd){ // Blatt voll
 							// Blatt ist voll, Elternknoten hat noch Platz (nur Blatt spalten, Elternknoten nicht)					
 				var rightSibling=new Node();
 				var values=actNode.keys;
@@ -650,7 +621,7 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 				actNode.keys=valuesLeftSibling;
 					
 				var valuesRightSibling=[];
-				for(var i=this.order+1; i<=this.order*2; i++) valuesRightSibling.push(values[i]);
+				for(i=this.order+1; i<=dOrd; i++) valuesRightSibling.push(values[i]);
 				rightSibling.keys=valuesRightSibling;
 					
 				index=0;
@@ -665,47 +636,30 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 				actNode.parent.pointers.splice(index+1, 0, rightSibling);
 				rightSibling.parent=actNode.parent;
 
-			}else if(actNode.keys.length==this.order*2&&actNode.parent!=undefined&&actNode.parent.keys.length==this.order*2){
-							// Blatt voll, Elternknoten auch voll
-				var finished=false;
-				var oldLeft=undefined;
-				var oldRight=undefined;
-				var rightSibling=undefined;
-				var helpValues=[];
-				var helpValuesActNode=[];
-				var left=false;
-				var limit=0;
-				var i=0;
-
+			}else if(actNode.keys.length==dOrd&&actNode.parent!=undefined&&actNode.parent.keys.length==dOrd){
+				var oldLeft=undefined, oldRight=undefined, rightSibling=undefined, finished=false, left=false, i=0;
+				var helpValues=[], helpValuesActNode=[];
 				while(!finished){
-
 					helpValues=[];
 					helpValuesActNode=[];
-
 					helpValues=actNode.keys;
 					helpValues.push(val);
 					helpValues.sort(function(a, b){return a-b});
 					rightSibling=new Node();
-
 					for(i=this.order+1; i<helpValues.length; i++) rightSibling.keys.push(helpValues[i]);
-				
 					if(!actNode.isLeaf){
 						for(i=0; i<this.order; i++) helpValuesActNode.push(helpValues[i]);
 						val=helpValues[this.order];
 						rightSibling.isLeaf=false;
-				
 					}else{
 						for(i=0; i<=this.order; i++) helpValuesActNode.push(helpValues[i]);
 						val=rightSibling.keys[0];
 					}
 					actNode.keys=helpValuesActNode;
-		
 					if(oldLeft!=undefined){
-
 						helpValues=actNode.pointers;
 						helpValuesActNode=[];
 						if(actNode.pointers[this.order]==oldLeft){
-			
 							rightSibling.pointers.push(oldRight);
 							for(i=this.order+1; i<actNode.pointers.length; i++){
 								rightSibling.pointers.push(actNode.pointers[i]);
@@ -734,7 +688,6 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 								}		
 								actNode.pointers.splice(index+1, 0, oldRight); // neues Blatt links einfuegen
 								oldRight.parent=actNode;
-
 							}else{
 								for(i=this.order+1; i<actNode.pointers.length; i++){
 									rightSibling.pointers.push(actNode.pointers[i]);
@@ -754,7 +707,6 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 							}
 						}
 					}
-
 					if(actNode==tree.root){ // Wurzel spalten								
 						var newRoot=new Node();	// neue Wurzel	
 						newRoot.isLeaf=false;
@@ -765,7 +717,7 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 						rightSibling.parent=newRoot;
 						tree.root=newRoot;
 						finished=true;
-					}else if(actNode.parent!=undefined&&actNode.parent.keys.length<this.order*2){
+					}else if(actNode.parent!=undefined&&actNode.parent.keys.length<dOrd){
 						actNode.parent.keys.push(val);
 						actNode.parent.keys.sort(function(a, b){return a-b});
 						index=0;
@@ -835,10 +787,7 @@ BPlusTree.prototype.remove=function(mode){
 	var mo=parseInt(mode), val, i=0, j=0, helpNode, waitTime2=3000, invalTime=200, found=false;
 	if(mo==-2){
 		val=parseInt(prompt("Choose a value between 0 and 1000"));
-		if(isNaN(val)||val<1||val>999){ 
-			alert("Bad number");
-			return;
-		}
+		if(isNaN(val)||val<1||val>999) return;
 	}else if(mo==-1){ // zufaelligen Wert loeschen
 	
 		var tmpNodes=[];
@@ -1206,9 +1155,7 @@ BPlusTree.prototype.removeSimple=function(mode){
 	var mo=parseInt(mode), val, i=0, j=0, helpNode;
 	if(mo==-2){
 		val=parseInt(prompt("Choose a value between 0 and 1000"));
-		if(isNaN(val)||val<1||val>999){ 
-			return;
-		}
+		if(isNaN(val)||val<1||val>999) return;
 		tree.remOps=[];
 	}else if(mo==-1){ // zufaelligen Wert loeschen
 			
@@ -1505,9 +1452,7 @@ BPlusTree.prototype.searchTree=function(mode){
 	var mo=parseInt(mode), val, index=0, i=0, j=0;
 	if(mo==-2){
 		val=parseInt(prompt("Choose a value between 0 and 1000"));
-		if(isNaN(val)||val<1||val>999){ 
-			return;
-		}
+		if(isNaN(val)||val<1||val>999) return;
 	}else if(mo==-1){
  
 			var tmpNodes=[];
