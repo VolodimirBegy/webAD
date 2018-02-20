@@ -32,15 +32,15 @@ BPlusTreeView.prototype.zoomOut=function(){
 BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	
 	var dOrd=2*tree.order;
-	var pointerSpace =10*this.scale;
-	var cellWidth= 50*this.scale;
+	var pointerSpace=10*this.scale;
+	var cellWidth=50*this.scale;
 	var nodeWidth=dOrd*cellWidth + pointerSpace; // Knotenbreite
 	var ofNodeWidth=dOrd*cellWidth + cellWidth + pointerSpace; // Knotenbreite bei ueberglaufenem Knoten
-	var nodeHeight = 20*this.scale; // Knotenhoehe
+	var nodeHeight=20*this.scale; // Knotenhoehe
 	var vertDist=tree.vdist*this.scale; // vertikaler Abstand zwischen den Ebenen	
-	var horDist = tree.hdist*this.scale; // horizontaler Abstand zwischen den Knoten
-	var startPosX = 40*this.scale; 
-	var startPosY = 140*this.scale;
+	var horDist=tree.hdist*this.scale; // horizontaler Abstand zwischen den Knoten
+	var startPosX=40*this.scale; 
+	var startPosY=140*this.scale;
 	var layer = new Kinetic.Layer();
 	var clr = "black";
 	var moveSpeed=tree.speed;
@@ -48,7 +48,6 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	var actVal=parseInt(actualValue);
 	var op=parseInt(operation); // 1 = add, 2 = delete, 3 = search, 4=double value
 	var savedOpCount=tree.opCount;
-	
 	var tmpNodes=[];
 	var helpNode=undefined;
 	var i=0, j=0;
@@ -195,12 +194,10 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	}
 	this.protDisplay.innerHTML=protValues;
 
-
 	// Ruhender Kreis
 
 	if(actNode!=undefined){
 		if(moveSpeed==0) tree.hasArrived=true;
-
 		clr="black";
 		if(op==1) clr="#66ff33"; // hinzufuegen
 		else if(op==2) clr="#ff6666"; // loeschen
@@ -208,7 +205,6 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 		var nValxPos=-15;
 		if(actVal<10) nValxPos=-5;
 		else if(actVal<100) nValxPos=-10;
-
 		var cXpos=tmpNodes[0].xPosition + nodeWidth/2;
 		var cYpos=tmpNodes[0].yPosition - nodeHeight;
 
@@ -232,7 +228,6 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 			y: cYpos,
 			draggable: true
 		});
-		
 		ball.add(circle);
 		ball.add(nVal);
 		layer.add(ball);
@@ -247,84 +242,73 @@ BPlusTreeView.prototype.draw=function(actNode, actualValue, operation){
 	// Wandernder Kreis
 
 	if(actNode!=undefined&&moveSpeed!=0){ 
-		if(moveSpeed!=0){
-
-			var visitedNodes=[];
-			var xValues=[];
-			var yValues=[];
-			var dists=[];
-			var horWay=0;
-			var v=0, distHelp=0, distHelpX=0, distHelpY=0, helpX=0, helpY=0;
-		
-			for(i=tmpNodes.length-1; i>=0; i--){
-				helpNode=tmpNodes[i];
-				if(helpNode==actNode){ 
-					visitedNodes.push(helpNode); 
-					while(helpNode.parent!=undefined && helpNode.parent!=tree.root){
-						visitedNodes.unshift(helpNode.parent);// Alle Knoten auf dem Pfad speichern
-						helpNode=helpNode.parent;
-					}
-					finished=true;
-					break;
+		var visitedNodes=[], xValues=[], yValues=[], dists=[];
+		var horWay=0, v=0, distHelp=0, distHelpX=0, distHelpY=0;
+		for(i=tmpNodes.length-1; i>=0; i--){
+			helpNode=tmpNodes[i];
+			if(helpNode==actNode){ 
+				visitedNodes.push(helpNode); 
+				while(helpNode.parent!=undefined && helpNode.parent!=tree.root){
+					visitedNodes.unshift(helpNode.parent);// Alle Knoten auf dem Pfad speichern
+					helpNode=helpNode.parent;
 				}
+				finished=true;
+				break;
 			}
-			visitedNodes.unshift(tree.root);
-
-			for(i=0; i<visitedNodes.length; i++){
-				helpNode=visitedNodes[i];
-				xValues.push(helpNode.xPosition + nodeWidth/2);
-				yValues.push(helpNode.yPosition - nodeHeight);
-				horWay=0;
-				for(v=0; v<helpNode.keys.length; v++) if(actVal<helpNode.keys[v]) break;
-				horWay=cellWidth*v+pointerSpace/2;
-	
-				if(v!=tree.order){
-					xValues.push(helpNode.xPosition+horWay); // Punkt an der oberen Kante
-					yValues.push(helpNode.yPosition-nodeHeight); 
-				}
-				if(helpNode!=actNode){
-					xValues.push(helpNode.xPosition+horWay); // Punkt an der unteren Kante 
-					yValues.push(helpNode.yPosition);
-				}
-			}
-
-			for(i=1; i<xValues.length; i++){
-				distHelpX=xValues[i]-xValues[i-1];
-				distHelpY=yValues[i]-yValues[i-1];
-				distHelp=Math.sqrt(distHelpX*distHelpX+distHelpY*distHelpY);
-				dists.push(distHelp);
-			}
-
-			i=1;
-			function moveCircle(){
-				var tween = new Kinetic.Tween({
-					node: ball,
-					x: xValues[i],
-					y: yValues[i],
-					duration: dists[i-1]/moveSpeed,
-					onFinish: function(){
-						i++;
-						setTimeout(function(){
-							var inval1=setInterval(function(){
-								if(savedOpCount!=tree.opCount) clearInterval(inval1);
- 								if(!tree.paused){
-									if(savedOpCount==tree.opCount){
-										if(xValues[i]!=undefined)  moveCircle();	
-										else tree.hasArrived=true; 
-									}
-									clearInterval(inval1);
-								}
-							}, 100);
-						}, pauseTime);	
-					}
-				});
-				tween.play();	
-			}
-			if(tmpNodes.length>1) moveCircle();
 		}
+		visitedNodes.unshift(tree.root);
+
+		for(i=0; i<visitedNodes.length; i++){
+			helpNode=visitedNodes[i];
+			xValues.push(helpNode.xPosition + nodeWidth/2);
+			yValues.push(helpNode.yPosition - nodeHeight);
+			horWay=0;
+			for(v=0; v<helpNode.keys.length; v++) if(actVal<helpNode.keys[v]) break;
+			horWay=cellWidth*v+pointerSpace/2;
+	
+			if(v!=tree.order){
+				xValues.push(helpNode.xPosition+horWay); // Punkt an der oberen Kante
+				yValues.push(helpNode.yPosition-nodeHeight); 
+			}
+			if(helpNode!=actNode){
+				xValues.push(helpNode.xPosition+horWay); // Punkt an der unteren Kante 
+				yValues.push(helpNode.yPosition);
+			}
+		}
+
+		for(i=1; i<xValues.length; i++){
+			distHelpX=xValues[i]-xValues[i-1];
+			distHelpY=yValues[i]-yValues[i-1];
+			distHelp=Math.sqrt(distHelpX*distHelpX+distHelpY*distHelpY);
+			dists.push(distHelp);
+		}
+
+		i=1;
+		function moveCircle(){
+			var tween = new Kinetic.Tween({
+				node: ball,
+				x: xValues[i],
+				y: yValues[i],
+				duration: dists[i-1]/moveSpeed,
+				onFinish: function(){
+					i++;
+					setTimeout(function(){
+						var inval1=setInterval(function(){
+							if(savedOpCount!=tree.opCount) clearInterval(inval1);
+ 							if(!tree.paused){
+								if(savedOpCount==tree.opCount){
+									if(xValues[i]!=undefined)  moveCircle();	
+									else tree.hasArrived=true; 
+								}
+								clearInterval(inval1);
+							}
+						}, 100);
+					}, pauseTime);	
+				}
+			});
+			tween.play();	
+		}
+		if(tmpNodes.length>1) moveCircle();
 	}
-
-
-
 }
 
