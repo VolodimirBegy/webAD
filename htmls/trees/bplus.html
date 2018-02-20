@@ -28,8 +28,10 @@
 	var detailed=true;
 
 	function randomTree(ord){
-		var pauseSymb = $("#p");
-		pauseSymb.addClass("p1");
+		if(speed!=0){
+			var pauseSymb = $("#p");
+			pauseSymb.addClass("p1");
+		}
 		if(ord<0){
 			var nOrder = $("#order");
 			order=parseInt(nOrder.val());
@@ -86,21 +88,13 @@
 	}
 
 	function makePause(){
-
 		if(speed!=0){
-
 			var pauseSymb = $("#p");
 	 		if(pauseSymb.hasClass("p1")){
 				pauseSymb.removeClass("p1");
-			}else{
-				pauseSymb.addClass("p1");
-			}
+			}else pauseSymb.addClass("p1");	
 			tree.makePause();
-
-		}else{
-			tree.makePause(); // Bei Speed=0 das Zeichen unveraendert lassen
-
-		}
+		}else tree.makePause(); // Bei Speed=0 das Zeichen unveraendert lassen
 	}
 
  	function changeValues() {
@@ -204,9 +198,6 @@
 	</div>
 </div>
 
-
-
-
 <div id="config2" class="popup hide">
 	<div class="closer" onclick="javascript:_class('config2', 'hide')"></div>
 		<a href="javascript:_class('config2', 'hide')" class="close">X</a>
@@ -219,8 +210,6 @@
 		<input type="button" value="Create new tree" id="change" onclick="randomTree(-1);javascript:_class('config2', 'hide');return false;">
 	</div>
 </div>
-
-
 
 <div id="config" class="popup hide">
 	<div class="closer" onclick="javascript:_class('config', 'hide')"></div>
@@ -253,7 +242,6 @@
 			<img src="../../images/Octocat.png" width="100px" alt="bsimage"></a>
 	</div>
 </div>
-
 
 <div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Vectors</h2>
@@ -301,7 +289,6 @@
         </ul>
 	</div>
 </div>
-
 <div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Trees</h2>
 	     <ul>
