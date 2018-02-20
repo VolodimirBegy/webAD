@@ -73,17 +73,10 @@ BPlusTree.prototype.lastState=function(){
 
 
 BPlusTree.prototype.makePause=function(){
-	
 	if(tree.speed!=0){
-		if(tree.paused){ 
-			tree.paused=false;
-		}else{ 
-			tree.paused=true;
-		}
+		if(tree.paused) tree.paused=false;
+		else tree.paused=true;
 	}else tree.paused=false;
-
-	
-
 }
 
 
@@ -157,8 +150,6 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 		if(savedOpCount==tree.opCount) tree.draw(actNode, val, 1); // Baum im alten Zustand zeichnen mit wanderndem kreis
 		for(i=0; i<actNode.keys.length; i++) if(actNode.keys[i]==val) nVal=false;
 		
-
-
 		if(!nVal){ // bei doppeltem Wert
 			var inval1=setInterval(function(){
 				if(savedOpCount!=tree.opCount) clearInterval(inval1);
@@ -170,7 +161,6 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 				}
 			}, invalTime);
 
-
 		}else{
 
 			var str1 = "a-" + val.toString();		
@@ -180,9 +170,8 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 				actNode.keys.push(val);
 				actNode.keys.sort(function(a, b){return a-b});
 
-				if(actNode==tree.root){ 
-					tree.draw(undefined, origVal, 1); 
-				}else{
+				if(actNode==tree.root) tree.draw(undefined, origVal, 1); 
+				else{
 					var inval1=setInterval(function(){
 						if(savedOpCount!=tree.opCount) clearInterval(inval1);
 						if(!tree.paused&&tree.hasArrived){
@@ -192,9 +181,7 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 						}
 					}, invalTime);					
 				}
-
-
-			}else if(actNode.keys.length==dOrd && actNode==tree.root){ // Baum besteht nur aus Wurzel, Wurzel ist voll
+			}else if(actNode.keys.length==dOrd&&actNode==tree.root){ // Baum besteht nur aus Wurzel, Wurzel ist voll
 
 				var rightSibling=new Node(); // rechtes Kind
 				var values=actNode.keys;
@@ -206,19 +193,14 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 
 				setTimeout(function(){
 					var inval1=setInterval(function(){
-
 						if(savedOpCount!=tree.opCount) clearInterval(inval1);
-
 						if(!tree.paused){
-
 							var valuesLeftSibling=[];
 							for(i=0; i<=this.order; i++) valuesLeftSibling.push(values[i]); // Werte fuer das linke Kind
 							actNode.keys=valuesLeftSibling; // Wurzel erhaelt die Werte fuer den linken Knoten
-
 							var valuesRightSibling=[];
 							for(var i=this.order+1; i<=dOrd; i++) valuesRightSibling.push(values[i]);
 							rightSibling.keys=valuesRightSibling;
-
 							var newRoot=new Node(); // neue Wurzel
 							newRoot.isLeaf=false;
 							newRoot.keys.push(values[this.order+1]);
@@ -228,14 +210,11 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 							rightSibling.parent=newRoot;
 							tree.root=newRoot;
 							if(savedOpCount==tree.opCount) tree.draw(undefined, origVal, 1);
-
 							clearInterval(inval1);
 							if(tree.speed==0) tree.paused=true;
 						}
 					}, invalTime);
-
 				}, waitTime2);
-
 				
 			}else if(actNode.keys.length==dOrd&&actNode.parent!=undefined&&actNode.parent.keys.length<dOrd){
 				// Blatt ist voll, Elternknoten hat noch Platz (nur Blatt spalten, Elternknoten nicht)
@@ -247,30 +226,23 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 				var inval1=setInterval(function(){
 
 					if(savedOpCount!=tree.opCount) clearInterval(inval1);
-
 					if(!tree.paused&&tree.hasArrived){
-
 						tree.hasArrived=false;
 						actNode.keys=values; // Aktueller Knoten hat jetzt einen Wert zu viel
 						if(savedOpCount==tree.opCount) tree.draw(undefined, origVal, 1); 
-
 						var valuesLeftSibling=[];
 						for(i=0; i<=this.order; i++) valuesLeftSibling.push(values[i]);
 						actNode.keys=valuesLeftSibling;	
 						var valuesRightSibling=[];
-						for(var i=this.order+1; i<=dOrd; i++) valuesRightSibling.push(values[i]);
+						for(i=this.order+1; i<=dOrd; i++) valuesRightSibling.push(values[i]);
 						rightSibling.keys=valuesRightSibling;
 						rightSibling.isOrphan=true;
 						rightSibling.parent=actNode.parent;
 						actNode.rightPointer=rightSibling;
-
 						setTimeout(function(){ 
-
 							var inval2=setInterval(function(){
-
 								if(savedOpCount!=tree.opCount) clearInterval(inval2);
 								if(!tree.paused){
-
 									if(savedOpCount==tree.opCount) tree.draw(undefined, origVal, 1);
 									rightSibling.isOrphan=false;
 									actNode.rightPointer=undefined;
@@ -285,10 +257,8 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 									actNode.parent.keys.push(val);
 									actNode.parent.keys.sort(function(a, b){return a-b});		
 									actNode.parent.pointers.splice(index+1, 0, rightSibling);
-
 									setTimeout(function(){ 
 										var inval3=setInterval(function(){
-
 
 											if(savedOpCount!=tree.opCount) clearInterval(inval3);
 											if(!tree.paused){
@@ -298,13 +268,11 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 											}
 
 										}, invalTime);
-
 									}, waitTime2);
 									clearInterval(inval2);
 									if(tree.speed==0) tree.paused=true;
 								}
 							}, invalTime);
-
 						}, waitTime2);	
 						clearInterval(inval1);
 						if(tree.speed==0) tree.paused=true;
@@ -316,7 +284,6 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 				var oldLeft=undefined, oldRight=undefined, rightSibling=undefined, left=false, limit=0, i=0;
 				var helpValues=[];
 				var helpValuesActNode=[];
-				
 				helpValues=[];
 				helpValuesActNode=[];
 				helpValues=actNode.keys;
@@ -341,7 +308,6 @@ BPlusTree.prototype.add=function(mode) { // Funktion hinzufuegen
 						actNode.keys=helpValuesActNode; // jetzt sind die Werte in den Blaettern aufgeteilt
 
 						setTimeout(function(){ // jetzt die internen Knoten
-
 							var inval1=setInterval(function(){
 
 								if(savedOpCount!=tree.opCount) clearInterval(inval1);
@@ -610,7 +576,7 @@ BPlusTree.prototype.addSimple=function(mode) { // Funktion hinzufuegen
 				rightSibling.parent=newRoot;
 				tree.root=newRoot;
 
-			}else if(actNode.keys.length==dOrd&&actNode.parent!=undefined&&actNode.parent.keys.length<dOrd){ // Blatt voll
+			}else if(actNode.keys.length==dOrd&&actNode.parent!=undefined&&actNode.parent.keys.length<dOrd){ 
 							// Blatt ist voll, Elternknoten hat noch Platz (nur Blatt spalten, Elternknoten nicht)					
 				var rightSibling=new Node();
 				var values=actNode.keys;
@@ -775,10 +741,9 @@ BPlusTree.prototype.setValues=function(nsp, nhd, nvd, ncol){
 	tree.hdist=nhd;
 	tree.vdist=nvd;
 	tree.color=ncol;
-
 	if(tree.speed==0) tree.paused=true;
 	else tree.paused=false;
-
+	tree.update();
 }
 
 
@@ -1017,7 +982,6 @@ BPlusTree.prototype.remove=function(mode){
 						if(savedOpCount!=tree.opCount) clearInterval(inval1);
 						if(!tree.paused&&tree.hasArrived){
 							tree.hasArrived=false;
-
 							if(savedOpCount==tree.opCount) tree.draw(undefined, val, 2); // Baum zeichnen mit Wert im Blatt geloescht
 								// Werte im geloeschten Blatt neu verteilen, unterlaufenes Blatt loeschen
 								if(actNode==parentNode.pointers[0]){ //aktuelles Blatt ist ganz links
@@ -1043,9 +1007,7 @@ BPlusTree.prototype.remove=function(mode){
 									parentNode.keys.splice(index-1, 1); // Index des unterlaufenen Blattes loeschen
 									parentNode.pointers.splice(index, 1); // Zeiger loeschen
 								}
-					
 								actNode=parentNode;	
-
 								if(actNode==tree.root && actNode.keys.length==0){ // Wenn die Wurzel jetzt leer ist
 									tree.root=actNode.pointers[0];
 									actNode=tree.root;
@@ -1384,7 +1346,6 @@ BPlusTree.prototype.removeSimple=function(mode){
 							leftSibling.keys.splice(leftSibling.keys.length-1, 1); // Wert ganz rechts loeschen
 							leftSibling.pointers[leftSibling.pointers.length-1].parent=actNode;
 							leftSibling.pointers.splice(leftSibling.pointers.length-1, 1); // Pfeil ganz rechts loeschen
-					
 							actNode=parentNode; 
 
 						}else if(index!=parentNode.pointers.length-1 && rightSibling.keys.length>this.order){ // rechts probieren
@@ -1395,7 +1356,6 @@ BPlusTree.prototype.removeSimple=function(mode){
 							parentNode.keys[index]=rightSibling.keys[0];
 							rightSibling.keys.splice(0,1);
 							rightSibling.pointers.splice(0,1);
-
 							actNode=parentNode; 
 
 						}else{  // Wert kann weder links noch rechts ausgeborgt werden. Achtung: Wurzel kann jetzt leer werden
@@ -1454,34 +1414,26 @@ BPlusTree.prototype.searchTree=function(mode){
 		val=parseInt(prompt("Choose a value between 0 and 1000"));
 		if(isNaN(val)||val<1||val>999) return;
 	}else if(mo==-1){
- 
-			var tmpNodes=[];
-			var values=[];
-			tmpNodes.push(tree.root);
-
-			while(tmpNodes[i]!=undefined){
+		var tmpNodes=[], values=[];
+		tmpNodes.push(tree.root);
+		while(tmpNodes[i]!=undefined){
+			helpNode=tmpNodes[i];
+			for(j=0; j<helpNode.pointers.length; j++) tmpNodes.push(helpNode.pointers[j]);		
+			i++;
+		}
+		for(i=0; i<tmpNodes.length; i++){
+			if(tmpNodes[i].isLeaf){
 				helpNode=tmpNodes[i];
-				for(j=0; j<helpNode.pointers.length; j++){ 	
-					tmpNodes.push(helpNode.pointers[j]);
-				}		
-				i++;
+				for(j=0; j<helpNode.keys.length; j++)values.push(helpNode.keys[j]);	
 			}
-			for(i=0; i<tmpNodes.length; i++){
-				if(tmpNodes[i].isLeaf){
-					helpNode=tmpNodes[i];
-					for(j=0; j<helpNode.keys.length; j++){
-						values.push(helpNode.keys[j]);
-					}
-				}
-			}
-			var limit=values.length;
-			val=values[Math.floor(Math.random() * limit)]; // Zufallszahl generieren		
+		}
+		var limit=values.length;
+		val=values[Math.floor(Math.random() * limit)]; // Zufallszahl generieren		
 	}
 
 	tree.update();
 	tree.opCount++;
 	var savedOpCount=tree.opCount;
-
 
 	if(tree.speed==0){
 		tree.paused=true;
@@ -1490,7 +1442,6 @@ BPlusTree.prototype.searchTree=function(mode){
 		pauseSymb.addClass("p1");
 		tree.paused=false;
 	}
-
 	if(tree.root==undefined){
 		alert("Create the tree first!");
 		return;
@@ -1509,7 +1460,6 @@ BPlusTree.prototype.searchTree=function(mode){
 			actNode=actNode.pointers[index];
 		}
 		tree.draw(actNode, val, 3); // Baum im alten Zustand zeichnen 
-
 		var inval=setInterval(function(){
 			if(savedOpCount!=tree.opCount) clearInterval(inval);
 			if(!tree.paused&&tree.hasArrived){
@@ -1519,7 +1469,6 @@ BPlusTree.prototype.searchTree=function(mode){
 				if(tree.speed==0) tree.paused=true;
 			}																	
 		}, 200);
-
 	}
 }
 
