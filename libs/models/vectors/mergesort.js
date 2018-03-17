@@ -35,6 +35,7 @@ function Vector(){
 	this.lastPos = -1;
 	//Helper for saving when the status = 0
 	this.savedStatus = false;
+        this.doneAction = false;
 }
 
 Vector.prototype.init=function(){
@@ -69,8 +70,13 @@ Vector.prototype.init=function(){
 	this.paused=true;
 	this.finished=false;
 	this.savedStatus = false;
-	//if(this.actStateID!=-1)
-	//	this.saveInDB();
+        //Indicates that a separation is done (used for going back)
+        this.doneAction = false;
+	if(this.actStateID!=-1){
+            //Save empty array
+            this.saveInDB();
+            this.savedStatus = false;
+        }
 }
 
 Vector.prototype.saveInDB=function(){
@@ -186,6 +192,7 @@ Vector.prototype.copy=function(){
 	newVector.speed=this.speed;
 	
 	newVector.stepDelay=this.stepDelay;
+        newVector.doneAction = this.doneAction;
 	
 	newVector.elements=[];
 	for(var i=0;i<this.elements.length;i++){
@@ -243,6 +250,7 @@ Vector.prototype.replaceThis=function(toCopy){
 	this.speed=toCopy.speed;
 	
 	this.stepDelay=toCopy.stepDelay;
+        this.doneAction = toCopy.doneAction;
 	
 	this.elements=[];
 	for(var i=0;i<toCopy.elements.length;i++){
@@ -254,15 +262,18 @@ Vector.prototype.replaceThis=function(toCopy){
 Vector.prototype.prev=function(){
 	if(this.paused){
 		if(this.actStateID>0){
-			var prev_id=this.actStateID-1;
-			this.actStateID=prev_id;
-			var rs=this.db[prev_id];
-			//make actual node to THIS:
-	      	this.replaceThis(rs);
-	      	this.draw();
+                    var prev_id=this.actStateID-1;
+                    if(this.status == 0 && this.doneAction){
+                        prev_id=this.actStateID;
+                    }
+                    this.actStateID=prev_id;
+                    var rs=this.db[prev_id];
+                    //make actual node to THIS:
+                    this.replaceThis(rs);
+                    this.draw();
 		}
 		else if(this.actStateID == 0){
-			this.firstState();
+                    this.firstState();
 		}
 	}
 	else
@@ -434,7 +445,7 @@ Vector.prototype.mergeSort=function(){
 							this.savedStatus = false;
 							vector.lastPos = -1;
 						}
-						
+						vector.doneAction = true;
 						vector.status = status;
 						vector.setColorsMergeSort();
 						vector.draw();
