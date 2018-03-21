@@ -557,6 +557,52 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 	
 }
 
+WeightedDirectedGraph.prototype.floydwarshall = function() {
+    console.log(this.costMatrix);
+
+    var testMatrix = [];
+    for (var i = 0; i < this.costMatrix.length; i++) {
+        testMatrix.push(new Array(this.costMatrix.length));
+    }
+
+    for (var i = 0; i < this.costMatrix.length; i++) {
+        for (var j = 0; j < this.costMatrix.length; j++) {
+            if (this.costMatrix[i][j] != undefined) {
+                testMatrix[i][j] = this.costMatrix[i][j];
+            }
+        }
+    }
+
+    var n = testMatrix.length;
+    for (var k = 0; k < n; k++) {
+        for (var i = 0; i < n; i++) {
+            for (var j = 0; j < n; j++) {
+                var firstLength = testMatrix[i][k];
+                var secondLength = testMatrix[k][j];
+                var newPathlength = undefined;
+                if (firstLength !== undefined && secondLength !== undefined) {
+                    newPathlength = firstLength + secondLength;
+                }
+                var oldPathlength = testMatrix[i][j];
+                if (
+                    i !== j &&
+                    ((newPathlength !== undefined &&
+                        oldPathlength === undefined) ||
+                        newPathlength < oldPathlength)
+                ) {
+                    testMatrix[i][j] = newPathlength;
+                    console.log(i);
+                    console.log(j);
+                    console.log(newPathlength);
+                    console.log(oldPathlength);
+                    console.log(testMatrix[i][j]);
+                    console.log(testMatrix);
+                }
+            }
+        }
+    }
+};
+
 WeightedDirectedGraph.prototype.draw=function(){
 	this.view.draw();
 }
