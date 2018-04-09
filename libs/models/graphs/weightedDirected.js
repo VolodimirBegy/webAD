@@ -22,6 +22,15 @@ function Edge(u,v,w){
 	this.v=v;
 	this.weight=w;
 	this.color="black";
+
+	// floydwarshall
+	this.oColor = '#000000';
+	this.new = false;
+	this.k = undefined;
+	this.i = undefined;
+	this.j = undefined;
+	this.oldWeight = undefined;
+	this.sorting = 0;
 }
 
 function WeightedDirectedGraph(){
@@ -30,7 +39,9 @@ function WeightedDirectedGraph(){
 	this.actStateID=-1;
 }
 
-WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
+// floydwarshall: new variable mode to differ between algorithms
+WeightedDirectedGraph.prototype.fill=function(_matrix,startNode, mode){
+	this.mode = mode;
 	this.startNode=startNode;
 	
 	this.nodes=[];
@@ -90,8 +101,11 @@ WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 					}
 				}
 				
-				if(index==graph.nodes[0].index){cNode.color="#00FFFF";cNode.oColor="#00FFFF";}
-			
+				// floydwarshall: don't color startnode
+				if(graph.mode !== "floydwarshall"){
+					if(index==graph.nodes[0].index){cNode.color="#00FFFF";cNode.oColor="#00FFFF";}
+				}
+				
 				//ignore duplicates
 				var eExists=false;
 				for(var j=0;j<graph.edges.length;j++){
@@ -151,12 +165,18 @@ WeightedDirectedGraph.prototype.init=function(c1){
 	this.i=undefined; this.dist=undefined; 
 	this.prev=undefined; this.S=undefined;
 
-	// floydwarshall
+	// floydwarshall: initialize variables
 	this.j = undefined;
 	this.k = undefined;
 	this.speed = 5;
 	this.paused = false;
 	this.finished = false;
+	this.colorNodes="#00ff00";
+	this.colorVisitedNodes="#00ffff";
+	this.colorEdges="#000000";
+	this.colorVisitedEdges="#00ff00";
+	this.colorNewEdges="#ff0000";
+	this.edgeSorting = 0;
 
 	this.draw();
 	this.saveInDB();
@@ -178,12 +198,14 @@ WeightedDirectedGraph.prototype.copy=function(){
 	newG.i=this.i;
 	newG.uSet=this.uSet;
 
-	// floydwarshall
+	// floydwarshall: copy variables
 	newG.j = this.j;
 	newG.k = this.k;
 	newG.speed = this.speed;
 	newG.paused = true;
-	newG.finished = this.newG;
+	newG.finished = this.finished;
+	newG.mode = this.mode;
+	newG.edgeSorting = this.edgeSorting;
 	
 	if(this.Q!=undefined){
 		newG.Q=new Array(this.Q.length);
@@ -234,9 +256,17 @@ WeightedDirectedGraph.prototype.copy=function(){
 	
 	for(var i=0;i<this.edges.length;i++){
 		for(var j=0;j<newG.edges.length;j++){
-			if(this.edges[i].index==newG.edges[j].index){
-				
+			// floydwarshall bugfix: new edges can be added dynamically and are stored correctly
+			// if(this.edges[i].index==newG.edges[j].index){
+			if((this.edges[i].u.index === newG.edges[j].u.index) && (this.edges[i].v.index === newG.edges[j].v.index)){
 				newG.edges[j].color=this.edges[i].color;
+				newG.edges[j].oColor = this.edges[i].oColor;
+				newG.edges[j].new = this.edges[i].new;
+				newG.edges[j].k = this.edges[i].k;
+				newG.edges[j].i = this.edges[i].i;
+				newG.edges[j].j = this.edges[i].j;
+				newG.edges[j].oldWeight = this.edges[i].oldWeight;
+				newG.edges[j].sorting = this.edges[i].sorting;
 				break;
 			}
 		}
@@ -271,12 +301,14 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 	this.i=og.i;
 	this.uSet=og.uSet;
 
-	// floydwarshall
+	// floydwarshall: replace variables
 	this.j = og.j;
 	this.k = og.k;
 	this.speed = og.speed;
-	this.paused = og;
-	this.finished = og.newG;
+	this.paused = true;
+	this.finished = og.finished;
+	this.mode = og.mode;
+	this.edgeSorting = og.edgeSorting;
 	
 	if(og.Q!=undefined){
 		this.Q=new Array(og.Q.length);
@@ -327,8 +359,17 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 
 	for(var i=0;i<og.edges.length;i++){
 		for(var j=0;j<this.edges.length;j++){
-			if(og.edges[i].index==this.edges[j].index){
+			// floydwarshall bugfix: new edges can be added dynamically and are stored correctly
+			// if(og.edges[i].index==this.edges[j].index){
+			if((og.edges[i].u.index === this.edges[j].u.index) && (og.edges[i].v.index === this.edges[j].v.index)){
 				this.edges[j].color=og.edges[i].color;
+				this.edges[j].oColor = og.edges[i].oColor;
+				this.edges[j].new = og.edges[i].new;
+				this.edges[j].k = og.edges[i].k;
+				this.edges[j].i = og.edges[i].i;
+				this.edges[j].j = og.edges[i].j;
+				this.edges[j].oldWeight = og.edges[i].oldWeight;
+				this.edges[j].sorting = og.edges[i].sorting;
 				break;
 			}
 		}
@@ -422,6 +463,27 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
 		this.actStateID=nextID;
 		//window.alert(this.actStateID);
 	}
+}
+
+// floydwarshall: set colors for config
+WeightedDirectedGraph.prototype.setColorsFloydwarshall=function(){
+	var graph = this;
+	$.each(graph.nodes, function(index, node) {
+		if(node.color === node.oColor){
+			node.color = graph.colorNodes;
+			node.oColor = graph.colorNodes;
+		} else {
+			node.color = graph.colorVisitedNodes;
+		}
+	});
+	$.each(graph.edges, function(index, edge) {
+		if(edge.color === edge.oColor){
+			edge.color = graph.colorEdges;
+			edge.oColor = graph.colorEdges;
+		} else {
+			edge.color = graph.colorVisitedEdges;
+		}
+	});
 }
 
 WeightedDirectedGraph.prototype.dijkstra=function(){
@@ -579,18 +641,23 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 	
 }
 
+// floydwarshall: implemented by Jakob Aichmayr (a1349679)
 WeightedDirectedGraph.prototype.floydwarshall = function() {
-    var graph = this;
-	var n = this.nodes.length;
-    var firstDelay = 0;
+	var graph = this;
+	var n = graph.costMatrix.length;
+	var firstDelay = 0;
 
     if (n === 1 || graph.finished) {
-        graph.finished = true;
+		graph.finished = true;
+		$('#p').removeClass('p1');
         return;
 	}
 
     function step() {
         setTimeout(function() {
+			var changedNodeColor = false;
+			var changedEdgeColorOne = false;
+			var changedEdgeColorTwo = false;
             graph.k = graph.k === undefined ? 0 : graph.k;
             graph.i = graph.i === undefined ? 0 : graph.i;
             graph.j = graph.j === undefined ? 0 : graph.j;
@@ -598,32 +665,44 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 
             // nur Knoten
             if (graph.k === graph.i && graph.i === graph.j) {
-                changeNodeColor();
+				changedNodeColor = changeNodeColor();
                 graph.draw();
-                graph.saveInDB();
-                resetGraphColor();
-                // Knoten + Weg (zweiter)
-            } else if (graph.k === graph.i) {
-                changeNodeColor();
-                changeEdgeColor(2);
-                graph.draw();
-                graph.saveInDB();
-                resetGraphColor();
+				graph.saveInDB();
+				if(changedNodeColor){
+					resetGraphColor();
+				} else {
+					loop();
+				}
                 // Knoten + Weg (erster)
             } else if (graph.k === graph.j) {
-                changeNodeColor();
-                changeEdgeColor(1);
+                changedNodeColor = changeNodeColor();
+                changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
                 graph.draw();
                 graph.saveInDB();
-                resetGraphColor();
+                if(changedNodeColor || changedEdgeColorOne){
+					resetGraphColor();
+				} else {
+					loop();
+				}
+                // Knoten + Weg (zweiter)
+            } else if (graph.i === graph.k) {
+                changedNodeColor = changeNodeColor();
+                changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
+                graph.draw();
+                graph.saveInDB();
+                if(changedNodeColor || changedEdgeColorTwo){
+					resetGraphColor();
+				} else {
+					loop();
+				}
                 // 2 Wege
             } else {
-                changeEdgeColor(1);
-                changeEdgeColor(2);
+                changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
+                changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
                 graph.draw();
                 graph.saveInDB();
-                var firstLength = graph.costMatrix[graph.i][graph.k];
-                var secondLength = graph.costMatrix[graph.k][graph.j];
+				var firstLength = graph.costMatrix[graph.i][graph.k];
+				var secondLength = graph.costMatrix[graph.k][graph.j];
                 var shouldResetGraphColor = true;
                 if (firstLength !== undefined && secondLength !== undefined) {
                     var oldPathlength = graph.costMatrix[graph.i][graph.j];
@@ -634,45 +713,43 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
                         var firstNode;
                         var secondNode;
                         var foundEdge = undefined;
-                        $.each(graph.nodes, function(
-                            index,
-                            node
-                        ) {
+                        $.each(graph.nodes, function(index, node) {
                             if (firstIndex === node.index) {
                                 firstNode = node;
                             }
-                            if (
-                                secondIndex === node.index
-                            ) {
+                            if (secondIndex === node.index) {
                                 secondNode = node;
                             }
                         });
-                        $.each(graph.edges, function(
-                            index,
-                            edge
-                        ) {
-                            if (
-                                edge.u === firstNode &&
-                                edge.v === secondNode
-                            ) {
+                        $.each(graph.edges, function(index, edge) {
+                            if (edge.u === firstNode && edge.v === secondNode) {
                                 foundEdge = edge;
                                 return false;
                             }
-						});
-						setTimeout(function() {
-							if (foundEdge !== undefined) {
-								console.log("found Edge");
-								foundEdge.weight = newPathlength;
-								foundEdge.color = "red";
-								graph.costMatrix[graph.i][graph.j] = newPathlength;
-							} else {
-								console.log("new Edge");
+                        });
+                        setTimeout(function() {
+                            if (foundEdge !== undefined) {
+								foundEdge.oldWeight = foundEdge.weight;
+                                foundEdge.weight = newPathlength;
+								foundEdge.color = graph.colorNewEdges;
+								foundEdge.k = graph.k;
+								foundEdge.i = graph.i;
+								foundEdge.j = graph.j;
+								foundEdge.new = true;
+								foundEdge.sorting = graph.edgeSorting++;
+                                graph.costMatrix[graph.i][graph.j] = newPathlength;
+                            } else {
 								var newEdge = new Edge(firstNode, secondNode, newPathlength);
-								newEdge.color = "red";
-								// newEdge.index = graph.edges.length - 1;
-								graph.edges.push(newEdge);
-								graph.costMatrix[graph.i][graph.j] = newPathlength;
-							}
+								newEdge.oldWeight = '-';
+								newEdge.color = graph.colorNewEdges;
+								newEdge.k = graph.k;
+								newEdge.i = graph.i;
+								newEdge.j = graph.j;
+								newEdge.new = true;
+								newEdge.sorting = graph.edgeSorting++;
+                                graph.edges.push(newEdge);
+                                graph.costMatrix[graph.i][graph.j] = newPathlength;
+                            }
                             graph.draw();
                             graph.saveInDB();
                             resetGraphColor();
@@ -680,9 +757,11 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
                         shouldResetGraphColor = false;
                     }
                 }
-                if (shouldResetGraphColor) {
+                if ((changedEdgeColorOne || changedEdgeColorTwo) && shouldResetGraphColor) {
                     resetGraphColor();
-                }
+                } else if(shouldResetGraphColor){
+					loop();
+				}
             }
         }, firstDelay);
     }
@@ -690,6 +769,7 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 	
 	function loop() {
 		if (graph.j < n-1) {
+			var isLastStep = false;
 			graph.j++;
 			step();
 		} else if (graph.i < n-1) {
@@ -701,32 +781,25 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 			graph.i = 0;
 			graph.k++;
 			step();
-		} else {
-			graph.finished = true;
 		}
 	}
 
 	function changeNodeColor(){
+		var changedNodeColor = false;
 		$.each(graph.nodes, function(index, node) {
 			if (graph.k === node.index) {
-				node.color = "#00FFFF";
+				node.color = graph.colorVisitedNodes;
+				changedNodeColor = true;
 				return false;
 			}
 		});
+		return changedNodeColor;
 	}
 
-	function changeEdgeColor(number) {
-		var firstIndex;
-		var secondIndex;
+	function changeEdgeColor(firstIndex, secondIndex) {
 		var firstNode;
 		var secondNode;
-		if(number === 1){
-			firstIndex = graph.i;
-			secondIndex = graph.k;
-		} else if(number === 2){
-			firstIndex = graph.k;
-			secondIndex = graph.j;
-		}
+		var changedEdgeColor = false;
 		$.each(graph.nodes, function(index, node) {
 			if (firstIndex === node.index) {
 				firstNode = node;
@@ -737,19 +810,26 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 		});
         $.each(graph.edges, function(index, edge) {
 			if (edge.u === firstNode && edge.v === secondNode) {
-				edge.color = "lime";
+				edge.color = graph.colorVisitedEdges;
+				changedEdgeColor = true;
+				return false;
 			}
 		});
+		return changedEdgeColor;
 	}
 
 	function resetGraphColor(){
 		setTimeout(function() {
             $.each(graph.nodes, function(index, node) {
-                node.color = "lime";
+                node.color = graph.colorNodes;
             });
             $.each(graph.edges, function(index, edge) {
-                edge.color = "black";
-            });
+                edge.color = graph.colorEdges;
+			});
+			if(graph.j === n-1 && graph.i === n-1 && graph.k === n-1){
+				graph.finished = true;
+				$('#p').removeClass('p1');
+			}
             graph.draw();
             graph.saveInDB();
             loop();
@@ -757,155 +837,6 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 	}
 
 };
-
-	// console.log("hier")
-	// 											var newEdge = new Edge(
-	// 												node,
-	// 												connectedNode,
-	// 												newPathlength
-	// 											);
-	// 											newEdge.color = "red";
-	// 											newEdge.index =
-	// 												graph.edges.length - 1;
-	// 											graph.edges.push(newEdge);
-	// 											graph.costMatrix[graph.i][
-	// 												graph.j
-	// 											] = newPathlength;
-
-	// $.each(graph.nodes, function(index, node) {
-	// 	if (graph.i === node.index) {
-	// 		$.each(node.connectedTo, function(
-	// 			index,
-	// 			connectedNode
-	// 		) {
-	// 			if (graph.j === connectedNode.index) {
-	// 				var foundEdge = false;
-	// 				$.each(graph.edges, function(index, edge) {
-	// 					if (
-	// 						edge.u === node &&
-	// 						edge.v === connectedNode
-	// 					) {
-	// 						edge.weight = newPathlength;
-	// 						graph.costMatrix[graph.i][
-	// 							graph.j
-	// 						] = newPathlength;
-	// 					}
-	// 				});
-	// 			}
-	// 		});
-	// 	}
-	// });
-
-// if (
-			// 	i !== j &&
-			// 	((newPathlength !== undefined &&
-			// 		oldPathlength === undefined) ||
-			// 		newPathlength < oldPathlength)
-			// ) {
-			// 	this.costMatrix[i][j] = newPathlength;
-			
-			// }
-
-// $.each(this.nodes, function(index, node) {
-// 	if (graph.i === node.index) {
-// 		$.each(node.connectedTo, function(index, connectedNode) {
-// 			if (graph.j === connectedNode.index) {
-// 				$.each(graph.edges, function(index, edge) {
-// 					if (edge.u === node && edge.v === connectedNode) {
-// 						edge.weight = newPathlength;
-// 					} else {
-// 						var newEdge = new Edge(node, connectedNode, newPathlength);
-// 						newEdge.color = "red";
-// 						newEdge.index = graph.edges.length-1;
-// 						graph.edges.push(newEdge);
-// 					}
-// 				});
-// 			}
-// 		});
-// 	}
-// });
-
-// for (; graph.k < n; graph.k++) {
-// 	for (; graph.i < n; graph.i++) {
-// 		for (; graph.j < n; graph.j++) {
-
-// 		}
-// 	}
-// }
-
-// function step(graph) {
-// 	function start(graph) {
-		
-// 		setTimeout(function() {}, 100 * graph.speed);
-// 	}
-// 	start(graph);
-// }
-
-// if(k == i == j){
-// 	console.log("treffer");
-// 	setTimeout(function(){
-// 		$.each(graph.nodes, function(index, node){
-// 			if(k == node.index){
-// 				console.log("erste farbe");
-// 				node.color = "#00FFFF";
-// 				graph.draw();
-// 				graph.saveInDB();
-// 				// setTimeout(function(){
-// 					console.log("zweite farbe");
-// 					node.color = "lime";
-// 					graph.draw();
-// 					graph.saveInDB();
-// 				// }, 100*graph.speed)
-// 			}
-// 		})
-// 	}, 500)
-// }
-
-// WeightedDirectedGraph.prototype.floydwarshall = function() {
-//     console.log(this.costMatrix);
-
-//     var testMatrix = [];
-//     for (var i = 0; i < this.costMatrix.length; i++) {
-//         testMatrix.push(new Array(this.costMatrix.length));
-//     }
-
-//     for (var i = 0; i < this.costMatrix.length; i++) {
-//         for (var j = 0; j < this.costMatrix.length; j++) {
-//             if (this.costMatrix[i][j] != undefined) {
-//                 testMatrix[i][j] = this.costMatrix[i][j];
-//             }
-//         }
-//     }
-
-//     var n = testMatrix.length;
-//     for (var k = 0; k < n; k++) {
-//         for (var i = 0; i < n; i++) {
-//             for (var j = 0; j < n; j++) {
-//                 var firstLength = testMatrix[i][k];
-//                 var secondLength = testMatrix[k][j];
-//                 var newPathlength = undefined;
-//                 if (firstLength !== undefined && secondLength !== undefined) {
-//                     newPathlength = firstLength + secondLength;
-//                 }
-//                 var oldPathlength = testMatrix[i][j];
-//                 if (
-//                     i !== j &&
-//                     ((newPathlength !== undefined &&
-//                         oldPathlength === undefined) ||
-//                         newPathlength < oldPathlength)
-//                 ) {
-//                     testMatrix[i][j] = newPathlength;
-//                     console.log(i);
-//                     console.log(j);
-//                     console.log(newPathlength);
-//                     console.log(oldPathlength);
-//                     console.log(testMatrix[i][j]);
-//                     console.log(testMatrix);
-//                 }
-//             }
-//         }
-//     }
-// };
 
 WeightedDirectedGraph.prototype.draw=function(){
 	this.view.draw();

@@ -74,6 +74,18 @@
         <div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
         <div class="pole">
             <h2>Config</h2>
+            Animation speed:
+            <input type="number" name="speed" style="width:40px" id="speed" min="1" max="10" step="1" value="5" onchange="speed();return false;">
+            <br>Node color:
+            <input type="color" name="colorNodes" id="colorNodes" onchange="colorNodes();return false;">
+            <br>Visited node color:
+            <input type="color" name="colorVisitedNodes" id="colorVisitedNodes" onchange="colorVisitedNodes();return false;">
+            <br>Edge color:
+            <input type="color" name="colorEdges" id="colorEdges" onchange="colorEdges();return false;">
+            <br>Visited edge color:
+            <input type="color" name="colorVisitedEdges" id="colorVisitedEdges" onchange="colorVisitedEdges();return false;">
+            <br>New edge color:
+            <input type="color" name="colorNewEdges" id="colorNewEdges" onchange="colorNewEdges();return false;">
         </div>
     </div>
     <div id="about" class="popup hide">
@@ -207,7 +219,7 @@
         matrix[2][1] = 2;
 
         var c1 = document.getElementById("container1");
-        graph.fill(matrix, startNode);
+        graph.fill(matrix, startNode, 'floydwarshall');
         graph.init(c1);
         _matrix = new WeightedDirectedMatrix(nodeCount);
 
@@ -218,6 +230,7 @@
         _matrix.miniMatrix = matrix;
         _matrix.minNum = nodeCount;
         _matrix.drawMin();
+        resetFields();
     });
 
     function create() {
@@ -246,6 +259,7 @@
         tf.val("");
         tf.css("background-color", "white");
         _class('createMatrix', 'hide');
+        resetFields();
     }
 
     function zoomOutMatrix() {
@@ -307,8 +321,8 @@
             }
             _class('createMatrix', 'hide');
             var c1 = document.getElementById("container1");
-            graph.fill(_matrix.matrix, startNode);
-            graph.init(c1);
+            graph.fill(_matrix.matrix, startNode, 'floydwarshall');
+            graph.init(c1, 'floydwarshall');
             //mini display
             _matrix.miniMatrix = graph.costMatrix;
             _matrix.minNum = graph.costMatrix.length;
@@ -320,6 +334,7 @@
                 elem.removeClass("p1");
             }
         }
+        resetFields();
     }
 
     function modify() {
@@ -360,6 +375,7 @@
             } else
                 window.alert("Algorithm already in progress");
         }
+        resetFields();
     }
 
     function clearTimes() {
@@ -431,8 +447,8 @@
             random();
         } else {
             var c1 = document.getElementById("container1");
-            graph.fill(matrix, startNode);
-            graph.init(c1);
+            graph.fill(matrix, startNode, 'floydwarshall');
+            graph.init(c1, 'floydwarshall');
 
             _matrix = new WeightedDirectedMatrix(amount);
             var cm = $('#containerMatrix')[0];
@@ -449,6 +465,7 @@
                 elem.removeClass("p1");
             }
         }
+        resetFields();
     }
 
     function floydwarshall() {
@@ -474,6 +491,7 @@
         _matrix.minNum = graph.costMatrix.length;
         _matrix.miniMatrix = graph.costMatrix;
         _matrix.drawMin();
+        resetFields();
     }
 
     function previous() {
@@ -488,19 +506,23 @@
         _matrix.minNum = graph.costMatrix.length;
         _matrix.miniMatrix = graph.costMatrix;
         _matrix.drawMin();
+        resetFields();
     }
 
     function playPause() {
         if (graph != undefined) {
-            var elem = $("#p");
-            if (elem.hasClass("p1")) {
-                clearTimes();
-                elem.removeClass("p1");
-            } else {
-                graph.floydwarshall();
-                elem.addClass("p1");
+            if (!graph.finished) {
+                var elem = $("#p");
+                if (elem.hasClass("p1")) {
+                    graph.paused = true;
+                    clearTimes();
+                    elem.removeClass("p1");
+                } else {
+                    graph.paused = false;
+                    graph.floydwarshall();
+                    elem.addClass("p1");
+                }
             }
-
         } else
             alert("No graph created!");
     }
@@ -517,6 +539,7 @@
         _matrix.minNum = graph.costMatrix.length;
         _matrix.miniMatrix = graph.costMatrix;
         _matrix.drawMin();
+        resetFields();
     }
 
     function last() {
@@ -531,6 +554,7 @@
         _matrix.minNum = graph.costMatrix.length;
         _matrix.miniMatrix = graph.costMatrix;
         _matrix.drawMin();
+        resetFields();
     }
 
     function zoomOut() {
@@ -539,6 +563,92 @@
 
     function zoomIn() {
         graph.view.zoomIn();
+    }
+
+    function resetFields() {
+        var speed = $("#speed");
+        speed.val(graph.speed);
+        $("#colorNodes").val(graph.colorNodes);
+        $("#colorVisitedNodes").val(graph.colorVisitedNodes);
+        $("#colorEdges").val(graph.colorEdges);
+        $("#colorVisitedEdges").val(graph.colorVisitedEdges);
+        $("#colorNewEdges").val(graph.colorNewEdges);
+    }
+
+    function speed() {
+        if (graph != undefined) {
+            var speed = $("#speed");
+            graph.speed = parseInt(speed.val());
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorNodes() {
+        if (graph != undefined) {
+            var colorNodes = $("#colorNodes");
+            graph.colorNodes = colorNodes.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorVisitedNodes() {
+        if (graph != undefined) {
+            var colorVisitedNodes = $("#colorVisitedNodes");
+            graph.colorVisitedNodes = colorVisitedNodes.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorEdges() {
+        if (graph != undefined) {
+            var colorEdges = $("#colorEdges");
+            graph.colorEdges = colorEdges.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorVisitedEdges() {
+        if (graph != undefined) {
+            var colorVisitedEdges = $("#colorVisitedEdges");
+            graph.colorVisitedEdges = colorVisitedEdges.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorNewEdges() {
+        if (graph != undefined) {
+            var colorNewEdges = $("#colorNewEdges");
+            graph.colorNewEdges = colorNewEdges.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
     }
 </script>
 
