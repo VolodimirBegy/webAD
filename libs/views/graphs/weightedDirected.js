@@ -44,11 +44,11 @@ WeightedDirectedGraphView.prototype.zoomOut=function(){
 }
 
 WeightedDirectedGraphView.prototype.draw=function(){
-	// floydwarshall
-	console.log(this.model);
-	console.log("k: " + this.model.k);
-	console.log("i: " + this.model.i);
-	console.log("j: " + this.model.j);
+	// floydwarshall: debugging
+	// console.log(this.model);
+	// console.log("k: " + this.model.k);
+	// console.log("i: " + this.model.i);
+	// console.log("j: " + this.model.j);
 
 	var view = this;
 	
@@ -267,6 +267,7 @@ WeightedDirectedGraphView.prototype.draw=function(){
 
 	// floydwarshall: tables
 	var lastY = undefined;
+	var outerY = undefined;
 	if (this.model.mode === "floydwarshall" && this.model.k !== undefined && this.model.i !== undefined && this.model.j !== undefined) {
         var outerX = 0;
         for (var i = 0; i < this.model.nodes.length; i++) {
@@ -451,7 +452,7 @@ WeightedDirectedGraphView.prototype.draw=function(){
 		$.each(view.model.edges, function(index, edge) {
 			if(edge.new){
 				if(newEdgeCounter === 0){
-					var outerY = 0;
+					outerY = 0;
 					var loopTableOuterY = jValueGrid.getY()+jValueGrid.getHeight();
 					for (var i = 0; i < view.model.nodes.length; i++) {
 						if (view.model.nodes[i].yPosition > outerY) outerY = view.model.nodes[i].yPosition;
@@ -1183,7 +1184,8 @@ WeightedDirectedGraphView.prototype.draw=function(){
 	if(H>h)h=H;
 	if(W>w)w=W;
 
-	if(lastY!==undefined)h=h+lastY;
+	// floydwarshall: increase height, when new table lines are added
+	if(lastY!==undefined && outerY!==undefined)h=h+lastY-outerY;
 	
 	this.stage.setHeight(h);
 	this.stage.setWidth(w);

@@ -68,24 +68,65 @@
         <div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
         <div class="pole">
             <h2>Info</h2>
+            In computer science, the Floyd–Warshall algorithm is an algorithm for finding shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles). A single execution of the algorithm will find the lengths (summed weights)
+            of the shortest paths between all pairs of vertices. Although it does not return details of the paths themselves, it is possible to reconstruct the paths with simple modifications to the algorithm. Versions of the algorithm can also be used
+            for finding the transitive closure of a relation R, or (in connection with the Schulze voting system) widest paths between all pairs of vertices in a weighted graph.
+            <h3>History and naming</h3>
+            The Floyd–Warshall algorithm is an example of dynamic programming, and was published in its currently recognized form by Robert Floyd in 1962. However, it is essentially the same as algorithms previously published by Bernard Roy in 1959 and also by Stephen
+            Warshall in 1962 for finding the transitive closure of a graph, and is closely related to Kleene's algorithm (published in 1956) for converting a deterministic finite automaton into a regular expression. The modern formulation of the algorithm
+            as three nested for-loops was first described by Peter Ingerman, also in 1962. The algorithm is also known as Floyd's algorithm, the Roy–Warshall algorithm, the Roy–Floyd algorithm, or the WFI algorithm.
+            <h3>Algorithm</h3>
+            The Floyd–Warshall algorithm compares all possible paths through the graph between each pair of vertices. It is able to do this with &Theta;(|V|<sup>3</sup>) comparisons in a graph. This is remarkable considering that there may be up to &Omega;(|V|<sup>2</sup>)
+            edges in the graph, and every combination of edges is tested. It does so by incrementally improving an estimate on the shortest path between two vertices, until the estimate is optimal.
+            <br />
+            <br /> The algorithm works by first computing <b>shortestPath(i,j,k)</b> for all <b>(i,j)</b> pairs for <b>k=1</b>, then <b>k=2</b>, etc. This process continues until <b>k=N</b>, and we have found the shortest path for all <b>(i,j)</b> pairs
+            using any intermediate vertices. Pseudocode for this basic version follows:
+            <br />
+            <br />
+            <img src="../../images/pseudofloydwarshall.png" width="800px" alt="pseudofloydwarshall">
+            <br />
+            <br />
+            <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm" target="_blank">https://en.wikipedia.org/wiki/Floyd-Warshall_algorithm</a>
         </div>
     </div>
     <div id="config" class="popup hide">
         <div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
         <div class="pole">
             <h2>Config</h2>
-            Animation speed:
-            <input type="number" name="speed" style="width:40px" id="speed" min="1" max="10" step="1" value="5" onchange="speed();return false;">
-            <br>Node color:
-            <input type="color" name="colorNodes" id="colorNodes" onchange="colorNodes();return false;">
-            <br>Visited node color:
-            <input type="color" name="colorVisitedNodes" id="colorVisitedNodes" onchange="colorVisitedNodes();return false;">
-            <br>Edge color:
-            <input type="color" name="colorEdges" id="colorEdges" onchange="colorEdges();return false;">
-            <br>Visited edge color:
-            <input type="color" name="colorVisitedEdges" id="colorVisitedEdges" onchange="colorVisitedEdges();return false;">
-            <br>New edge color:
-            <input type="color" name="colorNewEdges" id="colorNewEdges" onchange="colorNewEdges();return false;">
+            <table>
+                <tr>
+                    <td>Skip steps where i = k = j</td>
+                    <td><input type="checkbox" name="skipVisitedNode" id="skipVisitedNode" value="skipVisitedNode" onchange="skipVisitedNode();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Skip steps where nodes are visited</td>
+                    <td><input type="checkbox" name="skipAllVisitedNodes" id="skipAllVisitedNodes" value="skipAllVisitedNodes" onchange="skipAllVisitedNodes();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Animation speed:</td>
+                    <td><input type="number" name="speed" style="width:40px" id="speed" min="1" max="10" step="1" value="5" onchange="speed();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Node color:</td>
+                    <td><input type="color" name="colorNodes" id="colorNodes" onchange="colorNodes();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Visited node color:</td>
+                    <td><input type="color" name="colorVisitedNodes" id="colorVisitedNodes" onchange="colorVisitedNodes();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Edge color:</td>
+                    <td> <input type="color" name="colorEdges" id="colorEdges" onchange="colorEdges();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Visited edge color:</td>
+                    <td> <input type="color" name="colorVisitedEdges" id="colorVisitedEdges" onchange="colorVisitedEdges();return false;"> </td>
+                </tr>
+                <tr>
+                    <td>New edge color:</td>
+                    <td> <input type="color" name="colorNewEdges" id="colorNewEdges" onchange="colorNewEdges();return false;"> </td>
+                </tr>
+            </table>
         </div>
     </div>
     <div id="about" class="popup hide">
@@ -151,6 +192,7 @@
                 <li><a href="../graphs/dijkstra.html">Dijkstra</a></li>
                 <li><a href="../graphs/prim.html">Prim</a></li>
                 <li><a href="../graphs/topo.html">Topologial Sort</a></li>
+                <li><a href="../graphs/floydwarshall.html">Floyd-Warshall</a></li>
             </ul>
         </div>
     </div>
@@ -259,7 +301,6 @@
         tf.val("");
         tf.css("background-color", "white");
         _class('createMatrix', 'hide');
-        resetFields();
     }
 
     function zoomOutMatrix() {
@@ -458,7 +499,7 @@
             _matrix.miniMatrix = matrix;
             _matrix.minNum = amount;
             _matrix.drawMin();
-            //dijkstra specific
+            //dijkstra / floydwarshall specific
             var elem = $("#p");
             if (elem.hasClass("p1")) {
                 clearTimes();
@@ -566,20 +607,48 @@
     }
 
     function resetFields() {
-        var speed = $("#speed");
-        speed.val(graph.speed);
-        $("#colorNodes").val(graph.colorNodes);
+        $("#skipVisitedNode").prop('checked', graph.skipVisitedNode);
+        $("#skipAllVisitedNodes").prop('checked', graph.skipAllVisitedNodes);
+        $("#speed").val(graph.speed);
+        if (graph.colorNodes === 'lime') {
+            $("#colorNodes").val('#00ff00');
+        } else {
+            $("#colorNodes").val(graph.colorNodes);
+        }
         $("#colorVisitedNodes").val(graph.colorVisitedNodes);
-        $("#colorEdges").val(graph.colorEdges);
+        if (graph.colorEdges === 'black') {
+            $("#colorEdges").val('#000000');
+        } else {
+            $("#colorEdges").val(graph.colorEdges);
+        }
         $("#colorVisitedEdges").val(graph.colorVisitedEdges);
         $("#colorNewEdges").val(graph.colorNewEdges);
+    }
+
+    function skipVisitedNode() {
+        if (graph != undefined) {
+            var skipVisitedNode = $("#skipVisitedNode");
+            graph.skipVisitedNode = skipVisitedNode.prop('checked');
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function skipAllVisitedNodes() {
+        if (graph != undefined) {
+            var skipAllVisitedNodes = $("#skipAllVisitedNodes");
+            graph.skipAllVisitedNodes = skipAllVisitedNodes.prop('checked');
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
     }
 
     function speed() {
         if (graph != undefined) {
             var speed = $("#speed");
             graph.speed = parseInt(speed.val());
-            graph.saveInDB();
         } else {
             alert("No graph created!");
             resetFields();

@@ -24,7 +24,7 @@ function Edge(u,v,w){
 	this.color="black";
 
 	// floydwarshall
-	this.oColor = '#000000';
+	this.oColor = 'black';
 	this.new = false;
 	this.k = undefined;
 	this.i = undefined;
@@ -171,12 +171,14 @@ WeightedDirectedGraph.prototype.init=function(c1){
 	this.speed = 5;
 	this.paused = false;
 	this.finished = false;
-	this.colorNodes="#00ff00";
+	this.colorNodes="lime";
 	this.colorVisitedNodes="#00ffff";
-	this.colorEdges="#000000";
+	this.colorEdges="black";
 	this.colorVisitedEdges="#00ff00";
 	this.colorNewEdges="#ff0000";
 	this.edgeSorting = 0;
+	this.skipVisitedNode = false;
+	this.skipAllVisitedNodes = false;
 
 	this.draw();
 	this.saveInDB();
@@ -201,7 +203,6 @@ WeightedDirectedGraph.prototype.copy=function(){
 	// floydwarshall: copy variables
 	newG.j = this.j;
 	newG.k = this.k;
-	newG.speed = this.speed;
 	newG.paused = true;
 	newG.finished = this.finished;
 	newG.mode = this.mode;
@@ -304,7 +305,6 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 	// floydwarshall: replace variables
 	this.j = og.j;
 	this.k = og.k;
-	this.speed = og.speed;
 	this.paused = true;
 	this.finished = og.finished;
 	this.mode = og.mode;
@@ -480,6 +480,8 @@ WeightedDirectedGraph.prototype.setColorsFloydwarshall=function(){
 		if(edge.color === edge.oColor){
 			edge.color = graph.colorEdges;
 			edge.oColor = graph.colorEdges;
+		} else if(edge.new) {
+			edge.color = graph.colorNewEdges;
 		} else {
 			edge.color = graph.colorVisitedEdges;
 		}
@@ -654,122 +656,96 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 	}
 
     function step() {
-        setTimeout(function() {
 			var changedNodeColor = false;
 			var changedEdgeColorOne = false;
 			var changedEdgeColorTwo = false;
             graph.k = graph.k === undefined ? 0 : graph.k;
             graph.i = graph.i === undefined ? 0 : graph.i;
             graph.j = graph.j === undefined ? 0 : graph.j;
-            firstDelay = 100 * graph.speed;
 
             // nur Knoten
             if (graph.k === graph.i && graph.i === graph.j) {
-				changedNodeColor = changeNodeColor();
-                graph.draw();
-				graph.saveInDB();
-				if(changedNodeColor){
-					resetGraphColor();
-				} else {
-					loop();
-				}
+                if (!graph.skipVisitedNode && !graph.skipAllVisitedNodes) {
+                    changedNodeColor = changeNodeColor();
+                    if (changedNodeColor) {
+                        setTimeout(function() {
+                            graph.draw();
+                            graph.saveInDB();
+                            resetGraphColor();
+                        }, firstDelay);
+                    } else {
+                        loop();
+                    }
+                } else {
+                    loop();
+                }
                 // Knoten + Weg (erster)
             } else if (graph.k === graph.j) {
-                changedNodeColor = changeNodeColor();
-                changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
-                graph.draw();
-                graph.saveInDB();
-                if(changedNodeColor || changedEdgeColorOne){
-					resetGraphColor();
+				if (!graph.skipAllVisitedNodes) {
+					changedNodeColor = changeNodeColor();
+					changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
+					if (changedNodeColor || changedEdgeColorOne) {
+						setTimeout(function() {
+							graph.draw();
+							graph.saveInDB();
+							resetGraphColor();
+						}, firstDelay);
+					} else {
+						loop();
+					}
 				} else {
-					loop();
-				}
+                    loop();
+                }
                 // Knoten + Weg (zweiter)
             } else if (graph.i === graph.k) {
-                changedNodeColor = changeNodeColor();
-                changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
-                graph.draw();
-                graph.saveInDB();
-                if(changedNodeColor || changedEdgeColorTwo){
-					resetGraphColor();
+				if (!graph.skipAllVisitedNodes) {
+					changedNodeColor = changeNodeColor();
+					changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
+					if (changedNodeColor || changedEdgeColorTwo) {
+						setTimeout(function() {
+							graph.draw();
+							graph.saveInDB();
+							resetGraphColor();
+						}, firstDelay);
+					} else {
+						loop();
+					}
 				} else {
 					loop();
 				}
                 // 2 Wege
             } else {
+                var changedEdge = false;
                 changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
                 changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
-                graph.draw();
-                graph.saveInDB();
-				var firstLength = graph.costMatrix[graph.i][graph.k];
-				var secondLength = graph.costMatrix[graph.k][graph.j];
-                var shouldResetGraphColor = true;
-                if (firstLength !== undefined && secondLength !== undefined) {
-                    var oldPathlength = graph.costMatrix[graph.i][graph.j];
-                    var newPathlength = firstLength + secondLength;
-                    if (graph.i !== graph.j && (oldPathlength === undefined || newPathlength < oldPathlength)) {
-                        var firstIndex = graph.i;
-                        var secondIndex = graph.j;
-                        var firstNode;
-                        var secondNode;
-                        var foundEdge = undefined;
-                        $.each(graph.nodes, function(index, node) {
-                            if (firstIndex === node.index) {
-                                firstNode = node;
-                            }
-                            if (secondIndex === node.index) {
-                                secondNode = node;
-                            }
-                        });
-                        $.each(graph.edges, function(index, edge) {
-                            if (edge.u === firstNode && edge.v === secondNode) {
-                                foundEdge = edge;
-                                return false;
-                            }
-                        });
-                        setTimeout(function() {
-                            if (foundEdge !== undefined) {
-								foundEdge.oldWeight = foundEdge.weight;
-                                foundEdge.weight = newPathlength;
-								foundEdge.color = graph.colorNewEdges;
-								foundEdge.k = graph.k;
-								foundEdge.i = graph.i;
-								foundEdge.j = graph.j;
-								foundEdge.new = true;
-								foundEdge.sorting = graph.edgeSorting++;
-                                graph.costMatrix[graph.i][graph.j] = newPathlength;
-                            } else {
-								var newEdge = new Edge(firstNode, secondNode, newPathlength);
-								newEdge.oldWeight = '-';
-								newEdge.color = graph.colorNewEdges;
-								newEdge.k = graph.k;
-								newEdge.i = graph.i;
-								newEdge.j = graph.j;
-								newEdge.new = true;
-								newEdge.sorting = graph.edgeSorting++;
-                                graph.edges.push(newEdge);
-                                graph.costMatrix[graph.i][graph.j] = newPathlength;
-                            }
-                            graph.draw();
-                            graph.saveInDB();
+                if (changedEdgeColorOne || changedEdgeColorTwo) {
+                    setTimeout(function() {
+                        graph.draw();
+                        graph.saveInDB();
+                        changedEdge = changeEdge();
+                        if (changedEdge) {
+                            setTimeout(function() {
+                                graph.draw();
+                                graph.saveInDB();
+								resetGraphColor();
+								//mini display
+								_matrix.miniMatrix = graph.costMatrix;
+                                _matrix.minNum = graph.costMatrix.length;
+                                _matrix.drawMin();
+                            }, 100 * graph.speed);
+                        } else {
                             resetGraphColor();
-                        }, 100 * graph.speed);
-                        shouldResetGraphColor = false;
-                    }
+                        }
+                    }, firstDelay);
+                } else {
+                    loop();
                 }
-                if ((changedEdgeColorOne || changedEdgeColorTwo) && shouldResetGraphColor) {
-                    resetGraphColor();
-                } else if(shouldResetGraphColor){
-					loop();
-				}
-            }
-        }, firstDelay);
+			}
+			firstDelay = 100 * graph.speed;
     }
-    step();
 	
 	function loop() {
 		if (graph.j < n-1) {
-			var isLastStep = false;
 			graph.j++;
 			step();
 		} else if (graph.i < n-1) {
@@ -781,6 +757,13 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 			graph.i = 0;
 			graph.k++;
 			step();
+		} else {
+			graph.finished = true;
+			$("#p").removeClass("p1");
+			if(skipVisitedNode || graph.skipAllVisitedNodes){
+				graph.draw();
+				graph.saveInDB();
+			}
 		}
 	}
 
@@ -818,23 +801,78 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 		return changedEdgeColor;
 	}
 
-	function resetGraphColor(){
-		setTimeout(function() {
-            $.each(graph.nodes, function(index, node) {
-                node.color = graph.colorNodes;
-            });
-            $.each(graph.edges, function(index, edge) {
-                edge.color = graph.colorEdges;
-			});
-			if(graph.j === n-1 && graph.i === n-1 && graph.k === n-1){
-				graph.finished = true;
-				$('#p').removeClass('p1');
-			}
+	function changeEdge() {
+        var firstLength = graph.costMatrix[graph.i][graph.k];
+		var secondLength = graph.costMatrix[graph.k][graph.j];
+		var changedEdge = false;
+        if (firstLength !== undefined && secondLength !== undefined) {
+            var oldPathlength = graph.costMatrix[graph.i][graph.j];
+            var newPathlength = firstLength + secondLength;
+            if (graph.i !== graph.j && (oldPathlength === undefined || newPathlength < oldPathlength)) {
+                var firstIndex = graph.i;
+                var secondIndex = graph.j;
+                var firstNode;
+                var secondNode;
+                var foundEdge = undefined;
+                $.each(graph.nodes, function(index, node) {
+                    if (firstIndex === node.index) {
+                        firstNode = node;
+                    }
+                    if (secondIndex === node.index) {
+                        secondNode = node;
+                    }
+                });
+                $.each(graph.edges, function(index, edge) {
+                    if (edge.u === firstNode && edge.v === secondNode) {
+                        foundEdge = edge;
+                        return false;
+                    }
+                });
+                if (foundEdge !== undefined) {
+                    foundEdge.oldWeight = foundEdge.weight;
+                    foundEdge.weight = newPathlength;
+                    foundEdge.color = graph.colorNewEdges;
+                    foundEdge.k = graph.k;
+                    foundEdge.i = graph.i;
+                    foundEdge.j = graph.j;
+                    foundEdge.new = true;
+                    foundEdge.sorting = graph.edgeSorting++;
+                    graph.costMatrix[graph.i][graph.j] = newPathlength;
+                } else {
+                    var newEdge = new Edge(firstNode, secondNode, newPathlength);
+                    newEdge.oldWeight = "-";
+                    newEdge.color = graph.colorNewEdges;
+                    newEdge.k = graph.k;
+                    newEdge.i = graph.i;
+                    newEdge.j = graph.j;
+                    newEdge.new = true;
+                    newEdge.sorting = graph.edgeSorting++;
+                    graph.edges.push(newEdge);
+                    graph.costMatrix[graph.i][graph.j] = newPathlength;
+                }
+                changedEdge = true;
+            }
+		}
+		return changedEdge;
+    }
+
+	function resetGraphColor() {
+        $.each(graph.nodes, function(index, node) {
+            node.color = graph.colorNodes;
+            node.oColor = graph.colorNodes;
+        });
+        $.each(graph.edges, function(index, edge) {
+            edge.color = graph.colorEdges;
+            edge.oColor = graph.colorEdges;
+        });
+        setTimeout(function() {
             graph.draw();
             graph.saveInDB();
             loop();
         }, 100 * graph.speed);
-	}
+    }
+
+	step();
 
 };
 
