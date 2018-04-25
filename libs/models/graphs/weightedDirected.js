@@ -656,92 +656,92 @@ WeightedDirectedGraph.prototype.floydwarshall = function() {
 	}
 
     function step() {
-			var changedNodeColor = false;
-			var changedEdgeColorOne = false;
-			var changedEdgeColorTwo = false;
-            graph.k = graph.k === undefined ? 0 : graph.k;
-            graph.i = graph.i === undefined ? 0 : graph.i;
-            graph.j = graph.j === undefined ? 0 : graph.j;
+        var changedNodeColor = false;
+        var changedEdgeColorOne = false;
+        var changedEdgeColorTwo = false;
+        graph.k = graph.k === undefined ? 0 : graph.k;
+        graph.i = graph.i === undefined ? 0 : graph.i;
+        graph.j = graph.j === undefined ? 0 : graph.j;
 
-            // nur Knoten
-            if (graph.k === graph.i && graph.i === graph.j) {
-                if (!graph.skipVisitedNode && !graph.skipAllVisitedNodes) {
-                    changedNodeColor = changeNodeColor();
-                    if (changedNodeColor) {
-                        setTimeout(function() {
-                            graph.draw();
-                            graph.saveInDB();
-                            resetGraphColor();
-                        }, firstDelay);
-                    } else {
-                        loop();
-                    }
-                } else {
-                    loop();
-                }
-                // Knoten + Weg (erster)
-            } else if (graph.k === graph.j) {
-				if (!graph.skipAllVisitedNodes) {
-					changedNodeColor = changeNodeColor();
-					changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
-					if (changedNodeColor || changedEdgeColorOne) {
-						setTimeout(function() {
-							graph.draw();
-							graph.saveInDB();
-							resetGraphColor();
-						}, firstDelay);
-					} else {
-						loop();
-					}
-				} else {
-                    loop();
-                }
-                // Knoten + Weg (zweiter)
-            } else if (graph.i === graph.k) {
-				if (!graph.skipAllVisitedNodes) {
-					changedNodeColor = changeNodeColor();
-					changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
-					if (changedNodeColor || changedEdgeColorTwo) {
-						setTimeout(function() {
-							graph.draw();
-							graph.saveInDB();
-							resetGraphColor();
-						}, firstDelay);
-					} else {
-						loop();
-					}
-				} else {
-					loop();
-				}
-                // 2 Wege
-            } else {
-                var changedEdge = false;
-                changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
-                changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
-                if (changedEdgeColorOne || changedEdgeColorTwo) {
+        // nur Knoten
+        if (graph.k === graph.i && graph.i === graph.j) {
+            if (!graph.skipVisitedNode && !graph.skipAllVisitedNodes) {
+                changedNodeColor = changeNodeColor();
+                if (changedNodeColor) {
                     setTimeout(function() {
                         graph.draw();
                         graph.saveInDB();
-                        changedEdge = changeEdge();
-                        if (changedEdge) {
-                            setTimeout(function() {
-                                graph.draw();
-                                graph.saveInDB();
-								resetGraphColor();
-								//mini display
-								_matrix.miniMatrix = graph.costMatrix;
-                                _matrix.minNum = graph.costMatrix.length;
-                                _matrix.drawMin();
-                            }, 100 * graph.speed);
-                        } else {
-                            resetGraphColor();
-                        }
+                        resetGraphColor();
                     }, firstDelay);
                 } else {
                     loop();
                 }
-			}
-			firstDelay = 100 * graph.speed;
+            } else {
+                loop();
+            }
+        // Knoten + Weg (erster)
+        } else if (graph.k === graph.j) {
+            if (!graph.skipAllVisitedNodes) {
+                changedNodeColor = changeNodeColor();
+                changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
+                if (changedNodeColor || changedEdgeColorOne) {
+                    setTimeout(function() {
+                        graph.draw();
+                        graph.saveInDB();
+                        resetGraphColor();
+                    }, firstDelay);
+                } else {
+                    loop();
+                }
+            } else {
+                loop();
+            }
+        // Knoten + Weg (zweiter)
+        } else if (graph.i === graph.k) {
+            if (!graph.skipAllVisitedNodes) {
+                changedNodeColor = changeNodeColor();
+                changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
+                if (changedNodeColor || changedEdgeColorTwo) {
+                    setTimeout(function() {
+                        graph.draw();
+                        graph.saveInDB();
+                        resetGraphColor();
+                    }, firstDelay);
+                } else {
+                    loop();
+                }
+            } else {
+                loop();
+            }
+        // 2 Wege
+        } else {
+            var changedEdge = false;
+            changedEdgeColorOne = changeEdgeColor(graph.i, graph.k);
+            changedEdgeColorTwo = changeEdgeColor(graph.k, graph.j);
+            if (changedEdgeColorOne || changedEdgeColorTwo) {
+                setTimeout(function() {
+                    graph.draw();
+                    graph.saveInDB();
+                    changedEdge = changeEdge();
+                    if (changedEdge) {
+                        setTimeout(function() {
+                            graph.draw();
+                            graph.saveInDB();
+                            resetGraphColor();
+                            //mini display
+                            _matrix.miniMatrix = graph.costMatrix;
+                            _matrix.minNum = graph.costMatrix.length;
+                            _matrix.drawMin();
+                        }, 100 * graph.speed);
+                    } else {
+                        resetGraphColor();
+                    }
+                }, firstDelay);
+            } else {
+                loop();
+            }
+        }
+        firstDelay = 100 * graph.speed;
     }
 	
 	function loop() {
