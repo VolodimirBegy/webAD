@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>webAD</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
+
+    <script src="../../libs/externalLibs/jquery.min.js"></script>
+    <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
+
+    <script type="text/javascript" src="../../libs/menu.js"></script>
+    <script src="./weightedDirectedMatrix.js"></script>
+
+    <script src="../../libs/views/graphs/weightedDirected.js"></script>
+    <script src="../../libs/models/graphs/weightedDirected.js"></script>
+</head>
+
+<body id="body" class="page">
+    <header id="header">
+        <ul>
+            <li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
+            <li><a href="javascript:_class('config', 'hide')" class="conf">Config</a></li>
+            <li><a href="javascript:_class('about', 'hide')" class="idea">About</a></li>
+        </ul>
+    </header>
+    <aside>
+        <a href="../index.html" class="logo"></a>
+        <ul class="dis">
+            <li><a href="javascript:_class('vec', 'hide')" class="v"><span>Vectors</span></a></li>
+            <li><a href="javascript:_class('dic', 'hide')" class="d"><span>Dictionaries</span></a></li>
+            <li><a href="javascript:_class('lis', 'hide')" class="l"><span>Lists</span></a></li>
+            <li><a href="javascript:_class('gra', 'hide')" class="g"><span>Graphs</span></a></li>
+            <li><a href="javascript:_class('tre', 'hide')" class="t"><span>Trees</span></a></li>
+        </ul>
+    </aside>
+    <article>
+        <div id="menu" class="open">
+            <a href="javascript:_class('menu', 'open')">Floyd-Warshall</a>
+            <input type="button" value="Create" id="create" onclick="create();return false;">
+            <input type="button" value="Modify nodes" id="modify" onclick="modify();return false;">
+            <input type="button" value="Random" id="random" onclick="random();return false;">
+            <input type="button" value="Run Floyd-Warshall" id="floydwarshall" onclick="floydwarshall();return false;">
+            <div id="containerMatrixMini"></div>
+        </div>
+        <div id="container1"></div>
+    </article>
+    <footer>
+        <div class="rul">
+            <a href="#" class="l2" id="first" onclick="first();return false;"></a>
+            <a href="#" class="l1" id="prev" onclick="previous();return false;"></a>
+            <a href="#" id="p" onclick="playPause();return false;"></a>
+            <a href="#" class="r1" id="next" onclick="next();return false;"></a>
+            <a href="#" class="r2" id="last" onclick="last();return false;"></a>
+            <a href="#" class="z2" onclick="zoomOut();return false;"></a>
+            <a href="#" class="z1" onclick="zoomIn();return false;"></a>
+        </div>
+        webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+    </footer>
+
+    <div id="info" class="popup hide">
+        <div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
+        <div class="pole">
+            <h2>Info</h2>
+            In computer science, the Floyd–Warshall algorithm is an algorithm for finding shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles). A single execution of the algorithm will find the lengths (summed weights)
+            of the shortest paths between all pairs of vertices. Although it does not return details of the paths themselves, it is possible to reconstruct the paths with simple modifications to the algorithm. Versions of the algorithm can also be used
+            for finding the transitive closure of a relation R, or (in connection with the Schulze voting system) widest paths between all pairs of vertices in a weighted graph.
+            <h3>History and naming</h3>
+            The Floyd–Warshall algorithm is an example of dynamic programming, and was published in its currently recognized form by Robert Floyd in 1962. However, it is essentially the same as algorithms previously published by Bernard Roy in 1959 and also by Stephen
+            Warshall in 1962 for finding the transitive closure of a graph, and is closely related to Kleene's algorithm (published in 1956) for converting a deterministic finite automaton into a regular expression. The modern formulation of the algorithm
+            as three nested for-loops was first described by Peter Ingerman, also in 1962. The algorithm is also known as Floyd's algorithm, the Roy–Warshall algorithm, the Roy–Floyd algorithm, or the WFI algorithm.
+            <h3>Algorithm</h3>
+            The Floyd–Warshall algorithm compares all possible paths through the graph between each pair of vertices. It is able to do this with &Theta;(|V|<sup>3</sup>) comparisons in a graph. This is remarkable considering that there may be up to &Omega;(|V|<sup>2</sup>)
+            edges in the graph, and every combination of edges is tested. It does so by incrementally improving an estimate on the shortest path between two vertices, until the estimate is optimal.
+            <br />
+            <br /> The algorithm works by first computing <b>shortestPath(i,j,k)</b> for all <b>(i,j)</b> pairs for <b>k=1</b>, then <b>k=2</b>, etc. This process continues until <b>k=N</b>, and we have found the shortest path for all <b>(i,j)</b> pairs
+            using any intermediate vertices. Pseudocode for this basic version follows:
+            <br />
+            <br />
+            <img src="../../images/pseudofloydwarshall.png" width="800px" alt="pseudofloydwarshall">
+            <br />
+            <br />
+            <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm" target="_blank">https://en.wikipedia.org/wiki/Floyd-Warshall_algorithm</a>
+        </div>
+    </div>
+    <div id="config" class="popup hide">
+        <div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
+        <div class="pole">
+            <h2>Config</h2>
+            <table>
+                <tr>
+                    <td>Skip steps where i = k = j</td>
+                    <td><input type="checkbox" name="skipVisitedNode" id="skipVisitedNode" value="skipVisitedNode" onchange="skipVisitedNode();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Skip steps where nodes are visited</td>
+                    <td><input type="checkbox" name="skipAllVisitedNodes" id="skipAllVisitedNodes" value="skipAllVisitedNodes" onchange="skipAllVisitedNodes();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Animation speed:</td>
+                    <td><input type="number" name="speed" style="width:40px" id="speed" min="1" max="10" step="1" value="5" onchange="speed();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Node color:</td>
+                    <td><input type="color" name="colorNodes" id="colorNodes" onchange="colorNodes();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Visited node color:</td>
+                    <td><input type="color" name="colorVisitedNodes" id="colorVisitedNodes" onchange="colorVisitedNodes();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Edge color:</td>
+                    <td> <input type="color" name="colorEdges" id="colorEdges" onchange="colorEdges();return false;"></td>
+                </tr>
+                <tr>
+                    <td>Visited edge color:</td>
+                    <td> <input type="color" name="colorVisitedEdges" id="colorVisitedEdges" onchange="colorVisitedEdges();return false;"> </td>
+                </tr>
+                <tr>
+                    <td>New edge color:</td>
+                    <td> <input type="color" name="colorNewEdges" id="colorNewEdges" onchange="colorNewEdges();return false;"> </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="about" class="popup hide">
+        <div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
+        <div class="pole2">
+            <h2>About</h2>
+            <a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
+                <img src="../../images/uni.png" width="250px" alt="bsimage">
+            </a>
+            <a href="https://github.com/VolodimirBegy/webAD" target="_blank">
+                <img src="../../images/Octocat.png" width="100px" alt="bsimage">
+            </a>
+        </div>
+    </div>
+
+    <div id="vec" class="popup hide">
+        <div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
+        <div class="pole">
+            <h2>Vectors</h2>
+            <ul>
+                <li><a href="../vectors/BubbleSort.html">Bubble Sort</a></li>
+                <li><a href="../vectors/SelectionSort.html">Selection Sort</a></li>
+                <li><a href="../vectors/MergeSort.html">Merge Sort</a></li>
+                <li><a href="../vectors/QuickSort.html">Quick Sort</a></li>
+                <li><a href="../vectors/RadixSort.html">LSD Radix Sort</a></li>
+                <li><a href="../vectors/BucketSort.html">Bucket Sort</a></li>
+                <li><a href="../vectors/CountingSort.html">Counting Sort</a></li>
+                <li><a href="../vectors/BinaryQuickSort.html">Binary Quicksort</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="dic" class="popup hide">
+        <div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
+        <div class="pole">
+            <h2>Dictionaries</h2>
+            <ul>
+                <li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
+                <li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
+                <li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
+                <li><a href="../dictionaries/SeparateChaining.html">SeparateChaining</a></li>
+                <li><a href="../dictionaries/ExtendibleHashing.html">Extendible Hashing</a></li>
+                <li><a href="../dictionaries/Biseh.html">BISEH</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="lis" class="popup hide">
+        <div class="closer" onclick="javascript:_class('lis', 'hide')"></div><a href="javascript:_class('lis', 'hide')" class="close">X</a>
+        <div class="pole">
+            <h2>Lists</h2>
+            <ul>
+                <li>Coming soon</li>
+            </ul>
+        </div>
+    </div>
+    <div id="gra" class="popup hide">
+        <div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
+        <div class="pole">
+            <h2>Graphs</h2>
+            <ul>
+                <li><a href="../graphs/bfs.html">Breadth First Search</a></li>
+                <li><a href="../graphs/dfs.html">Depth First Search</a></li>
+                <li><a href="../graphs/kruskal.html">Kruskal</a></li>
+                <li><a href="../graphs/dijkstra.html">Dijkstra</a></li>
+                <li><a href="../graphs/prim.html">Prim</a></li>
+                <li><a href="../graphs/topo.html">Topologial Sort</a></li>
+                <li><a href="../graphs/floydwarshall.html">Floyd-Warshall</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="tre" class="popup hide">
+        <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+        <div class="pole">
+            <h2>Trees</h2>
+            <ul>
+                <li><a href="../trees/bst.html">Binary Search Tree</a></li>
+                <li><a href="../trees/bplus.html">B+ Tree</a></li>
+                <li><a href="../trees/heap.html">Binary Heap</a></li>
+                <li><a href="../trees/heapSort.html">Heap Sort</a></li>
+                <li><a href="../trees/trie.html">Trie</a></li>
+                <li><a href="../trees/traversal.html">Traversal</a></li>
+                <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- for the create matrix: -->
+    <div id="createMatrix" class="popup hide">
+        <div class="closer" onclick="javascript:_class('createMatrix', 'hide')"></div><a href="javascript:_class('createMatrix', 'hide')" class="close">X</a>
+        <div class="pole">
+            <h2>Tick the fields in the matrix:</h2>
+            <div id="containerMatrix"></div>
+            <div class="rul">
+                <a href="#" class="z2" style="width:7%;height:50%;" onclick="zoomOutMatrix();return false;"></a>
+                <a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>
+            </div>
+            Initial Node:<input type="text" id="startNode" style="width:20px"><br><br>
+            <a href="#" id="createOk" style='font-size:25px;text-decoration: none;color:red;background:lime;box-shadow:inset 0px 2px 10px white, 0 0 5px silver' onclick="createOk();">Create</a>
+        </div>
+    </div>
+</body>
+
+<script>
+    var _matrix = undefined;
+    var graph = undefined;
+
+    $(document).ready(function() {
+        if (graph != undefined) {
+            clearTimes();
+            graph.nodes = [];
+            graph.edges = [];
+            if (graph.view.layer != undefined)
+                graph.view.layer.remove();
+        }
+
+        graph = new WeightedDirectedGraph();
+
+        if (_matrix != undefined && _matrix.stageMin != undefined) {
+            _matrix.stageMin.removeChildren();
+            _matrix = undefined;
+        }
+
+        var nodeCount = 3;
+        var matrix = new Array(nodeCount);
+        for (var i = 0; i < nodeCount; i++) {
+            matrix[i] = new Array(nodeCount);
+        }
+        var startNode = 0;
+
+        matrix[0][1] = 8;
+        matrix[0][2] = 5;
+        matrix[1][0] = 3;
+        matrix[2][1] = 2;
+
+        var c1 = document.getElementById("container1");
+        graph.fill(matrix, startNode, 'floydwarshall');
+        graph.init(c1);
+        _matrix = new WeightedDirectedMatrix(nodeCount);
+
+        var cm = $('#containerMatrix')[0];
+        var cmMin = $('#containerMatrixMini')[0];
+        _matrix.initStage(cm, cmMin);
+        //mini display
+        _matrix.miniMatrix = matrix;
+        _matrix.minNum = nodeCount;
+        _matrix.drawMin();
+        resetFields();
+    });
+
+    function create() {
+        var amount = parseInt(prompt("Amount of nodes:\nmin 2"));
+        if (isNaN(amount) || amount < 2) return;
+
+        //prevent deletion of mini matrix due to object overwrite
+        var oldM = undefined;
+        if (_matrix != undefined)
+            oldM = _matrix.miniMatrix.slice();
+
+        _matrix = new WeightedDirectedMatrix(amount);
+        var cm = $('#containerMatrix')[0];
+        var cmMin = $('#containerMatrixMini')[0];
+        _matrix.initStage(cm, cmMin)
+
+        _matrix.draw();
+        //mini display
+        if (oldM != undefined) {
+            _matrix.miniMatrix = oldM;
+            _matrix.minNum = oldM.length;
+            _matrix.drawMin();
+        }
+
+        var tf = $("#startNode");
+        tf.val("");
+        tf.css("background-color", "white");
+        _class('createMatrix', 'hide');
+    }
+
+    function zoomOutMatrix() {
+        _matrix.zoomOut();
+    }
+
+    function zoomInMatrix() {
+        _matrix.zoomIn();
+    }
+
+    function createOk() {
+        var tf = $("#startNode");
+        var startNode = parseInt(tf.val());
+
+        if (isNaN(startNode) || startNode < 0 || startNode > _matrix.number - 1) {
+            tf.css("background-color", "orange");
+            window.alert("Invalid initial node. It must be between 0 and " + (_matrix.number - 1));
+            return;
+        }
+
+        var nodes = [];
+
+        function addConnected(index) {
+            var cNode = new Node();
+            cNode.index = index;
+            for (var i = 0; i < _matrix.matrix.length; i++) {
+                if (_matrix.matrix[index][i] != undefined) {
+                    var newNode = new Node();
+                    newNode.index = i;
+                    cNode.connectedTo.push(newNode);
+                }
+            }
+
+            nodes.push(cNode);
+
+            for (i = 0; i < cNode.connectedTo.length; i++) {
+                var exists = false;
+                for (var j = 0; j < nodes.length; j++) {
+                    if (nodes[j].index == cNode.connectedTo[i].index)
+                        exists = true;
+                }
+                if (!exists)
+                    addConnected(cNode.connectedTo[i].index);
+            }
+        }
+
+        addConnected(startNode);
+
+        //if(nodes.length!=_matrix.matrix.length){
+        //window.alert("not all nodes are reachable from the initial node");
+        if (nodes.length < 2) {
+            window.alert("Connect at least 2 nodes!");
+            return;
+        } else {
+            var elem = $("#p");
+            if (elem.hasClass("p1")) {
+                clearTimes();
+                elem.removeClass("p1");
+            }
+            _class('createMatrix', 'hide');
+            var c1 = document.getElementById("container1");
+            graph.fill(_matrix.matrix, startNode, 'floydwarshall');
+            graph.init(c1, 'floydwarshall');
+            //mini display
+            _matrix.miniMatrix = graph.costMatrix;
+            _matrix.minNum = graph.costMatrix.length;
+            _matrix.drawMin();
+            //pause spec
+            var elem = $("#p");
+            if (elem.hasClass("p1")) {
+                clearTimes();
+                elem.removeClass("p1");
+            }
+        }
+        resetFields();
+    }
+
+    function modify() {
+        if (graph != undefined) {
+            if (graph.Q == undefined) {
+                var amount = graph.costMatrix.length;
+                var newamount = 0;
+
+                var check = confirm("Insert new nodes? (Matrix contains " + amount + " nodes now)");
+
+                if (check) {
+                    newamount = parseInt(prompt("Amount of new nodes:"));
+                    if (isNaN(newamount) || newamount < 0) return;
+                }
+                //for mini
+                var oldM = _matrix.miniMatrix.slice();
+
+                _matrix = new WeightedDirectedMatrix(amount);
+
+                _matrix.matrix = graph.costMatrix;
+                _matrix.extendBy(newamount, graph.costMatrix);
+
+                var cm = $('#containerMatrix')[0];
+                var cmMin = $('#containerMatrixMini')[0];
+                _matrix.initStage(cm, cmMin);
+
+                _matrix.draw();
+
+                //mini
+                _matrix.miniMatrix = oldM;
+                _matrix.minNum = oldM.length;
+                _matrix.drawMin();
+
+                var tf = $("#startNode");
+                tf.val("" + graph.startNode + "");
+                tf.css("background-color", "white");
+                _class('createMatrix', 'hide');
+            } else
+                window.alert("Algorithm already in progress");
+        }
+        resetFields();
+    }
+
+    function clearTimes() {
+        //[30]
+        var pids = window.setTimeout(function() {}, 0);
+
+        while (pids--) {
+            window.clearTimeout(pids);
+        }
+    }
+
+    //[35]
+    function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function random() {
+        clearTimes();
+        var amount = randInt(4, 8);
+        var matrix = new Array(amount);
+        for (var i = 0; i < amount; i++) {
+            matrix[i] = new Array(amount);
+        }
+        var startNode = undefined;
+
+        var fill = undefined;
+        var fM = 4;
+        for (var i = 0; i < amount; i++) {
+            for (var j = 0; j < amount; j++) {
+                if (i == amount - 1 && j == 0) fM = 0;
+                else fM = 4;
+                fill = randInt(0, 7);
+                if (i != j && fill > fM) {
+                    matrix[i][j] = randInt(0, 100);
+                    startNode = i;
+                }
+            }
+        }
+
+        var nodes = [];
+
+        function addConnected(index) {
+            var cNode = new Node();
+            cNode.index = index;
+            for (var i = 0; i < matrix.length; i++) {
+                if (matrix[index][i] != undefined) {
+                    var newNode = new Node();
+                    newNode.index = i;
+                    cNode.connectedTo.push(newNode);
+                }
+            }
+
+            nodes.push(cNode);
+
+            for (i = 0; i < cNode.connectedTo.length; i++) {
+                var exists = false;
+                for (var j = 0; j < nodes.length; j++) {
+                    if (nodes[j].index == cNode.connectedTo[i].index)
+                        exists = true;
+                }
+                if (!exists)
+                    addConnected(cNode.connectedTo[i].index);
+            }
+        }
+
+        addConnected(startNode);
+
+        if (nodes.length != matrix.length) {
+            random();
+        } else {
+            var c1 = document.getElementById("container1");
+            graph.fill(matrix, startNode, 'floydwarshall');
+            graph.init(c1, 'floydwarshall');
+
+            _matrix = new WeightedDirectedMatrix(amount);
+            var cm = $('#containerMatrix')[0];
+            var cmMin = $('#containerMatrixMini')[0];
+            _matrix.initStage(cm, cmMin);
+            //mini display
+            _matrix.miniMatrix = matrix;
+            _matrix.minNum = amount;
+            _matrix.drawMin();
+            //dijkstra / floydwarshall specific
+            var elem = $("#p");
+            if (elem.hasClass("p1")) {
+                clearTimes();
+                elem.removeClass("p1");
+            }
+        }
+        resetFields();
+    }
+
+    function floydwarshall() {
+        if (graph != undefined) {
+            clearTimes();
+            var elem = $("#p");
+            elem.addClass("p1");
+            graph.floydwarshall();
+        } else {
+            window.alert("No graph created");
+        }
+    }
+
+    function first() {
+        var elem = $("#p");
+        if (elem.hasClass("p1")) {
+            clearTimes();
+            elem.removeClass("p1");
+        }
+        clearTimes();
+        graph.firstState();
+        //mini display
+        _matrix.minNum = graph.costMatrix.length;
+        _matrix.miniMatrix = graph.costMatrix;
+        _matrix.drawMin();
+        resetFields();
+    }
+
+    function previous() {
+        var elem = $("#p");
+        if (elem.hasClass("p1")) {
+            clearTimes();
+            elem.removeClass("p1");
+        }
+        clearTimes();
+        graph.prevtr();
+        //mini display
+        _matrix.minNum = graph.costMatrix.length;
+        _matrix.miniMatrix = graph.costMatrix;
+        _matrix.drawMin();
+        resetFields();
+    }
+
+    function playPause() {
+        if (graph != undefined) {
+            if (!graph.finished) {
+                var elem = $("#p");
+                if (elem.hasClass("p1")) {
+                    graph.paused = true;
+                    clearTimes();
+                    elem.removeClass("p1");
+                } else {
+                    graph.paused = false;
+                    graph.floydwarshall();
+                    elem.addClass("p1");
+                }
+            }
+        } else
+            alert("No graph created!");
+    }
+
+    function next() {
+        var elem = $("#p");
+        if (elem.hasClass("p1")) {
+            clearTimes();
+            elem.removeClass("p1");
+        }
+        clearTimes();
+        graph.next();
+        //mini display
+        _matrix.minNum = graph.costMatrix.length;
+        _matrix.miniMatrix = graph.costMatrix;
+        _matrix.drawMin();
+        resetFields();
+    }
+
+    function last() {
+        var elem = $("#p");
+        if (elem.hasClass("p1")) {
+            clearTimes();
+            elem.removeClass("p1");
+        }
+        clearTimes();
+        graph.lastState();
+        //mini display
+        _matrix.minNum = graph.costMatrix.length;
+        _matrix.miniMatrix = graph.costMatrix;
+        _matrix.drawMin();
+        resetFields();
+    }
+
+    function zoomOut() {
+        graph.view.zoomOut();
+    }
+
+    function zoomIn() {
+        graph.view.zoomIn();
+    }
+
+    function resetFields() {
+        $("#skipVisitedNode").prop('checked', graph.skipVisitedNode);
+        $("#skipAllVisitedNodes").prop('checked', graph.skipAllVisitedNodes);
+        $("#speed").val(graph.speed);
+        if (graph.colorNodes === 'lime') {
+            $("#colorNodes").val('#00ff00');
+        } else {
+            $("#colorNodes").val(graph.colorNodes);
+        }
+        $("#colorVisitedNodes").val(graph.colorVisitedNodes);
+        if (graph.colorEdges === 'black') {
+            $("#colorEdges").val('#000000');
+        } else {
+            $("#colorEdges").val(graph.colorEdges);
+        }
+        $("#colorVisitedEdges").val(graph.colorVisitedEdges);
+        $("#colorNewEdges").val(graph.colorNewEdges);
+    }
+
+    function skipVisitedNode() {
+        if (graph != undefined) {
+            var skipVisitedNode = $("#skipVisitedNode");
+            graph.skipVisitedNode = skipVisitedNode.prop('checked');
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function skipAllVisitedNodes() {
+        if (graph != undefined) {
+            var skipAllVisitedNodes = $("#skipAllVisitedNodes");
+            graph.skipAllVisitedNodes = skipAllVisitedNodes.prop('checked');
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function speed() {
+        if (graph != undefined) {
+            var speed = $("#speed");
+            graph.speed = parseInt(speed.val());
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorNodes() {
+        if (graph != undefined) {
+            var colorNodes = $("#colorNodes");
+            graph.colorNodes = colorNodes.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorVisitedNodes() {
+        if (graph != undefined) {
+            var colorVisitedNodes = $("#colorVisitedNodes");
+            graph.colorVisitedNodes = colorVisitedNodes.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorEdges() {
+        if (graph != undefined) {
+            var colorEdges = $("#colorEdges");
+            graph.colorEdges = colorEdges.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorVisitedEdges() {
+        if (graph != undefined) {
+            var colorVisitedEdges = $("#colorVisitedEdges");
+            graph.colorVisitedEdges = colorVisitedEdges.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+
+    function colorNewEdges() {
+        if (graph != undefined) {
+            var colorNewEdges = $("#colorNewEdges");
+            graph.colorNewEdges = colorNewEdges.val();
+            graph.setColorsFloydwarshall();
+            graph.draw();
+            graph.saveInDB();
+        } else {
+            alert("No graph created!");
+            resetFields();
+        }
+    }
+</script>
+
+</html>
