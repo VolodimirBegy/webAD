@@ -206,7 +206,7 @@ ExtendibleHashing.prototype.init = function (useDefault) { // false: read user i
 ExtendibleHashing.prototype.example = function () {
 
 	this.global_depth = 1;
-	this.datablock_size = 4;
+	this.datablock_size = 2;
 	this.init(true); // Use default values
 
 	this.draw();
@@ -432,6 +432,7 @@ ExtendibleHashing.prototype.add = function (){
 				setTimeout( function(){
 					// 1) Add value
 					var free_element_index = undefined;
+
 					for (var i = 0; i < instance.datablock_size; i++){
 							
 							// Value exists 
@@ -510,19 +511,36 @@ ExtendibleHashing.prototype.add = function (){
 
 								// Save reference to old datablock elements and marked object (view purpose);
 								var ptr_old_marked = instance.datablock_array[index].marked;
-								var ptr_old_elements = instance.datablock_array[index].elements;
-								instance.datablock_array[index].local_depth = instance.datablock_array[index].local_depth + 1;
-								var tmp_new_local_depth = instance.datablock_array[index].local_depth;
-						
-								// Assign a new Datablock at the current computed index 
-								instance.datablock_array[index] = new Datablock(tmp_new_local_depth,instance.datablock_size);
-							
-								// Move elements to new Block (now at index) if necessary
+								var ptr_old_elements = instance.datablock_array[index].elements
+
+								var tmp_new_local_depth = instance.datablock_array[index].local_depth + 1;
+								instance.datablock_array[index].local_depth = tmp_new_local_depth	
+
+								// Create a new bucket and distribute the references 
+								var bucket_ptrs = []; 
+								for (var i = 0; i < instance.datablock_array.length; i++) // 2^(gDepth - lDepth) references
+								{if(instance.datablock_array[index] === instance.datablock_array[i]) bucket_ptrs.push(i); } 
+								
+								var bucketOne = instance.datablock_array[index];				
+								var bucketTwo = new Datablock(tmp_new_local_depth,instance.datablock_size);
+
+								var ptr_distribution = {} // Two groups
+								bucket_ptrs.forEach( b_ptr => { 
+									var b_index = b_ptr % Math.pow(2,tmp_new_local_depth) // LSB based on incremented local depth
+									if(!(b_index in ptr_distribution)) ptr_distribution[b_index]= [];
+									ptr_distribution[b_index].push(b_ptr)
+
+								});
+								ptr_distribution[Object.keys(ptr_distribution)[0]].forEach(b_ptr =>{ instance.datablock_array[b_ptr] = bucketOne});
+								ptr_distribution[Object.keys(ptr_distribution)[1]].forEach(b_ptr =>{ instance.datablock_array[b_ptr] = bucketTwo});
+								
+
+								//  Move elements to new Block if necessary using the incremented local depth
 								var free_pos_new = 0;
 								for (var i = 0; i < instance.datablock_size; i++){
 									var new_index = instance.hash(ptr_old_elements[i], tmp_new_local_depth);
-									if(new_index === index){
-										instance.datablock_array[index].elements[free_pos_new] = ptr_old_elements[i];
+									if(instance.datablock_array[new_index] !== bucketOne){
+										bucketTwo.elements[free_pos_new] = ptr_old_elements[i];
 										free_pos_new = free_pos_new + 1;
 										ptr_old_elements[i] = undefined;
 									}
@@ -530,12 +548,12 @@ ExtendibleHashing.prototype.add = function (){
 
 
 	
-								instance.datablock_array[index].marked.splittRow = true;
+								bucketTwo.marked.splittRow = true;
 								ptr_old_marked.splittRow = true;
 								instance.saveInDB(); //B
 								instance.disableDrawingOnPause();
 								instance.draw(); 
-								instance.datablock_array[index].marked = {};
+								bucketTwo.marked = {};
 								ptr_old_marked.splittRow = false;
 
 								setTimeout(function(){
