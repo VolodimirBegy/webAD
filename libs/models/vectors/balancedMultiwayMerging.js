@@ -57,19 +57,36 @@ BalancedMultiwayMerging.prototype.init = function(){
     //draw the initial start
     this.draw();
 
+    //save the initial start to the database
+    var newState = new State();
+	newState.state_tape_array = JSON.parse(JSON.stringify(this.tape_array));
+	for(var i = 0; i < this.tapes; i++){
+		newState.state_tape_array[i].head_position = 0;
+	}
+	newState.state_alternating = this.alternating;
+	newState.state_text = this.text;
+	this.database.push(newState);
+
     //start the sorting
     this.sorting();
 }
 
 BalancedMultiwayMerging.prototype.saveState = function(){
-    var newState = new State();
-
-    //parse all the current data into the state that will be saved
-    newState.state_tape_array = JSON.parse(JSON.stringify(this.tape_array));
-    newState.state_alternating = this.alternating;
-    newState.state_text = this.text;
-
-    this.database.push(newState);
+	var newState = new State();
+	
+	newState.state_tape_array = JSON.parse(JSON.stringify(this.tape_array));
+	//head position is not relevant for display
+	for(var i = 0; i < this.tapes; i++){
+		newState.state_tape_array[i].head_position = 0;
+	}
+	newState.state_alternating = this.alternating;
+	newState.state_text = this.text;
+	//check if the same state already exists
+	if(JSON.stringify(this.database[this.database.length - 1].state_tape_array) === JSON.stringify(newState.state_tape_array) &&
+		this.database[this.database.length - 1].state_text === newState.state_text){
+		return;
+	}
+	this.database.push(newState);
 }
 
 BalancedMultiwayMerging.prototype.restoreState = function(){
@@ -88,7 +105,7 @@ BalancedMultiwayMerging.prototype.play = async function(){
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve('resolved');
-            }, timew/3);
+            }, timew/2);
         });
     }
 
@@ -98,6 +115,11 @@ BalancedMultiwayMerging.prototype.play = async function(){
         this.draw();
         await waitforme(250*this.speed);
     }
+
+    //fix for not displaying the play button at the end of the playback
+    var button = $("#p");
+    button.removeClass("p1");
+    document.getElementById("speedometer").selectedIndex = 0;
 }
 
 BalancedMultiwayMerging.prototype.stop = function (){
