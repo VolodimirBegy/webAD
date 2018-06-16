@@ -82,7 +82,6 @@
             button.removeClass("p1");
             document.getElementById("speedometer").selectedIndex = 0;
         } else {
-            bmwm.play();
             button.addClass("p1");
 
             //If the user plays again make sure the speed dial is on the right setting
@@ -94,6 +93,7 @@
                     break;
                 }
             }
+            bmwm.play();
         }
     }
     
