@@ -36,7 +36,7 @@ UnweightedUndirectedGraph.prototype.fill=function(_matrix,_startNode){
 	for(var i=0;i<_matrix.length;i++){
 		this.costMatrix.push(new Array(_matrix.length));
 	}
-	
+
 	for(var i=0;i<_matrix.length;i++){
 		for(var j=0;j<_matrix.length;j++){
 			if(_matrix[i][j]==1){
@@ -49,55 +49,55 @@ UnweightedUndirectedGraph.prototype.fill=function(_matrix,_startNode){
 	this.queue=undefined;
 	this.stack=undefined;
 	this.matrixLink=new Array(_matrix.length);
-	
+
 	function addConnected(graph,index){
 		var cNode=undefined;
-		
+
 		if(graph.nodes[graph.matrixLink[index]]==undefined){
 			cNode=new Node();
 			cNode.index=index;
-			
+
 			graph.nodes.push(cNode);
 			graph.matrixLink[cNode.index]=graph.nodes.length-1;
 		}
 		else{
 			cNode=graph.nodes[graph.matrixLink[index]];
 		}
-		
+
 		for(var i=0;i<_matrix.length;i++){
 			if(_matrix[index][i]!=undefined){
 				var newNode=undefined;
-				
+
 				if(graph.nodes[graph.matrixLink[i]]==undefined){
 					newNode=new Node();
 					newNode.index=i;
-					
+
 					graph.nodes.push(newNode);
 					graph.matrixLink[newNode.index]=graph.nodes.length-1;
 				}
 				else{
 					newNode=graph.nodes[graph.matrixLink[i]];
 				}
-				
+
 				var alreadyConnected=false;
 				for(var j=0;j<cNode.connectedTo.length;j++){
 					if(cNode.connectedTo[j]==newNode){
 						alreadyConnected=true;break;
 					}
 				}
-				
+
 				if(index==graph.nodes[0].index){cNode.color="#00FFFF";cNode.oColor="#00FFFF";}
-			
+
 				if(!alreadyConnected){
 					cNode.connectedTo.push(newNode);
 					addConnected(graph,cNode.connectedTo[cNode.connectedTo.length-1].index);
 				}
-				
+
 			}
 		}
 
 	}
-	
+
 	addConnected(this,_startNode);
 
 	if(this.nodes.length==1){
@@ -115,11 +115,11 @@ UnweightedUndirectedGraph.prototype.fill=function(_matrix,_startNode){
 			else break;
 		}
 	}
-	
+
 	for(var i=0;i<this.nodes.length;i++){
-		
+
 		for(var j=0;j<this.nodes[i].connectedTo.length;j++){
-			
+
 			var ai=this.nodes[i].connectedTo[j].index;
 			var tmpN=undefined;
 			for(var k=0;k<this.nodes.length;k++){
@@ -150,7 +150,7 @@ UnweightedUndirectedGraph.prototype.copy=function(){
 		newG.nodes[i].xPosition=this.nodes[i].xPosition;
 		newG.nodes[i].yPosition=this.nodes[i].yPosition;
 	}
-	
+
 	if(this.stack!=undefined){
 		newG.stack=[];
 		for(var i=0;i<this.stack.length;i++){
@@ -184,12 +184,12 @@ UnweightedUndirectedGraph.prototype.replaceThis=function(og){
 
 	/*var oldX=[];
 	var oldY=[];
-	
+
 	for(var i=0;i<this.nodes.length;i++){
 		oldX.push(this.nodes[i].xPosition);
 		oldY.push(this.nodes[i].yPosition);
 	}*/
-	
+
 	this.startNode=newG.startNode;
 	this.costMatrix=newG.costMatrix;
 	this.nodes=newG.nodes;
@@ -202,7 +202,7 @@ UnweightedUndirectedGraph.prototype.replaceThis=function(og){
 		this.nodes[i].xPosition=og.nodes[i].xPosition;
 		this.nodes[i].yPosition=og.nodes[i].yPosition;
 	}
-	
+
 	if(og.stack!=undefined){
 		this.stack=[];
 		for(var i=0;i<og.stack.length;i++){
@@ -210,7 +210,7 @@ UnweightedUndirectedGraph.prototype.replaceThis=function(og){
 		}
 	}
 	else this.stack=undefined;
-	
+
 	if(og.queue!=undefined){
 		this.queue=[];
 		for(var i=0;i<og.queue.length;i++){
@@ -218,7 +218,7 @@ UnweightedUndirectedGraph.prototype.replaceThis=function(og){
 		}
 	}
 	else this.queue=undefined;
-	
+
 	if(og.visited!=undefined){
 		this.visited=[];
 		for(var i=0;i<og.visited.length;i++){
@@ -274,11 +274,11 @@ UnweightedUndirectedGraph.prototype.saveInDB=function(){
  	}
 
 	var nextID=this.db.length;
-	
+
 	var new_state = this.copy();
 	var last_state=this.db[this.db.length-1];
 	var same=true;
-	
+
 	if(last_state==undefined || new_state.costMatrix.length!=last_state.costMatrix.length ||
 			new_state.nodes.length!=last_state.nodes.length ||
 			new_state.visited.length!=last_state.visited.length){
@@ -301,7 +301,7 @@ UnweightedUndirectedGraph.prototype.saveInDB=function(){
 }
 
 UnweightedUndirectedGraph.prototype.dfs=function(){
-	//push into stack-> process upper -> push 
+	//push into stack-> process upper -> push
 	// cause initial has always index 0
 	var delay=0;
 	if(this.visited.length==this.nodes.length){
@@ -312,12 +312,12 @@ UnweightedUndirectedGraph.prototype.dfs=function(){
 		this.nodes[0].color="#00FFFF";this.nodes[0].oColor="#00FFFF";
 		this.visited=[];this.saveInDB();this.draw();delay=1000;
 	}
-	
+
 	if(this.stack==undefined)
 		this.stack=[];
 	if(this.stack.length==0)
 		this.stack.push(this.nodes[this.matrixLink[this.startNode]]);
-	
+
 	function _dfs(graph){
 		//make all from stack red
 		for(var k=0;k<graph.stack.length;k++){
@@ -326,13 +326,13 @@ UnweightedUndirectedGraph.prototype.dfs=function(){
 		}
 		graph.saveInDB();
 		graph.draw();
-		
+
 		function processAct(graph){
 			setTimeout(function (){
 				var ai=graph.matrixLink[graph.stack[graph.stack.length-1].index];
 				graph.stack[graph.stack.length-1].color="grey";
 				graph.stack[graph.stack.length-1].oColor="grey";
-				
+
 				graph.visited.push(graph.stack[graph.stack.length-1]);
 				graph.stack.splice(graph.stack.length-1,1);
 				if(graph.visited.length==graph.nodes.length){
@@ -342,43 +342,43 @@ UnweightedUndirectedGraph.prototype.dfs=function(){
 				//process connected
 				for(i=0;i<graph.nodes[ai].connectedTo.length;i++){
 					var exists=false;
-					
+
 					for(var j=0;j<graph.visited.length;j++){
 						if(graph.visited[j].index==graph.nodes[ai].connectedTo[i].index)
 							exists=true;
 					}
-					
+
 					for(var j=0;j<graph.stack.length;j++){
 						if(graph.stack[j].index==graph.nodes[ai].connectedTo[i].index)
 							exists=true;
 					}
-					
+
 					if(!exists)
 						graph.stack.push(graph.nodes[ai].connectedTo[i]);
 				}
-				
+
 				if(graph.stack.length>0)
 					_dfs(graph);
-				
+				else clearTimes();
 
 			},2000)
 		}
-		
+
 		processAct(graph);
 	}
-	
+
 	function startDFS(graph){
 		setTimeout(function(){
 			_dfs(graph);
 		},delay)
 	}
-	
+
 	startDFS(this);
-	
+
 }
 
 UnweightedUndirectedGraph.prototype.bfs=function(){
-	//push into stack-> process upper -> push 
+	//push into stack-> process upper -> push
 	// cause initial has always index 0
 	var delay=0;
 	if(this.visited.length==this.nodes.length){
@@ -393,7 +393,7 @@ UnweightedUndirectedGraph.prototype.bfs=function(){
 		this.queue=[];
 	if(this.queue.length==0)
 		this.queue.push(this.nodes[this.matrixLink[this.startNode]]);
-	
+
 	function _bfs(graph){
 		//make all from stack red
 		for(var k=0;k<graph.queue.length;k++){
@@ -402,13 +402,13 @@ UnweightedUndirectedGraph.prototype.bfs=function(){
 		}
 		graph.saveInDB();
 		graph.draw();
-		
+
 		function processAct(graph){
 			setTimeout(function (){
 				var ai=graph.matrixLink[graph.queue[0].index];
 				graph.queue[0].color="grey";
 				graph.queue[0].oColor="grey";
-				
+
 				graph.visited.push(graph.queue[0]);
 				graph.queue.splice(0,1);
 				if(graph.visited.length==graph.nodes.length){
@@ -418,35 +418,36 @@ UnweightedUndirectedGraph.prototype.bfs=function(){
 				//process connected
 				for(i=0;i<graph.nodes[ai].connectedTo.length;i++){
 					var exists=false;
-					
+
 					for(var j=0;j<graph.visited.length;j++){
 						if(graph.visited[j].index==graph.nodes[ai].connectedTo[i].index)
 							exists=true;
 					}
-					
+
 					for(var j=0;j<graph.queue.length;j++){
 						if(graph.queue[j].index==graph.nodes[ai].connectedTo[i].index)
 							exists=true;
 					}
-					
+
 					if(!exists)
 						graph.queue.push(graph.nodes[ai].connectedTo[i]);
 				}
-				
+
 				if(graph.queue.length>0)
 					_bfs(graph);
+				else clearTimes();
 			},2000)
 		}
-		
+
 		processAct(graph);
 	}
-	
+
 	function startBFS(graph){
 		setTimeout(function(){
 			_bfs(graph);
 		},delay)
 	}
-	
+
 	startBFS(this);
 }
 
