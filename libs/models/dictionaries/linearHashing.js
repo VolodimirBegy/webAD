@@ -28,7 +28,6 @@ function LinearHashing(){
 	this.b=undefined;
 	this.d=undefined;
 	this.nts=0;
-
 	this.db=[];
 	this.actStateID=-1;
 }

@@ -207,15 +207,9 @@ WeightedDirectedMatrix.prototype.draw=function(){
   			rect.on('click', function() {		  				
   		        var indexes=this.ij.split(":");
   		        if(um.matrix[indexes[0]][indexes[1]]==undefined && indexes[0]!=indexes[1]){
-					if (graph.mode === "floydwarshall") {
-                        var weight = parseInt(prompt("Weight:\n>=-9999, <=9999"));
-                        if (isNaN(weight) || weight < -9999 || weight > 9999) return;
-                        um.matrix[indexes[0]][indexes[1]] = weight;
-                    } else {
-                        var weight = parseInt(prompt("Weight:\n>=1, <=9999"));
-                        if (isNaN(weight) || weight < 1 || weight > 9999) return;
-                        um.matrix[indexes[0]][indexes[1]] = weight;
-                    }
+  		        	var weight=parseInt(prompt("Weight:\n>=1, <=9999"));
+  	  				if(isNaN(weight) || weight<1 ||weight>9999)return;
+  		        	um.matrix[indexes[0]][indexes[1]]=weight;
   		        }
 
   		        um.draw();
@@ -225,15 +219,9 @@ WeightedDirectedMatrix.prototype.draw=function(){
   			rect.on('touchend', function() {
   				var indexes=this.ij.split(":");
   		        if(um.matrix[indexes[0]][indexes[1]]==undefined && indexes[0]!=indexes[1]){
-					if (graph.mode === "floydwarshall") {
-                        var weight = parseInt(prompt("Weight:\n>=-9999, <=9999"));
-                        if (isNaN(weight) || weight < -9999 || weight > 9999) return;
-                        um.matrix[indexes[0]][indexes[1]] = weight;
-                    } else {
-                        var weight = parseInt(prompt("Weight:\n>=1, <=9999"));
-                        if (isNaN(weight) || weight < 1 || weight > 9999) return;
-                        um.matrix[indexes[0]][indexes[1]] = weight;
-                    }
+  		        	var weight=parseInt(prompt("Weight:\n>=1, <=9999"));
+  	  				if(isNaN(weight) || weight<1 ||weight>9999)return;
+  		        	um.matrix[indexes[0]][indexes[1]]=weight;
   		        }
 
   		        um.draw();

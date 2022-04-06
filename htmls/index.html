@@ -1,139 +1,74 @@
 <!DOCTYPE html>
-
 <head>
-    <meta charset="UTF-8">
-    <title>webAD</title>
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
-    <link rel="stylesheet" href="../styles/style.css" type="text/css" media="all">
-    <link rel="stylesheet" href="../styles/img.css" type="text/css" media="all">
-    <script src="../libs/externalLibs/jquery.min.js"></script>
-    <script type="text/javascript" src="../libs/menu.js"></script>
+<meta charset="UTF-8">
+<title>webAD</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+  <link rel="stylesheet" href="../styles/style.css" type="text/css" media="all">
+  <link rel="stylesheet" href="../styles/img.css" type="text/css" media="all">
+  <script src="../libs/externalLibs/jquery.min.js"></script>
+  <script type="text/javascript" src="../libs/menu.js"></script>
 </head>
-
 <body id="body" class="index">
-    <article>
-        <div id="container">
-            <a href="javascript:_class('log', 'hide')" class="logo"></a>
-            <ul class="dis">
-                <li><a href="javascript:_class('vec', 'hide')" class="v"><span>Vectors</span></a></li>
-                <li><a href="javascript:_class('dic', 'hide')" class="d"><span>Dictionaries</span></a></li>
-                <li><a href="javascript:_class('lis', 'hide')" class="l"><span>Lists</span></a></li>
-                <li><a href="javascript:_class('gra', 'hide')" class="g"><span>Graphs</span></a></li>
-                <li><a href="javascript:_class('tre', 'hide')" class="t"><span>Trees</span></a></li>
-            </ul>
-        </div>
-    </article>
-    <footer>
-
-        webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastructures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a> or <a href="mailto:erich.schikuta@univie.ac.at">erich.schikuta@univie.ac.at</a>
-    </footer>
-    <div id="log" class="popup hide">
-        <div class="closer" onclick="javascript:_class('log', 'hide')"></div><a href="javascript:_class('log', 'hide')" class="close">X</a>
-        <div class="pole">
-            <h2>Contributors</h2>
-            <ul>
-                <li>Volodimir Begy (Base System, Architecture, many AD topics etc.)</li>
-			  <li>Erich Schikuta (Accademic lead, some code brush up)</li>
-                <li>Bernhard Hirsch (Mergesort)</li>
-                <li>Steve Aumüller (Bucket Sort)</li>
-                <li>Robert Habetinek (LSD Radixsort)</li>
-                <li>David Tomic (Separate Chaining)</li>
-                <li>Laura Fagagnini (Traversal)</li>
-                <li>Kathrin Kronfuß (Counting Sort)</li>
-                <li>Yasmin Tarasiewicz (Trie)</li>
-                <li>Amolkirat Singh Mangat (Extendible Hashing)</li>
-                <li>Christopher Slapal (Binary Quicksort)</li>
-                <li>Lukas Wittich (Prim's algorithm)</li>
-                <li>Markus Berger (Topological Sort)</li>
-                <li>Michael Biber (BISEH)</li>
-			  <li>Adam Kehrer (B+ Tree 2)</li>
-                <li>Martin Kunz (2-3-4 Tree)</li>
-                <li>Jakob Aichmayr (Floyd-Warshall)</li>
-                <li>Patrick Schulteis (Patricia and De la Briandais Tries)</li>
-                <li>Raphael Raditsch (Balanced Multiway Merging)</li>
-            </ul>
-			Version 1.15
-        </div>
-    </div>
-    <div id="vec" class="popup hide">
-        <div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
-        <div class="pole">
-            <h2>Vectors</h2>
-            <ul>
-                <li><a href="./vectors/BubbleSort.html">Bubble Sort</a></li>
-                <li><a href="./vectors/SelectionSort.html">Selection Sort</a></li>
-                <li><a href="./vectors/MergeSort.html">Merge Sort</a></li>
-                <li><a href="./vectors/QuickSort.html">Quick Sort</a></li>
-                <li><a href="./vectors/RadixSort.html">LSD Radix Sort</a></li>
-                <li><a href="./vectors/BucketSort.html">Bucket Sort</a></li>
-                <li><a href="./vectors/CountingSort.html">Counting Sort</a></li>
-                <li><a href="./vectors/BinaryQuickSort.html">Binary Quicksort</a></li>
-                <li><a href="./vectors/BalancedMultiwayMerging.html">Balanced Multiway Merging</a></li>
-            </ul>
-        </div>
-    </div>
-    <div id="dic" class="popup hide">
-        <div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
-        <div class="pole">
-            <h2>Dictionaries</h2>
-            <ul>
-                <li><a href="./dictionaries/DoubleHashing.html">Double Hashing</a></li>
-                <li><a href="./dictionaries/LinearProbing.html">Linear Probing</a></li>
-                <li><a href="./dictionaries/LinearHashing.html">Linear Hashing</a></li>
-                <li><a href="./dictionaries/SeparateChaining.html">Separate Chaining</a></li>
-                <li><a href="./dictionaries/ExtendibleHashing.html">Extendible Hashing</a></li>
-                <li><a href="./dictionaries/biseh.html">BISEH</a></li>
-            </ul>
-        </div>
-    </div>
-    <div id="lis" class="popup hide">
-        <div class="closer" onclick="javascript:_class('lis', 'hide')"></div><a href="javascript:_class('lis', 'hide')" class="close">X</a>
-        <div class="pole">
-            <h2>Lists</h2>
-            <ul>
-                <li>Coming soon</li>
-            </ul>
-        </div>
-    </div>
-    <div id="gra" class="popup hide">
-        <div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
-        <div class="pole">
-            <h2>Graphs</h2>
-            <ul>
-                <li><a href="./graphs/bfs.html">Breadth First Search</a></li>
-                <li><a href="./graphs/dfs.html">Depth First Search</a></li>
-                <li><a href="./graphs/kruskal.html">Kruskal</a></li>
-                <li><a href="./graphs/dijkstra.html">Dijkstra</a></li>
-                <li><a href="./graphs/prim.html">Prim</a></li>
-                <li><a href="./graphs/topo.html">Topological Sort</a></li>
-                <li><a href="./graphs/floydwarshall.html">Floyd-Warshall</a></li>
-            </ul>
-        </div>
-    </div>
-    <div id="tre" class="popup hide">
-        <div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-        <div class="pole">
-            <h2>Trees</h2>
-            <ul>
-                <li><a href="./trees/bst.html">Binary Search Tree</a></li>
-			  <li><a href="./trees/bplus1.html">B+ Tree 1</a></li>
-                <li><a href="./trees/bplus2.html">B+ Tree 2</a></li>
-                <li><a href="./trees/heap.html">Binary Heap</a></li>
-                <li><a href="./trees/heapSort.html">Heap Sort</a></li>
-                <li><a href="./trees/trie.html">Trie</a>
-                  <ul>
-                    <li><a href="./trees/trie.html?type=patricia">PATRICIA</a></li>
-                    <li><a href="./trees/trie.html?type=briandais">De la Briandais</a></li>
-                  </ul>
-                </li>
-                <li><a href="./trees/traversal.html">Traversal</a></li>
-                <li><a href="./trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-            </ul>
-        </div>
-    </div>
+<article><div id="container">
+	<a href="#" class="logo"></a>
+	<ul class="dis">
+		<li><a href="javascript:_class('vec', 'hide')" class="v"><span>Vectors</span></a></li>
+		<li><a href="javascript:_class('dic', 'hide')" class="d"><span>Dictionaries</span></a></li>
+		<li><a href="javascript:_class('lis', 'hide')" class="l"><span>Lists</span></a></li>
+		<li><a href="javascript:_class('gra', 'hide')" class="g"><span>Graphs</span></a></li>
+		<li><a href="javascript:_class('tre', 'hide')" class="t"><span>Trees</span></a></li>
+	</ul>
+</div></article>
+<footer>
+	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Data Structures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">Begy Volodimir</a>
+</footer>
+<div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Vectors</h2>
+     	<ul>
+           	<li><a href="./vectors/BubbleSort.html">Bubble Sort</a></li>
+           	<li><a href="./vectors/SelectionSort.html">Selection Sort</a></li>
+           	<li><a href="./vectors/QuickSort.html">Quick Sort</a></li>
+           	<li><a href="./vectors/heapSort.html">Heap Sort</a></li>
+          </ul>
+	</div>
+</div>
+<div id="dic" class="popup hide"><div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Dictionaries</h2>
+     	<ul>
+           	<li><a href="./dictionaries/DoubleHashing.html">Double Hashing</a></li>
+           	<li><a href="./dictionaries/LinearProbing.html">Linear Probing</a></li>
+           	<li><a href="./dictionaries/LinearHashing.html">Linear Hashing</a></li>
+          </ul>
+	</div>
+</div>
+<div id="lis" class="popup hide"><div class="closer" onclick="javascript:_class('lis', 'hide')"></div><a href="javascript:_class('lis', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Lists</h2>
+     	<ul>
+             	<li>Coming soon</li>
+          </ul>
+	</div>
+</div>
+<div id="gra" class="popup hide"><div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Graphs</h2>
+     	<ul>
+     		<li><a href="./graphs/bfs.html">Breadth First Search</a></li>
+			<li><a href="./graphs/dfs.html">Depth First Search</a></li>
+			<li><a href="./graphs/kruskal.html">Kruskal</a></li>
+			<li><a href="./graphs/dijkstra.html">Dijkstra</a></li>
+        </ul>
+	</div>
+</div>
+<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
+	<div class="pole"><h2>Trees</h2>
+     	<ul>
+           	<li><a href="./trees/bst.html">Binary Search Tree</a></li>
+           	<li><a href="./trees/bplus.html">B+ Tree</a></li>
+           	<li><a href="./trees/heap.html">Binary Heap</a></li>
+          </ul>
+	</div>
+</div>
 </body>
-
 </html>

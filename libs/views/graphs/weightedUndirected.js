@@ -50,80 +50,6 @@ UndirectedGraphView.prototype.draw=function(){
 	var H=undefined;
 	var W=undefined;
 	var drawn=[];
-    
-    // Addition for prim
-    /*
-    if(this.model.Q != undefined){
-        var outerX = 0;
-        var offset = 0;
-        
-        for (var i = 0; i < this.model.nodes.length; i++) {
-            if (this.model.nodes[i].xPosition > outerX) {
-                outerX = this.model.nodes[i].xPosition;   
-            }
-        }
-
-        outerX += 2 * _radius;
-        
-        for(var i = 0; i < this.model.nodes.length; i++) {
-            var color1 = undefined;
-            var color2 = undefined;
-            
-            if(this.model.Q[i].used == true) {
-                color1 = "lightgrey";
-            } else {
-                color1 = "black";
-            }
-            if(this.model.Q[i].isMinInStep == this.model.i && this.model.i != undefined) {
-                color1 = "black";
-                color2 = "lime";
-            } else {
-                color2 = "white";
-            }
-            
-            var col1 = new Kinetic.Rect({
-                x: outerX,
-                y: 25 + offset,
-                width: 50 * this.scale,
-                height: 40 * this.scale,
-                fill: color2,
-                stroke: 'black',
-                strokeWidth: 2*this.scale
-            });
-            var col1text = new Kinetic.Text({
-                x: col1.getX() + 5 * this.scale,
-                y: col1.getY() + 5 * this.scale,
-                text: this.model.Q[i].node.index,
-                fontSize: 25 * this.scale,
-                fontFamily: 'Calibri',
-                fill: color1,
-            });
-            var col2 = new Kinetic.Rect({
-                x: outerX + 50,
-                y: 25 + offset,
-                width: 100 * this.scale,
-                height: 40 * this.scale,
-                fill: color2,
-                stroke: 'black',
-                strokeWidth: 2 * this.scale
-            });
-            var col2text = new Kinetic.Text({
-                x: col2.getX() + 5 * this.scale,
-                y: col2.getY() + 5 * this.scale,
-                text: this.model.Q[i].cost,
-                fontSize: 25 * this.scale,
-                fontFamily: 'Calibri',
-                fill: color1,
-            });
-            
-            offset += 40;
-            layer.add(col1);
-            layer.add(col1text);
-            layer.add(col2);
-            layer.add(col2text);
-        }
-    }
-    */
 	
 	for(var i=0;i<this.model.nodes.length;i++){
 	
@@ -164,7 +90,7 @@ UndirectedGraphView.prototype.draw=function(){
 			valFrom.circle=circleFrom;
 			
 			var v=this;
-            
+			
 			valFrom.on('dragmove', function() {
 				for(var k=0;k<this.circle.lines.length;k++){
 					this.circle.lines[k].setPoints([parseInt(this.getX())+parseInt(this.getWidth())/2,parseInt(this.getY())+parseInt(this.getFontSize())/2,parseInt(this.circle.connectedTo[k].getX()),parseInt(this.circle.connectedTo[k].getY())]);
