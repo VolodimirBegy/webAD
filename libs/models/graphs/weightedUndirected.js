@@ -35,7 +35,7 @@ function WeightedUndirectedGraph(){
 	this.actStateID=-1;
 }
 
-WeightedUndirectedGraph.prototype.fill=function(_matrix,startNode){	
+WeightedUndirectedGraph.prototype.fill=function(_matrix,startNode){
 	this.nodes=[];
 	this.edges=[];
 	//matrix deep copy
@@ -44,7 +44,7 @@ WeightedUndirectedGraph.prototype.fill=function(_matrix,startNode){
 	for(var i=0;i<_matrix.length;i++){
 		this.costMatrix.push(new Array(_matrix.length));
 	}
-	
+
 	for(var i=0;i<_matrix.length;i++){
 		for(var j=0;j<_matrix.length;j++){
 			if(_matrix[i][j]!=undefined){
@@ -55,45 +55,45 @@ WeightedUndirectedGraph.prototype.fill=function(_matrix,startNode){
 	//matrix deep copy
 	this.startNode=startNode;
 	this.matrixLink=new Array(_matrix.length);
-	
+
 	function addConnected(graph,index){
 		var cNode=undefined;
-		
+
 		if(graph.nodes[graph.matrixLink[index]]==undefined){
 			cNode=new Node();
 			cNode.index=index;
-			
+
 			graph.nodes.push(cNode);
 			graph.matrixLink[cNode.index]=graph.nodes.length-1;
 		}
 		else{
 			cNode=graph.nodes[graph.matrixLink[index]];
 		}
-		
+
 		for(var i=0;i<_matrix.length;i++){
 			if(_matrix[index][i]!=undefined){
 				var newNode=undefined;
-				
+
 				if(graph.nodes[graph.matrixLink[i]]==undefined){
 					newNode=new Node();
 					newNode.index=i;
-					
+
 					graph.nodes.push(newNode);
 					graph.matrixLink[newNode.index]=graph.nodes.length-1;
 				}
 				else{
 					newNode=graph.nodes[graph.matrixLink[i]];
 				}
-				
+
 				var alreadyConnected=false;
 				for(var j=0;j<cNode.connectedTo.length;j++){
 					if(cNode.connectedTo[j]==newNode){
 						alreadyConnected=true;break;
 					}
 				}
-				
+
 				if(index==graph.nodes[0].index){cNode.color="#00FFFF";cNode.oColor="#00FFFF";}
-			
+
 				//ignore duplicates
 				var eExists=false;
 				for(var j=0;j<graph.edges.length;j++){
@@ -106,19 +106,19 @@ WeightedUndirectedGraph.prototype.fill=function(_matrix,startNode){
 					graph.edges.push(new Edge(cNode,newNode,_matrix[index][i]));
 					graph.edges[graph.edges.length-1].index=graph.edges.length-1;
 				}
-				
+
 				if(!alreadyConnected){
 					cNode.connectedTo.push(newNode);
 					cNode.connectedWeights.push(_matrix[index][i]);
 					addConnected(graph,cNode.connectedTo[cNode.connectedTo.length-1].index);
 				}
-				
+
 			}
 		}
 	}
-	
+
 	addConnected(this,this.startNode);
-	
+
 	this.gridSize=Math.ceil(Math.sqrt(this.nodes.length));
 	var index=0;
 	for(var i=0;i<this.gridSize;i++){
@@ -131,11 +131,11 @@ WeightedUndirectedGraph.prototype.fill=function(_matrix,startNode){
 			else break;
 		}
 	}
-	
+
 	for(var i=0;i<this.nodes.length;i++){
-		
+
 		for(var j=0;j<this.nodes[i].connectedTo.length;j++){
-			
+
 			var ai=this.nodes[i].connectedTo[j].index;
 			var tmpN=undefined;
 			for(var k=0;k<this.nodes.length;k++){
@@ -175,9 +175,9 @@ WeightedUndirectedGraph.prototype.copy=function(){
 		newG.nodes[i].xPosition=this.nodes[i].xPosition;
 		newG.nodes[i].yPosition=this.nodes[i].yPosition;
 	}
-	
+
 	newG.i=this.i;
-	
+
 	for(var i=0;i<this.edges.length;i++){
 		for(var j=0;j<newG.edges.length;j++){
 			if(this.edges[i].index==newG.edges[j].index){
@@ -186,7 +186,7 @@ WeightedUndirectedGraph.prototype.copy=function(){
 			}
 		}
 	}
-	
+
 	if(this.A!=undefined){
 		newG.A=[];
 		newG.edges.sort(compare);
@@ -218,7 +218,7 @@ WeightedUndirectedGraph.prototype.replaceThis=function(og){
 	newG.fill(og.costMatrix,og.startNode);
 
 	this.startNode=newG.startNode;
-	
+
 	this.costMatrix=newG.costMatrix;
 	this.nodes=newG.nodes;
 	this.edges=newG.edges;
@@ -234,7 +234,7 @@ WeightedUndirectedGraph.prototype.replaceThis=function(og){
 	}
 
 	this.i=og.i;
-	
+
 	for(var i=0;i<og.edges.length;i++){
 		for(var j=0;j<this.edges.length;j++){
 			if(og.edges[i].index==this.edges[j].index){
@@ -243,7 +243,7 @@ WeightedUndirectedGraph.prototype.replaceThis=function(og){
 			}
 		}
 	}
-	
+
 	if(og.A!=undefined){
 		this.A=[];
 		this.edges.sort(compare);
@@ -317,10 +317,10 @@ WeightedUndirectedGraph.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	var new_state = this.copy();
-	
+
 	var last_state=this.db[this.db.length-1];
 	var same=true;
-	
+
 	if(last_state==undefined || new_state.costMatrix.length!=last_state.costMatrix.length||
 			new_state.nodes.length!=last_state.nodes.length ||
 			new_state.edges.length!=last_state.edges.length){
@@ -344,7 +344,7 @@ WeightedUndirectedGraph.prototype.saveInDB=function(){
 			}
 		}
 	}
-	
+
 	if(!same){
 		this.db.push(new_state);
 		this.actStateID=nextID;
@@ -357,22 +357,25 @@ WeightedUndirectedGraph.prototype.kruskal=function(){
 		return;
 	var delay=0;
 	if(this.A==undefined ||(this.i==this.edges.length)){
-		
+
 		if(this.i==this.edges.length){
-			 delay=1000;
-		
+			 //delay=1000;
+
 			for(var k=0;k<graph.edges.length;k++)
 				graph.edges[k].color="black";
+				//window.alert("IN");
+				graph.saveInDB();
+				graph.draw();
 		}
-		
+
 		if(this.A==undefined){
 			this.edges.sort(compare);
 		}
-		
+
 		this.A=[];
-	
+
 		this.p=new Array(this.nodes.length);
-		
+
 		//make set fuer alle knoten
 		for(var i=0;i<this.nodes.length;i++){
 			makeSet(this.nodes[i],this);
@@ -380,7 +383,7 @@ WeightedUndirectedGraph.prototype.kruskal=function(){
 
 		this.i=0;
 	}
-	
+
 	function step(graph){
 		setTimeout(function(){
 			if(findSet(graph.edges[graph.i].u,graph)!= findSet(graph.edges[graph.i].v,graph)){
@@ -391,37 +394,38 @@ WeightedUndirectedGraph.prototype.kruskal=function(){
 				graph.edges[graph.i].color="#6699FF";
 			}
 			union(graph.edges[graph.i].u,graph.edges[graph.i].v,graph);
-			
+
 			graph.i++;
 			graph.saveInDB();
 			graph.draw();
-			
+
 			if(graph.i<graph.edges.length)
-				step(graph);			
+				step(graph);
+			else clearTimes();
 		},2000)
 	}
-	
+
 	function startKruskal(graph){
 		setTimeout(function(){
 			step(graph);
 		},delay)
 	}
-	
+
 	startKruskal(this);
-	
+
 	function makeSet(x,graph){
 		graph.p[x.index]=x;
 	}
-	
+
 	function findSet(x,graph){
 		if(x!=graph.p[x.index]) return findSet(graph.p[x.index],graph);
 		return graph.p[x.index];
 	}
-	
+
 	function link(x,y,graph){
 		graph.p[y.index]=x;
 	}
-	
+
 	function union(x,y,graph){
 		link(findSet(x,graph),findSet(y,graph),graph);
 	}
