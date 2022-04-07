@@ -32,7 +32,7 @@ function WeightedDirectedGraph(){
 
 WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 	this.startNode=startNode;
-	
+
 	this.nodes=[];
 	this.edges=[];
 
@@ -42,7 +42,7 @@ WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 	for(var i=0;i<_matrix.length;i++){
 		this.costMatrix.push(new Array(_matrix.length));
 	}
-	
+
 	for(var i=0;i<_matrix.length;i++){
 		for(var j=0;j<_matrix.length;j++){
 			if(_matrix[i][j]!=undefined){
@@ -51,47 +51,47 @@ WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 		}
 	}
 	//matrix deep copy
-	
+
 	this.matrixLink=new Array(_matrix.length);
-	
+
 	function addConnected(graph,index){
 		var cNode=undefined;
-		
+
 		if(graph.nodes[graph.matrixLink[index]]==undefined){
 			cNode=new Node();
 			cNode.index=index;
-			
+
 			graph.nodes.push(cNode);
 			graph.matrixLink[cNode.index]=graph.nodes.length-1;
 		}
 		else{
 			cNode=graph.nodes[graph.matrixLink[index]];
 		}
-		
+
 		for(var i=0;i<_matrix.length;i++){
 			if(_matrix[index][i]!=undefined){
 				var newNode=undefined;
-				
+
 				if(graph.nodes[graph.matrixLink[i]]==undefined){
 					newNode=new Node();
 					newNode.index=i;
-					
+
 					graph.nodes.push(newNode);
 					graph.matrixLink[newNode.index]=graph.nodes.length-1;
 				}
 				else{
 					newNode=graph.nodes[graph.matrixLink[i]];
 				}
-				
+
 				var alreadyConnected=false;
 				for(var j=0;j<cNode.connectedTo.length;j++){
 					if(cNode.connectedTo[j]==newNode){
 						alreadyConnected=true;break;
 					}
 				}
-				
+
 				if(index==graph.nodes[0].index){cNode.color="#00FFFF";cNode.oColor="#00FFFF";}
-			
+
 				//ignore duplicates
 				var eExists=false;
 				for(var j=0;j<graph.edges.length;j++){
@@ -103,19 +103,19 @@ WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 					graph.edges.push(new Edge(cNode,newNode,_matrix[index][i]));
 					graph.edges[graph.edges.length-1].index=graph.edges.length-1;
 				}
-				
+
 				if(!alreadyConnected){
 					cNode.connectedTo.push(newNode);
 					cNode.connectedWeights.push(_matrix[index][i]);
 					addConnected(graph,cNode.connectedTo[cNode.connectedTo.length-1].index);
 				}
-				
+
 			}
 		}
 	}
-	
+
 	addConnected(this,startNode);
-	
+
 	this.gridSize=Math.ceil(Math.sqrt(this.nodes.length));
 	var index=0;
 	for(var i=0;i<this.gridSize;i++){
@@ -128,11 +128,11 @@ WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 			else break;
 		}
 	}
-	
+
 	for(var i=0;i<this.nodes.length;i++){
-		
+
 		for(var j=0;j<this.nodes[i].connectedTo.length;j++){
-			
+
 			var ai=this.nodes[i].connectedTo[j].index;
 			var tmpN=undefined;
 			for(var k=0;k<this.nodes.length;k++){
@@ -147,8 +147,8 @@ WeightedDirectedGraph.prototype.fill=function(_matrix,startNode){
 
 WeightedDirectedGraph.prototype.init=function(c1){
 	this.view.initStage(c1);
-	this.Q=undefined; this.uSet=undefined; 
-	this.i=undefined; this.dist=undefined; 
+	this.Q=undefined; this.uSet=undefined;
+	this.i=undefined; this.dist=undefined;
 	this.prev=undefined; this.S=undefined;
 	this.draw();
 	this.saveInDB();
@@ -158,7 +158,7 @@ WeightedDirectedGraph.prototype.init=function(c1){
 WeightedDirectedGraph.prototype.copy=function(){
 	var newG = new WeightedDirectedGraph();
 	newG.fill(this.costMatrix,this.startNode);
-	
+
 	for(var i=0;i<this.nodes.length;i++){
 		newG.nodes[i].index=this.nodes[i].index;
 		newG.nodes[i].color=this.nodes[i].color;
@@ -169,7 +169,7 @@ WeightedDirectedGraph.prototype.copy=function(){
 	//Q, uSet, i, dist, prev, S
 	newG.i=this.i;
 	newG.uSet=this.uSet;
-	
+
 	if(this.Q!=undefined){
 		newG.Q=new Array(this.Q.length);
 		for(var i=0;i<this.Q.length;i++){
@@ -182,7 +182,7 @@ WeightedDirectedGraph.prototype.copy=function(){
 	}
 	else
 		newG.Q=undefined;
-	
+
 	if(this.S!=undefined){
 		newG.S=new Array(this.S.length);
 		for(var i=0;i<this.S.length;i++){
@@ -195,7 +195,7 @@ WeightedDirectedGraph.prototype.copy=function(){
 	}
 	else
 		newG.S=undefined;
-	
+
 	if(this.dist!=undefined){
 		newG.dist=new Array(this.dist.length);
 		for(var i=0;i<this.dist.length;i++){
@@ -204,7 +204,7 @@ WeightedDirectedGraph.prototype.copy=function(){
 	}
 	else
 		newG.dist=undefined;
-	
+
 	if(this.prev!=undefined){
 		newG.prev=new Array(this.prev.length);
 		for(var i=0;i<this.prev.length;i++){
@@ -216,17 +216,17 @@ WeightedDirectedGraph.prototype.copy=function(){
 	}
 	else
 		newG.prev=undefined;
-	
+
 	for(var i=0;i<this.edges.length;i++){
 		for(var j=0;j<newG.edges.length;j++){
 			if(this.edges[i].index==newG.edges[j].index){
-				
+
 				newG.edges[j].color=this.edges[i].color;
 				break;
 			}
 		}
 	}
-	
+
 
 	return newG;
 }
@@ -237,12 +237,12 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 
 	this.startNode=newG.startNode;
 	this.costMatrix=newG.costMatrix;
-	
+
 	this.nodes=newG.nodes;
 	this.edges=newG.edges;
-	
+
 	this.matrixLink=newG.matrixLink;
-	
+
 	for(var i=0;i<og.nodes.length;i++){
 		if(this.nodes[i]!=undefined){
 			this.nodes[i].index=og.nodes[i].index;
@@ -255,7 +255,7 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 
 	this.i=og.i;
 	this.uSet=og.uSet;
-	
+
 	if(og.Q!=undefined){
 		this.Q=new Array(og.Q.length);
 		for(var i=0;i<og.Q.length;i++){
@@ -268,7 +268,7 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 	}
 	else
 		this.Q=undefined;
-	
+
 	if(og.S!=undefined){
 		this.S=new Array(og.S.length);
 		for(var i=0;i<og.S.length;i++){
@@ -281,7 +281,7 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 	}
 	else
 		this.S=undefined;
-	
+
 	if(og.dist!=undefined){
 		this.dist=new Array(og.dist.length);
 		for(var i=0;i<og.dist.length;i++){
@@ -290,7 +290,7 @@ WeightedDirectedGraph.prototype.replaceThis=function(og){
 	}
 	else
 		this.dist=undefined;
-	
+
 	if(og.prev!=undefined){
 		this.prev=new Array(og.prev.length);
 		for(var i=0;i<og.prev.length;i++){
@@ -353,8 +353,11 @@ WeightedDirectedGraph.prototype.lastState=function(){
      this.draw();
 }
 
-WeightedDirectedGraph.prototype.saveInDB=function(){
-	
+WeightedDirectedGraph.prototype.saveInDB=function(replace_last=false){
+	if(replace_last){
+		this.db[this.db.length - 1] = this.copy();
+		return;
+	}
 	var count=this.db.length-1;
  	if(count!=this.actStateID){
  		this.db.splice(this.actStateID+1,count-this.actStateID);
@@ -362,15 +365,15 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	var new_state = this.copy();
-	
+
 	var last_state=this.db[this.db.length-1];
 	var same=true;
-	
+
 	if(last_state==undefined || new_state.costMatrix.length!=last_state.costMatrix.length||
 			new_state.nodes.length!=last_state.nodes.length ||
 			new_state.edges.length!=last_state.edges.length || (last_state.Q==undefined && new_state.Q!=undefined)
 			||(last_state.Q!=undefined && new_state.Q.length!=last_state.Q.length)
-			||(last_state.S==undefined && new_state.S==undefined)
+			||(last_state.S==undefined && new_state.S!=undefined)
 			||(last_state.S!=undefined && new_state.S.length!=last_state.S.length)){
 		same=false;
 	}
@@ -384,7 +387,7 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
 			}
 		}
 		for(var i=0;i<new_state.edges.length;i++){
-			
+
 			if(new_state.edges[i].weight!=last_state.edges[i].weight||
 					new_state.edges[i].u.index!=last_state.edges[i].u.index||
 					new_state.edges[i].v.index!=last_state.edges[i].v.index||
@@ -394,7 +397,7 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
 			}
 		}
 	}
-	
+
 	if(!same){
 		this.db.push(new_state);
 		this.actStateID=nextID;
@@ -412,81 +415,81 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 		this.i=0;
 		for(var i=0;i<this.edges.length;i++)
 			this.edges[i].color="black";
-		
+
 		for(var i=1;i<this.nodes.length;i++){
 			this.nodes[i].color="lime";
 		}
-		
+
 		this.dist=new Array(this.costMatrix.length);
 		this.prev=new Array(this.costMatrix.length);
 		this.S=[];
-		
+
 		var source=this.nodes[0];
 		this.S.push(source);
 		this.dist[source.index]=0;
 		this.prev[source.index]=undefined;
-		
+
 		this.Q=[];
-		
+
 		for(var i=0;i<this.nodes.length;i++){
 			var v=this.nodes[i];
 			if(v!=source){
 				this.dist[v.index]=Number.MAX_VALUE;
 				this.prev[v.index]=undefined;
 			}
-			
+
 			this.Q.push(v);
 		}
 	}
-	
+
 	this.draw();
 	this.saveInDB();
-	
+
 	if(this.uSet)delay=0;
-	
+
 	function step(graph){
 		setTimeout(function(){
 			var u=graph.Q[0];
 			graph.uSet=true;
 			var index=0;
-			
+
 			for(var i=0;i<graph.Q.length;i++){
 				if(graph.dist[graph.Q[i].index]<graph.dist[u.index]){
 					u=graph.Q[i];index=i;
 				}
 			}
-			
+
 			//because of return while pausing
 			if($.inArray(u,graph.S)<0)
 				graph.S.push(u);
-			
+
 			u.color="#00FFFF";
 			graph.draw();
 			graph.saveInDB();
 
-			
+
 			//i<u.connectedTo.length
 			function processU(){
 				setTimeout(function(){
 
 					var v=u.connectedTo[graph.i];
 					var alt=graph.dist[u.index]+graph.costMatrix[u.index][v.index];
-					
+
 					if(alt<graph.dist[v.index]){
 						graph.dist[v.index]=alt;
-						
+
 						var oldU=graph.prev[v.index];
-						
+
 						graph.prev[v.index]=u;
 						/*if(oldU!=undefined)
 						window.alert(oldU.index);
 						else window.alert("undef");*/
 						//prev for v is u
-						
+
 						for(var j=0;j<graph.edges.length;j++){
 							if(graph.edges[j].u==u && graph.edges[j].v==v){
 								graph.edges[j].color="lime";break;
-								
+
 							}
 						}
 						if(oldU!=undefined){
@@ -496,22 +499,22 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 								}
 							}
 						}
-						
+
 					}
 					else{
-						
+
 						for(var j=0;j<graph.edges.length;j++){
 							if(graph.edges[j].u==u && graph.edges[j].v==v){
 								graph.edges[j].color="#6699FF";eIndex=j;_in=true;break;
 							}
 						}
 					}
-					
-					
+
+
 					graph.i++;
 					graph.draw();
-					
-				
+
+
 					if(graph.i<u.connectedTo.length){
 						graph.saveInDB();
 						processU(graph);
@@ -520,6 +523,7 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 					else{
 						graph.i=0;
 						graph.Q.splice(index,1);
+
 						graph.uSet=false;
 						delay=2000;
 						graph.delay=2000;
@@ -528,12 +532,14 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 							step(graph);
 							return;
 						}
-						else
+						else{
 							graph.saveInDB();
+							clearTimes();
+						}
 					}
 				},2000)
 			}
-			
+
 			if(graph.i<u.connectedTo.length){
 				processU(graph);
 				return;
@@ -547,14 +553,18 @@ WeightedDirectedGraph.prototype.dijkstra=function(){
 					step(graph);
 					return;
 				}
+				else{
+					graph.saveInDB(true);
+					clearTimes();
+				}
 			}
-			
+
 		},delay)
 	}
 
 	if(graph.Q.length>0)
 		step(this);
-	
+
 }
 
 WeightedDirectedGraph.prototype.draw=function(){
