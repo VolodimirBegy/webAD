@@ -14,7 +14,7 @@
  */
 
 function Node(){
-	
+
 	this.color="#ADFF2F";
 	this.value=0;
 	this.rightChild=undefined;
@@ -22,7 +22,7 @@ function Node(){
 	this.parent=undefined;
 	this.xPosition=0;
 	this.yPosition=0;
-	
+
 }
 
 function BinSearchTree(){
@@ -34,11 +34,11 @@ function BinSearchTree(){
 
 BinSearchTree.prototype.copy=function(){
 	var newTree=new BinSearchTree();
-			
+
 	function recursivePreorderTraversal(newTree,node){
 		if(node==undefined)
 			return;
-		
+
 		newTree.addFixed(node.value);
 		recursivePreorderTraversal(newTree,node.leftChild);
 		recursivePreorderTraversal(newTree,node.rightChild);
@@ -50,12 +50,12 @@ BinSearchTree.prototype.copy=function(){
 }
 
 BinSearchTree.prototype.replaceThis=function(toCopy){
-	
+
 	this.root=undefined;
 	function recursivePreorderTraversal(tree,node){
 		if(node==undefined)
 			return;
-		
+
 		tree.addFixed(node.value);
 		recursivePreorderTraversal(tree,node.leftChild);
 		recursivePreorderTraversal(tree,node.rightChild);
@@ -109,12 +109,12 @@ BinSearchTree.prototype.add=function() {
 	//var count=this.db().count();
 
 	//if(count==this.actStateID){
-		
+
 	var val=parseInt(prompt("Add:"));
 	if(isNaN(val))return;
 	var node=new Node();
 	node.value=val;
-		
+
 	if(this.root==undefined){
 		this.root=node;
 		this.draw();
@@ -125,16 +125,16 @@ BinSearchTree.prototype.add=function() {
 		var added=false;
 		var root=this.root;
 		var actNode=root;
-		
+
 		this.root.color="coral";
 		if(val!=undefined)
 			this.draw();
-		
+
 		var lc=0;
 		function doLoop(tree){
 			setTimeout(function (){
 				tree.root.color="#ADFF2F";
-				if(actNode.value>node.value && actNode.leftChild==undefined){
+				if(actNode.value>=node.value && actNode.leftChild==undefined){
 					actNode.color="#ADFF2F";
 					actNode.leftChild=node;
 					actNode.leftChild.parent=actNode;
@@ -142,15 +142,15 @@ BinSearchTree.prototype.add=function() {
 					tree.draw();
 				}
 
-				else if(actNode.value<=node.value && actNode.rightChild==undefined){
-					actNode.color="#ADFF2F";				
+				else if(actNode.value<node.value && actNode.rightChild==undefined){
+					actNode.color="#ADFF2F";
 					actNode.rightChild=node;
 					actNode.rightChild.parent=actNode;
 					added=true;
 					tree.draw();
 				}
 
-				else if(actNode.value>node.value && actNode.leftChild!=undefined){
+				else if(actNode.value>=node.value && actNode.leftChild!=undefined){
 					var tmpParent=actNode;
 					actNode=actNode.leftChild;
 					actNode.parent=tmpParent;
@@ -159,7 +159,7 @@ BinSearchTree.prototype.add=function() {
 					tree.draw();
 				}
 
-				else if(actNode.value<=node.value && actNode.rightChild!=undefined){
+				else if(actNode.value<node.value && actNode.rightChild!=undefined){
 					var tmpParent=actNode;
 					actNode=actNode.rightChild;
 					actNode.parent=tmpParent;
@@ -167,7 +167,7 @@ BinSearchTree.prototype.add=function() {
 					actNode.parent.color="#ADFF2F";
 					tree.draw();
 				}
-				
+
 				if(!added){
 					doLoop(tree);
 				}
@@ -177,12 +177,12 @@ BinSearchTree.prototype.add=function() {
 				lc++;
 			},1000)
 		}
-	
+
 		if(!added)doLoop(this);
-		
+
 
 	}
-	
+
 	//}
 
 
@@ -190,9 +190,9 @@ BinSearchTree.prototype.add=function() {
 
 BinSearchTree.prototype.addFixed=function(_val) {
 	var node=new Node();
-	
+
 	node.value=_val;
-		
+
 	if(this.root==undefined){
 		this.root=node;
 	}
@@ -207,41 +207,41 @@ BinSearchTree.prototype.addFixed=function(_val) {
 		var lc=0;
 		function doLoop(){
 
-				if(actNode.value>node.value && actNode.leftChild==undefined){
+				if(actNode.value>=node.value && actNode.leftChild==undefined){
 					actNode.leftChild=node;
 					actNode.leftChild.parent=actNode;
 					added=true;
 
 				}
 
-				else if(actNode.value<=node.value && actNode.rightChild==undefined){					
+				else if(actNode.value<node.value && actNode.rightChild==undefined){
 					actNode.rightChild=node;
 					actNode.rightChild.parent=actNode;
 					added=true;
 
 				}
 
-				else if(actNode.value>node.value && actNode.leftChild!=undefined){
+				else if(actNode.value>=node.value && actNode.leftChild!=undefined){
 					var tmpParent=actNode;
 					actNode=actNode.leftChild;
 					actNode.parent=tmpParent;
 
 				}
 
-				else if(actNode.value<=node.value && actNode.rightChild!=undefined){
+				else if(actNode.value<node.value && actNode.rightChild!=undefined){
 					var tmpParent=actNode;
 					actNode=actNode.rightChild;
 					actNode.parent=tmpParent;
 				}
-				
+
 				if(!added){
 					doLoop();
 				}
 				lc++;
 		}
-	
+
 		if(!added)doLoop();
-	
+
 	}
 
 }
@@ -253,10 +253,10 @@ BinSearchTree.prototype.saveInDB=function(){
  	}
 
 	var nextID=this.db.length;
-	
+
 	var new_state = this.copy();
 	this.db.push(new_state);
-	
+
 	this.actStateID=nextID;
 }
 
@@ -264,9 +264,9 @@ BinSearchTree.prototype.search=function() {
 
 	var value=parseInt(prompt("Search for:"));
 	if(isNaN(value))return;
-	
+
 	var tree=this;
-	
+
 	if(tree.root==undefined){
 		return;
 	}
@@ -276,10 +276,10 @@ BinSearchTree.prototype.search=function() {
 		found=false;
 		var root=tree.root;
 		var actNode=root;
-		
+
 		tree.root.color="coral";
 		tree.draw();
-		
+
 		var lc=0;
 		function doLoop(tree){
 			setTimeout(function (){
@@ -313,7 +313,7 @@ BinSearchTree.prototype.search=function() {
 					actNode.parent.color="#ADFF2F";
 					tree.draw();
 				}
-				
+
 				else if(actNode.value==value){
 					var tmpParent=actNode;
 					//actNode=actNode.get("leftChild");
@@ -321,33 +321,33 @@ BinSearchTree.prototype.search=function() {
 					actNode.color="gold";
 					//actNode.get("parent").set({color:"#ADFF2F"});
 					tree.draw();
-					
+
 					setTimeout(function(){
 						actNode.color="#ADFF2F";
 						tree.draw();
 					},1000)
 					return;
 				}
-				
+
 				if(!found){
 					doLoop(tree);
 				}
 				lc++;
 			},1000)
 		}
-	
+
 		if(!found)doLoop(tree);
-		
+
 	}
 
 }
 
 
-BinSearchTree.prototype.remove=function() { 
+BinSearchTree.prototype.remove=function() {
 	//var count=this.db().count();
 
 	//if(count==this.actStateID){
-		
+
 	var value=parseInt(prompt("delete:"));
 	if(isNaN(value))return;
 	if(this.root==undefined){
@@ -359,10 +359,10 @@ BinSearchTree.prototype.remove=function() {
 		found=false;
 		var root=this.root;
 		var actNode=root;
-		
+
 		this.root.color="coral";
 		this.draw();
-		
+
 		var lc=0;
 		function doLoop(tree){
 			setTimeout(function (){
@@ -396,7 +396,7 @@ BinSearchTree.prototype.remove=function() {
 					actNode.parent.color="#ADFF2F";
 					tree.draw();
 				}
-				
+
 				else if(actNode.value==value){
 					if(actNode!=tree.root){
 						var parr=actNode.parent;
@@ -406,19 +406,19 @@ BinSearchTree.prototype.remove=function() {
 							isLeft=false;
 						}
 					}
-					
+
 					//actNode=actNode.get("leftChild");
 					//actNode.set({parent: tmpParent});
 					actNode.color="gold";
 					//actNode.get("parent").set({color:"#ADFF2F"});
 					tree.draw();
-				
+
 					setTimeout(function(){
 					var noKids=new Boolean();
 					noKids=true;
 					if(actNode.rightChild!=undefined || actNode.leftChild!=undefined)
 						noKids=false;
-						
+
 					var onlyRightChild=false;
 					if(actNode.rightChild!=undefined && actNode.leftChild==undefined){
 						onlyRightChild=true;
@@ -427,7 +427,7 @@ BinSearchTree.prototype.remove=function() {
 					if(actNode.leftChild!=undefined && actNode.rightChild==undefined){
 						onlyLeftChild=true;
 					}
-					
+
 					var twoKids=false;
 					if(actNode.leftChild!=undefined && actNode.rightChild!=undefined){
 						twoKids=true;
@@ -444,16 +444,16 @@ BinSearchTree.prototype.remove=function() {
 							else
 								tree.root=undefined;
 						}
-							
+
 						else if(onlyLeftChild && tree.root==actNode){
 							tree.root=actNode.leftChild;
 						}
-						
+
 						else if(onlyRightChild && tree.root==actNode){
 							tree.root=actNode.rightChild;
-						
+
 						}
-						
+
 						else if(onlyLeftChild && isLeft){
 							//par.set({leftChild:undefined});
 							parr.leftChild=actNode.leftChild;
@@ -465,25 +465,25 @@ BinSearchTree.prototype.remove=function() {
 							parr.rightChild=actNode.leftChild;
 							actNode.leftChild.parent=parr;
 						}
-						
+
 						else if(onlyRightChild && isLeft){
 							//par.set({leftChild:undefined});
 							parr.leftChild=actNode.rightChild;
 							actNode.rightChild.parent=parr;
 						}
-						
+
 						else if(onlyRightChild && !isLeft){
 							//par.set({rightChild:undefined});
 							parr.rightChild=actNode.rightChild;
 							actNode.rightChild.parent=parr;
 						}
-						
+
 						else if(onlyRightChild && tree.root==actNode)
 							tree.root=actNode.rightChild;
-							
+
 						else if(onlyLeftChild && tree.root==actNode)
 							tree.root=actNode.leftChild;
-							
+
 						else if(twoKids && actNode!=tree.root){
 							//get most right of left subtree to be the root
 							var oldLeft=actNode.leftChild;
@@ -491,7 +491,7 @@ BinSearchTree.prototype.remove=function() {
 							var oldPar=actNode.parent;
 							var oldLeftSec=oldLeft.leftChild;
 							var newNode=oldLeft;
-							
+
 							if(newNode.rightChild==undefined){
 								if(isLeft){
 									parr.leftChild=newNode;
@@ -503,10 +503,10 @@ BinSearchTree.prototype.remove=function() {
 									parr.rightChild=newNode;
 									newNode.parent=parr;
 									newNode.rightChild=oldRight;
-									oldRight.parent=newNode; 
+									oldRight.parent=newNode;
 								}
 							}
-							
+
 							else{
 								var lastPar=undefined;
 								var kidOfMoved=undefined;
@@ -526,20 +526,20 @@ BinSearchTree.prototype.remove=function() {
 									}
 									newNode.rightChild=undefined;
 									newNode.leftChild=undefined;
-									
+
 									parr.leftChild=newNode;
 									newNode.parent=parr;
-									
+
 									oldRight.parent=undefined;
 									newNode.rightChild=oldRight;
 									oldRight.parent=newNode;
-									
+
 									oldLeft.parent=undefined;
 									newNode.leftChild=oldLeft;
-									oldLeft.parent=newNode;	
+									oldLeft.parent=newNode;
 								}
 								else{
-								
+
 									lastPar.rightChild=undefined;
 									if(kidOfMoved!=undefined){
 										kidOfMoved.parent=undefined;
@@ -548,36 +548,36 @@ BinSearchTree.prototype.remove=function() {
 									}
 									newNode.rightChild=undefined;
 									newNode.leftChild=undefined;
-									
+
 									parr.rightChild=newNode;
 									newNode.parent=parr;
-									
+
 									oldRight.parent=undefined;
 									newNode.rightChild=oldRight;
 									oldRight.parent=newNode;
-									
+
 									oldLeft.parent=undefined;
 									newNode.leftChild=oldLeft;
 									oldLeft.parent=newNode;
-									
+
 									}
 							}
 						}
-						
+
 						else if(twoKids && actNode==tree.root){
 							//get most right of left subtree to be the root
 							var oldLeft=actNode.leftChild;
 							var oldRight=actNode.rightChild;
 							//var oldPar=actNode.get("parent");
 							var newNode=oldLeft;
-							
+
 							if(newNode.rightChild==undefined){
 									newNode.parent=undefined;
 									tree.root=newNode;
 									newNode.rightChild=oldRight;
 									oldRight.parent=newNode;
 							}
-							
+
 							else{
 								var lastPar=undefined;
 								var kidOfMoved=undefined;
@@ -596,14 +596,14 @@ BinSearchTree.prototype.remove=function() {
 								}
 								newNode.parent=undefined;
 								tree.root=newNode;
-								
+
 								newNode.rightChild=undefined;
 								newNode.leftChild=undefined;
-																		
+
 								oldRight.parent=undefined;
 								newNode.rightChild=oldRight;
 								oldRight.parent=newNode;
-									
+
 								oldLeft.parent=undefined;
 								newNode.leftChild=oldLeft;
 								oldLeft.parent=newNode;
@@ -615,18 +615,18 @@ BinSearchTree.prototype.remove=function() {
 
 					return;
 				}
-				
+
 				if(!found){
 					doLoop(tree);
 				}
 				lc++;
 			},1000)
 		}
-	
+
 		if(!found)doLoop(this);
-		
+
 	}
-	
+
 	//}
 
 }
@@ -635,17 +635,17 @@ BinSearchTree.prototype.random=function(){
 	//var count=this.db().count();
 
 	//if(count==this.actStateID){
-		
+
 		this.root=undefined;
-		var number=parseInt(Math.random()*10,10); 
-	
+		var number=parseInt(Math.random()*10,10);
+
 		for(var i=0;i<number;i++){
 			this.addFixed(parseInt(Math.random()*1000,10));
 		}
-		
+
 		this.saveInDB();
 		this.draw();
-	
+
 	//}
 }
 
@@ -656,7 +656,7 @@ BinSearchTree.prototype.example=function(){
 	for(var i=0;i<numbers.length;i++){
 		this.addFixed(numbers[i]);
 	}
-		
+
 	this.saveInDB();
 	this.draw();
 }
@@ -664,4 +664,3 @@ BinSearchTree.prototype.example=function(){
 BinSearchTree.prototype.draw=function(){
 	this.view.draw();
 }
-
