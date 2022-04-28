@@ -143,16 +143,16 @@ Heap.prototype.prev=function(){
 		if(heap.working){
 			var rs=this.db[this.actStateID];
 			//make actual node to THIS:
-	      	this.replaceThis(rs);
-	      	this.draw();
+	    this.replaceThis(rs);
+	    this.draw();
 		}
 		else{
 			var prev_id=this.actStateID-1;
 			this.actStateID=prev_id;
 			var rs=this.db[prev_id];
 			//make actual node to THIS:
-	      	this.replaceThis(rs);
-	      	this.draw();
+	    this.replaceThis(rs);
+	    this.draw();
 		}
 	}
 	else
@@ -966,7 +966,7 @@ Heap.prototype.getElementsByPrompt=function(){
 		this.root=undefined;
 		this.sorted=[];
 		var tempElements=[];
-		
+
 		for(var i=0;i<tempValsStr.length;i++){
 			if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000){
 				this.addFixedNotHeapified(parseInt(tempValsStr[i]));
