@@ -57,23 +57,23 @@ Heap.prototype.init=function(){
 Heap.prototype.copy=function(){
 	var newHeap=new Heap();
 	var nodes=[];
-	
+
 	for(var i=0;i<this.nodes.length;i++){
 		var newNode=new Node();
-		
+
 		newNode.value=this.nodes[i].value;
 		newNode.color=this.nodes[i].color;
-		
+
 		nodes.push(newNode);
-		
+
 		if(i==0)
 			newHeap.root=newNode;
 		else{
 			var actIndex=nodes.length-1;
 			var parIndex=Math.floor((actIndex-1)/2);
-			
+
 			nodes[actIndex].parent=nodes[parIndex];
-			
+
 			//if index of last node is uneven, its a left child. else right
 			if((nodes.length-1)%2==1){
 				nodes[parIndex].leftChild=nodes[actIndex];
@@ -82,7 +82,7 @@ Heap.prototype.copy=function(){
 				nodes[parIndex].rightChild=nodes[actIndex];
 			}
 		}
-			
+
 	}
 	if(this.timer!=undefined){
 		newHeap.timer=new Timer(this.timer._callback,this.timer.remaining);
@@ -91,7 +91,7 @@ Heap.prototype.copy=function(){
 	newHeap.nodes=nodes;
 	for(var i=0;i<this.sorted.length;i++)
 		newHeap.sorted.push(this.sorted[i]);
-	
+
 	return newHeap;
 }
 
@@ -105,20 +105,20 @@ Heap.prototype.replaceThis=function(toCopy){
 	}
 	for(var i=0;i<toCopy.nodes.length;i++){
 		var newNode=new Node();
-		
+
 		newNode.value=toCopy.nodes[i].value;
 		newNode.color=toCopy.nodes[i].color;
-		
+
 		nodes.push(newNode);
-		
+
 		if(i==0)
 			this.root=newNode;
 		else{
 			var actIndex=nodes.length-1;
 			var parIndex=Math.floor((actIndex-1)/2);
-			
+
 			nodes[actIndex].parent=nodes[parIndex];
-			
+
 			//if index of last node is uneven, its a left child. else right
 			if((nodes.length-1)%2==1){
 				nodes[parIndex].leftChild=nodes[actIndex];
@@ -127,18 +127,18 @@ Heap.prototype.replaceThis=function(toCopy){
 				nodes[parIndex].rightChild=nodes[actIndex];
 			}
 		}
-			
+
 	}
 
 	this.nodes=nodes;
-	
+
 	for(var i=0;i<toCopy.sorted.length;i++)
 		this.sorted.push(toCopy.sorted[i]);
 
 }
 
 Heap.prototype.prev=function(){
-	
+
 	if(this.actStateID>0){
 		if(heap.working){
 			var rs=this.db[this.actStateID];
@@ -192,15 +192,15 @@ Heap.prototype.add=function() {
 	//var count=this.db().count();
 
 	//if(count==this.actStateID){
-		
+
 	var val=parseInt(prompt("Add:\n(Values > 999 are ignored)"));
 	if(isNaN(val)||val>999)return;
-	
+
 	this.working=true;
-	
+
 	var node=new Node();
 	node.value=val;
-	
+
 	this.nodes.push(node);
 	if(this.nodes.length==1){
 		this.root=this.nodes[0];
@@ -212,9 +212,9 @@ Heap.prototype.add=function() {
 	else{
 		var actIndex=this.nodes.length-1;
 		var parIndex=Math.floor((actIndex-1)/2);
-		
+
 		this.nodes[actIndex].parent=this.nodes[parIndex];
-		
+
 		//if index of last node is uneven, its a left child. else right
 		if((this.nodes.length-1)%2==1){
 			this.nodes[parIndex].leftChild=this.nodes[actIndex];
@@ -222,59 +222,59 @@ Heap.prototype.add=function() {
 		else{
 			this.nodes[parIndex].rightChild=this.nodes[actIndex];
 		}
-		
+
 		this.draw();
-		
+
 		//check if swap is needed
-		
+
 		//#44FF00 green
 		//#FF00E1 red
 		//#51DBED default
 		var finished=false;
-		
+
 		function swapping(heap){
 			heap.timer=new Timer(function() {
-				
+
 				if(heap.nodes[actIndex].value<heap.nodes[parIndex].value){
 					//window.alert("in1");
 					heap.nodes[actIndex].color="#FF00E1";
 					heap.nodes[parIndex].color="#FF00E1";
 					heap.draw();
-					
+
 					var temp=heap.nodes[actIndex].value;
 					heap.nodes[actIndex].value=heap.nodes[parIndex].value;
 					heap.nodes[parIndex].value=temp;
-					
+
 					function delayedDrawing1(heap){
-						
+
 						heap.timer=new Timer(function() {
-							
+
 							heap.nodes[actIndex].color="#51DBED";
 							heap.nodes[parIndex].color="#51DBED";
 							heap.draw();
-							
+
 							actIndex=parIndex;
 							parIndex=Math.floor((actIndex-1)/2);
-							
+
 							if(parIndex<0){
 								heap.working=false;
 								heap.saveInDB();
 								return;
 							}
-							
+
 							swapping(heap);
 						},1000);
 					}
-					
+
 					delayedDrawing1(heap);
-					
+
 				}
 				else{
 					//window.alert("in2");
 					heap.nodes[actIndex].color="#44FF00";
 					heap.nodes[parIndex].color="#44FF00";
 					heap.draw();
-					
+
 					function delayedDrawing(heap){
 						heap.timer=new Timer(function() {
 							heap.nodes[actIndex].color="#51DBED";
@@ -285,14 +285,14 @@ Heap.prototype.add=function() {
 							return;
 						},1000);
 					}
-					
+
 					delayedDrawing(heap);
 
 				}
 
 			},1000);
 		}
-		
+
 		swapping(this);
 	}
 }
@@ -301,7 +301,7 @@ Heap.prototype.addFixed=function(val) {
 
 	var node=new Node();
 	node.value=val;
-	
+
 	this.nodes.push(node);
 	if(this.nodes.length==1){
 		this.root=this.nodes[0];
@@ -310,9 +310,9 @@ Heap.prototype.addFixed=function(val) {
 	else{
 		var actIndex=this.nodes.length-1;
 		var parIndex=Math.floor((actIndex-1)/2);
-		
+
 		this.nodes[actIndex].parent=this.nodes[parIndex];
-		
+
 		//if index of last node is uneven, its a left child. else right
 		if((this.nodes.length-1)%2==1){
 			this.nodes[parIndex].leftChild=this.nodes[actIndex];
@@ -320,12 +320,12 @@ Heap.prototype.addFixed=function(val) {
 		else{
 			this.nodes[parIndex].rightChild=this.nodes[actIndex];
 		}
-		
+
 		//check if swap is needed
 		var finished=false;
-		
+
 		function swapping(heap){
-				if(heap.nodes[actIndex].value<heap.nodes[parIndex].value){	
+				if(heap.nodes[actIndex].value<heap.nodes[parIndex].value){
 					var temp=heap.nodes[actIndex].value;
 					heap.nodes[actIndex].value=heap.nodes[parIndex].value;
 					heap.nodes[parIndex].value=temp;
@@ -334,13 +334,13 @@ Heap.prototype.addFixed=function(val) {
 					if(parIndex<0){
 						return;
 					}
-					swapping(heap);					
+					swapping(heap);
 				}
 				else{
 					return;
 				}
 		}
-		
+
 		swapping(this);
 	}
 }
@@ -348,7 +348,7 @@ Heap.prototype.addFixed=function(val) {
 Heap.prototype.addFixedNotHeapified=function(val) {
 	var node=new Node();
 	node.value=val;
-	
+
 	this.nodes.push(node);
 	if(this.nodes.length==1){
 		this.root=this.nodes[0];
@@ -357,9 +357,9 @@ Heap.prototype.addFixedNotHeapified=function(val) {
 	else{
 		var actIndex=this.nodes.length-1;
 		var parIndex=Math.floor((actIndex-1)/2);
-		
+
 		this.nodes[actIndex].parent=this.nodes[parIndex];
-		
+
 		//if index of last node is uneven, its a left child. else right
 		if((this.nodes.length-1)%2==1){
 			this.nodes[parIndex].leftChild=this.nodes[actIndex];
@@ -378,14 +378,14 @@ Heap.prototype.saveInDB=function(){
  	}
 
 	var nextID=this.db.length;
-	
+
 	var new_state = this.copy();
-	//ignoring duplicates 
+	//ignoring duplicates
 	var last_state = this.db[this.db.length-1];
-	
+
 	var same=true;
-	if(last_state!=undefined && (new_state.nodes.length!=last_state.nodes.length || 
-			new_state.sorted.length!=last_state.sorted.length)) 
+	if(last_state!=undefined && (new_state.nodes.length!=last_state.nodes.length ||
+			new_state.sorted.length!=last_state.sorted.length))
 		same=false;
 	else{
 		if(last_state!=undefined)
@@ -398,7 +398,7 @@ Heap.prototype.saveInDB=function(){
 		else
 			same=false;
 	}
-	
+
 	if(!same){
 		this.db.push(new_state);
 		this.actStateID=nextID;
@@ -406,7 +406,7 @@ Heap.prototype.saveInDB=function(){
 }
 
 
-Heap.prototype.removeMinimum=function() { 
+Heap.prototype.removeMinimum=function() {
 	if(this.nodes.length<1){
 		window.alert("Heap is empty!");
 		return;
@@ -424,39 +424,39 @@ Heap.prototype.removeMinimum=function() {
 		else{
 
 			var actIndex=undefined;
-			
+
 			this.nodes[0].color="#FF00E1";
 			this.nodes[this.nodes.length-1].color="#FF00E1";
 			this.draw();
-			
+
 			var temp=this.nodes[0].value;
 			this.nodes[0].value=heap.nodes[this.nodes.length-1].value;
 			this.nodes[this.nodes.length-1].value=temp;
-			
+
 			function delayedDrawing1(heap){
-				
+
 				heap.timer=new Timer(function() {
-					
+
 					heap.nodes[0].color="#51DBED";
 					heap.nodes[heap.nodes.length-1].color="#51DBED";
 					heap.draw();
-					
+
 					delayedDrawing2(heap);
 				},1000);
 			}
-			
+
 			function delayedDrawing2(heap){
-				
+
 				heap.timer=new Timer(function() {
 					heap.nodes[heap.nodes.length-1].color="red";
 					heap.draw();
-					
+
 					heap.nodes[heap.nodes.length-1].parent=undefined;
 					var actIndex=heap.nodes.length-1;
 					var parIndex=Math.floor((actIndex-1)/2);
-					
+
 					heap.nodes[actIndex].parent=undefined;
-					
+
 					//if index of last node is uneven, its a left child. else right
 					if((heap.nodes.length-1)%2==1){
 						heap.nodes[parIndex].leftChild=undefined;
@@ -465,13 +465,13 @@ Heap.prototype.removeMinimum=function() {
 						heap.nodes[parIndex].rightChild=undefined;
 					}
 					heap.nodes.splice(heap.nodes.length-1,1);
-					
+
 					delayedDrawing3(heap);
 				},1000);
 			}
-			
+
 			function delayedDrawing3(heap){
-				
+
 				heap.timer=new Timer(function() {
 					heap.draw();
 					if(heap.nodes.length==1){
@@ -491,7 +491,7 @@ Heap.prototype.removeMinimum=function() {
 					//#44FF00 green
 					//#FF00E1 red
 					//#51DBED default
-					
+
 					//get actNode + child with smaller value
 					if((heap.nodes[2*actIndex+2]==undefined)||(heap.nodes[2*actIndex+2]!=undefined && heap.nodes[2*actIndex+1].value<=heap.nodes[2*actIndex+2].value)){
 						minKidIndex=2*actIndex+1;
@@ -499,13 +499,13 @@ Heap.prototype.removeMinimum=function() {
 					else if(heap.nodes[2*actIndex+2]!=undefined && heap.nodes[2*actIndex+1].value>heap.nodes[2*actIndex+2].value){
 						minKidIndex=2*actIndex+2;
 					}
-					
+
 					if(heap.nodes[actIndex].value<=heap.nodes[minKidIndex].value){
 						heap.nodes[actIndex].color="#44FF00";
 						heap.nodes[minKidIndex].color="#44FF00";
-						
+
 						heap.draw();
-						
+
 						heap.nodes[actIndex].color="#51DBED";
 						heap.nodes[minKidIndex].color="#51DBED";
 						delayedDrawing4(heap);
@@ -513,9 +513,9 @@ Heap.prototype.removeMinimum=function() {
 					else{
 						heap.nodes[actIndex].color="#FF00E1";
 						heap.nodes[minKidIndex].color="#FF00E1";
-						
+
 						heap.draw();
-						
+
 						var temp=heap.nodes[actIndex].value;
 						heap.nodes[actIndex].value=heap.nodes[minKidIndex].value;
 						heap.nodes[minKidIndex].value=temp;
@@ -524,36 +524,36 @@ Heap.prototype.removeMinimum=function() {
 
 				},1000);
 			}
-			
+
 			function delayedDrawing4(heap){
-				
+
 				heap.timer=new Timer(function() {
 					heap.draw();
-					
+
 					heap.saveInDB();
 					heap.working=false;
 					return;
-					
+
 				},1000);
 			}
-			
+
 			function delayedDrawing5(heap){
-				
+
 				heap.timer=new Timer(function() {
 					heap.nodes[actIndex].color="#51DBED";
 					heap.nodes[minKidIndex].color="#51DBED";
 					heap.draw();
-					
+
 					actIndex=minKidIndex;
 					if(heap.nodes[actIndex].leftChild==undefined && heap.nodes[actIndex].rightChild==undefined){
 						heap.saveInDB();
 						heap.working=false;
 						return;
 					}
-					
+
 					else
 						sink(heap);
-					
+
 				},1000);
 			}
 
@@ -562,7 +562,7 @@ Heap.prototype.removeMinimum=function() {
 	}
 }
 
-Heap.prototype.sort=function() { 
+Heap.prototype.sort=function() {
 
 		this.working=true;
 		if(this.nodes.length==1){
@@ -570,10 +570,10 @@ Heap.prototype.sort=function() {
 				heap.timer=new Timer(function(){
 					heap.sorted.splice(0,0,heap.root.value);
 					heap.sorted.join();
-	
+
 					heap.nodes=[];
 					heap.root=undefined
-				
+
 					heap.draw();
 					heap.saveInDB();
 					heap.working=false;
@@ -584,38 +584,38 @@ Heap.prototype.sort=function() {
 		}
 		else{
 			var actIndex=undefined;
-			
+
 			this.nodes[0].color="#FF00E1";
 			this.nodes[this.nodes.length-1].color="#FF00E1";
 			this.draw();
-			
+
 			var temp=this.nodes[0].value;
 			this.nodes[0].value=heap.nodes[this.nodes.length-1].value;
 			this.nodes[this.nodes.length-1].value=temp;
-			
+
 			function delayedDrawing1(heap){
-				
+
 				heap.timer=new Timer(function() {
-					
+
 					heap.nodes[0].color="#51DBED";
 					heap.nodes[heap.nodes.length-1].color="#51DBED";
 					heap.draw();
-					
+
 					delayedDrawing2(heap);
 				},1000);
 			}
-			
+
 			function delayedDrawing2(heap){
 				heap.timer=new Timer(function() {
 					heap.nodes[heap.nodes.length-1].color="red";
 					heap.draw();
-					
+
 					heap.nodes[heap.nodes.length-1].parent=undefined;
 					var actIndex=heap.nodes.length-1;
 					var parIndex=Math.floor((actIndex-1)/2);
-					
+
 					heap.nodes[actIndex].parent=undefined;
-					
+
 					//if index of last node is uneven, its a left child. else right
 					if((heap.nodes.length-1)%2==1){
 						heap.nodes[parIndex].leftChild=undefined;
@@ -626,26 +626,26 @@ Heap.prototype.sort=function() {
 
 					heap.sorted.splice(0,0,heap.nodes[heap.nodes.length-1].value);
 					heap.sorted.join();
-					
+
 					heap.nodes.splice(heap.nodes.length-1,1);
-					
+
 					delayedDrawing3(heap);
 				},1000);
 			}
-			
+
 			function delayedDrawing3(heap){
-				
+
 				heap.timer=new Timer(function() {
 					heap.draw();
 					if(heap.nodes.length==1){
 						heap.saveInDB();
-						
+
 						function removeNext(heap){
 							heap.timer=new Timer(function() {
 								heap.sort();
 							},1000);
 						}
-						
+
 						removeNext(heap);
 						return;
 					}
@@ -661,7 +661,7 @@ Heap.prototype.sort=function() {
 					//#44FF00 green
 					//#FF00E1 red
 					//#51DBED default
-					
+
 					//get actNode + child with smaller value
 					if((heap.nodes[2*actIndex+2]==undefined)||(heap.nodes[2*actIndex+2]!=undefined && heap.nodes[2*actIndex+1].value>=heap.nodes[2*actIndex+2].value)){
 						minKidIndex=2*actIndex+1;
@@ -669,13 +669,13 @@ Heap.prototype.sort=function() {
 					else if(heap.nodes[2*actIndex+2]!=undefined && heap.nodes[2*actIndex+1].value<heap.nodes[2*actIndex+2].value){
 						minKidIndex=2*actIndex+2;
 					}
-					
+
 					if(heap.nodes[actIndex].value>=heap.nodes[minKidIndex].value){
 						heap.nodes[actIndex].color="#44FF00";
 						heap.nodes[minKidIndex].color="#44FF00";
-						
+
 						heap.draw();
-						
+
 						heap.nodes[actIndex].color="#51DBED";
 						heap.nodes[minKidIndex].color="#51DBED";
 						delayedDrawing4(heap);
@@ -683,9 +683,9 @@ Heap.prototype.sort=function() {
 					else{
 						heap.nodes[actIndex].color="#FF00E1";
 						heap.nodes[minKidIndex].color="#FF00E1";
-						
+
 						heap.draw();
-						
+
 						var temp=heap.nodes[actIndex].value;
 						heap.nodes[actIndex].value=heap.nodes[minKidIndex].value;
 						heap.nodes[minKidIndex].value=temp;
@@ -694,52 +694,52 @@ Heap.prototype.sort=function() {
 
 				},1000);
 			}
-			
+
 			function delayedDrawing4(heap){
-				
+
 				heap.timer=new Timer(function() {
 					heap.draw();
-					
+
 					heap.saveInDB();
-					
+
 					function removeNext(heap){
 						heap.timer=new Timer(function() {
 							heap.sort();
 						},1000);
 					}
-					
+
 					removeNext(heap);
-					
+
 					return;
-					
+
 				},1000);
 			}
-			
+
 			function delayedDrawing5(heap){
-				
+
 				heap.timer=new Timer(function() {
 					heap.nodes[actIndex].color="#51DBED";
 					heap.nodes[minKidIndex].color="#51DBED";
 					heap.draw();
-					
+
 					actIndex=minKidIndex;
 					if(heap.nodes[actIndex].leftChild==undefined && heap.nodes[actIndex].rightChild==undefined){
 						heap.saveInDB();
-						
+
 						function removeNext(heap){
 							heap.timer=new Timer(function() {
 								heap.sort();
 							},1000);
 						}
-						
+
 						removeNext(heap);
-						
+
 						return;
 					}
-					
+
 					else
 						sink(heap);
-					
+
 				},1000);
 			}
 
@@ -757,10 +757,10 @@ Heap.prototype.buildMaxHeap=function(){
 			},1000);
 		}
 		endBMH(this);
-		
+
 		return;
 	}
-		
+
 	//get lastKid:
 	var actIndex=this.nodes.length-1;
 	var actNode=this.nodes[actIndex];
@@ -775,7 +775,7 @@ Heap.prototype.buildMaxHeap=function(){
 			//#44FF00 green
 			//#FF00E1 red
 			//#51DBED default
-			
+
 			//get actNode + child with smaller value
 			if((heap.nodes[2*actIndex+2]==undefined)||(heap.nodes[2*actIndex+2]!=undefined && heap.nodes[2*actIndex+1].value>=heap.nodes[2*actIndex+2].value)){
 				maxKidIndex=2*actIndex+1;
@@ -783,22 +783,22 @@ Heap.prototype.buildMaxHeap=function(){
 			else if(heap.nodes[2*actIndex+2]!=undefined && heap.nodes[2*actIndex+1].value<heap.nodes[2*actIndex+2].value){
 				maxKidIndex=2*actIndex+2;
 			}
-			
+
 			if(heap.nodes[actIndex].value>=heap.nodes[maxKidIndex].value){
 				heap.nodes[actIndex].color="#44FF00";
 				heap.nodes[maxKidIndex].color="#44FF00";
-				
+
 				heap.draw();
-				
+
 				heap.nodes[actIndex].color="#51DBED";
 				heap.nodes[maxKidIndex].color="#51DBED";
-				
+
 				function delayedDrawing(heap){
 					heap.timer=new Timer(function() {
 						heap.draw();
 						if(lastHeapified==0){
 							heap.saveInDB();
-					
+
 							function pSort(heap){
 								heap.timer=new Timer(function() {
 									window.alert("Max Heap built. Starting to sort...");
@@ -806,7 +806,7 @@ Heap.prototype.buildMaxHeap=function(){
 								},1000);
 							}
 							pSort(heap);
-							
+
 							return;
 						}
 						else{
@@ -817,31 +817,31 @@ Heap.prototype.buildMaxHeap=function(){
 						}
 					},1000);
 				}
-				
+
 				delayedDrawing(heap);
 			}
 			else{
 				heap.nodes[actIndex].color="#FF00E1";
 				heap.nodes[maxKidIndex].color="#FF00E1";
-				
+
 				heap.draw();
-				
+
 				var temp=heap.nodes[actIndex].value;
 				heap.nodes[actIndex].value=heap.nodes[maxKidIndex].value;
 				heap.nodes[maxKidIndex].value=temp;
-				
+
 				function endSink(heap){
-					
+
 					heap.timer=new Timer(function() {
 						heap.nodes[actIndex].color="#51DBED";
 						heap.nodes[maxKidIndex].color="#51DBED";
 						heap.draw();
-						
+
 						actIndex=maxKidIndex;
 						if(heap.nodes[actIndex].leftChild==undefined && heap.nodes[actIndex].rightChild==undefined){
 							if(lastHeapified==0){
 								heap.saveInDB();
-								
+
 								function pSort(heap){
 									heap.timer=new Timer(function() {
 										window.alert("Max Heap built. Starting to sort...");
@@ -849,7 +849,7 @@ Heap.prototype.buildMaxHeap=function(){
 									},1000);
 								}
 								pSort(heap);
-								
+
 								return;
 							}
 							else{
@@ -859,13 +859,13 @@ Heap.prototype.buildMaxHeap=function(){
 								return;
 							}
 						}
-						
+
 						else
 							sink(heap);
-						
+
 					},1000);
 				}
-				
+
 				endSink(heap);
 			}
 
@@ -879,11 +879,11 @@ Heap.prototype.random=function(){
 	this.root=undefined;
 	this.nodes=[];
 	var number=Math.floor(Math.random() * (20 - 1 + 1)) + 1;
-	
+
 	for(var i=0;i<number;i++){
 		this.addFixed(parseInt(Math.random()*1000,10));
 	}
-		
+
 	this.saveInDB();
 	this.draw();
 }
@@ -893,11 +893,11 @@ Heap.prototype.example=function(){
 	this.root=undefined;
 	this.nodes=[];
 	var numbers=[25,20,15,10,5,1];
-	
+
 	for(var i=0;i<numbers.length;i++){
 		this.addFixed(numbers[i]);
 	}
-	
+
 	this.saveInDB();
 	this.draw();
 }
@@ -907,11 +907,11 @@ Heap.prototype.exampleSort=function(){
 	this.root=undefined;
 	this.nodes=[];
 	var numbers=[1,5,2,13,34,3,100];
-	
+
 	for(var i=0;i<numbers.length;i++){
 		this.addFixedNotHeapified(numbers[i]);
 	}
-	
+
 	this.draw();
 
 	this.timer = new Timer(function() {
@@ -919,7 +919,7 @@ Heap.prototype.exampleSort=function(){
 		heap.buildMaxHeap();
 	}, 1000);
 	this.timer.pause();
-	
+
 	this.draw();
 }
 
@@ -931,14 +931,14 @@ Heap.prototype.randomHeapsort=function(){
 	this.nodes=[];
 	this.sorted=[];
 	var number=Math.floor(Math.random() * (20 - 1 + 1)) + 1;
-	
+
 	for(var i=0;i<number;i++){
 		this.addFixedNotHeapified(parseInt(Math.random()*1000,10));
 	}
-		
+
 	//this.saveInDB();
 	this.draw();
-	
+
 	this.timer = new Timer(function() {
 		window.alert("Starting to build max heap...");
 		heap.buildMaxHeap();
@@ -949,31 +949,32 @@ Heap.prototype.randomHeapsort=function(){
 
 Heap.prototype.getElementsByPrompt=function(){
 	this.working=true;
-	
+
 	var valuesInString=prompt("Please enter the elements (separated by space):\nValues > 999 are ignored");
 
-	var tempValsStr = valuesInString.split(" "); 
+	var tempValsStr = valuesInString.split(" ");
 	var _in=false;
 	for(var i=0;i<tempValsStr.length;i++){
 		if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000){
 			_in=true;
 		}
 	}
-	
+
 	if(_in){
+		clearTimes();
 		this.nodes=[];
 		this.root=undefined;
 		this.sorted=[];
 		var tempElements=[];
-		
+
 		for(var i=0;i<tempValsStr.length;i++){
 			if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000){
 				this.addFixedNotHeapified(parseInt(tempValsStr[i]));
 			}
 		}
-		
+
 		this.draw();
-		
+
 		this.timer = new Timer(function() {
 			window.alert("Starting to build max heap...");
 			heap.buildMaxHeap();
@@ -984,7 +985,7 @@ Heap.prototype.getElementsByPrompt=function(){
 		this.working=false;
 		return false;
 	}
-	
+
 }
 
 Heap.prototype.draw=function(){
