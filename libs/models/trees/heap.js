@@ -966,7 +966,7 @@ Heap.prototype.getElementsByPrompt=function(){
 		this.root=undefined;
 		this.sorted=[];
 		var tempElements=[];
-
+		
 		for(var i=0;i<tempValsStr.length;i++){
 			if(!isNaN(parseInt(tempValsStr[i])) && parseInt(tempValsStr[i])<1000){
 				this.addFixedNotHeapified(parseInt(tempValsStr[i]));
